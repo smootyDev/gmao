@@ -1,0 +1,15 @@
+<div class="layout-wrapper" [ngClass]="containerClass()">
+  <app-layout-topbar></app-layout-topbar>
+  <app-layout-sidebar></app-layout-sidebar>
+
+  <div class="layout-content-wrapper">
+    <div class="layout-content">
+      <div class="layout-content-inner">
+        <router-outlet></router-outlet>
+        <app-layout-footer></app-layout-footer>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-mask" (click)="hideMenu()"></div>
+</div>

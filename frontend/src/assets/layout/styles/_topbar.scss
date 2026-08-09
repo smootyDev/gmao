@@ -1,0 +1,147 @@
+@use './_mixins' as *;
+
+.layout-topbar {
+  height: 5rem;
+  padding: 0 2rem 0 1rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  background-color: var(--v-body-bg);
+
+  .layout-topbar-logo-container {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .layout-topbar-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--v-menuitem-text-color);
+
+    .layout-topbar-logo-icon {
+      width: 3rem;
+      height: 3rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--content-border-radius);
+      background-color: var(--primary-color);
+      color: var(--primary-contrast-color);
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    .layout-topbar-logo-text {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-left: 0.5rem;
+    }
+
+    &:focus-visible {
+      @include focused();
+    }
+  }
+
+  .layout-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 1.5rem;
+    border-radius: var(--content-border-radius);
+    flex-shrink: 0;
+    color: var(--v-menuitem-text-color-secondary);
+    border: 0 none;
+    background: transparent;
+    transition: background-color var(--element-transition-duration);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--v-menuitem-hover-bg);
+    }
+
+    &:focus-visible {
+      @include focused();
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .layout-topbar-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  .layout-config-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .layout-topbar-action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--v-menuitem-text-color-secondary);
+    border: 0 none;
+    background: transparent;
+    transition: background-color var(--element-transition-duration);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--v-menuitem-hover-bg);
+    }
+
+    &:focus-visible {
+      @include focused();
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .layout-topbar-username {
+    display: inline;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    color: var(--v-menuitem-text-color);
+  }
+}
+
+@media (max-width: 991px) {
+  .layout-topbar {
+    padding: 0 1rem;
+    flex-wrap: wrap;
+
+    .layout-topbar-logo-container {
+      height: 5rem;
+    }
+
+    .layout-topbar-logo-text {
+      display: none;
+    }
+
+    .layout-topbar-username {
+      display: none;
+    }
+  }
+}

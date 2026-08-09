@@ -5,7 +5,7 @@ export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/auth/components/login.component').then(m => m.LoginComponent) },
   {
     path: '',
-    loadComponent: () => import('./shared/components/shell.component').then(m => m.ShellComponent),
+    loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

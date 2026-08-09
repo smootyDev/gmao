@@ -1,0 +1,22 @@
+.layout-content-wrapper {
+  margin-left: 0;
+  padding-top: 5rem;
+  height: calc(100% - 5rem);
+  transition: margin-left var(--layout-section-transition-duration);
+
+  .layout-content {
+    border-top: 1px solid var(--surface-border);
+    overflow: auto;
+    height: calc(100vh - 5rem);
+    padding: 2rem;
+    background-color: var(--surface-ground);
+    border-top-left-radius: 30px;
+    box-shadow: inset 0 3px 4px rgba(0, 0, 0, 0.1);
+
+    .layout-content-inner {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+}

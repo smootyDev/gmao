@@ -13,6 +13,7 @@ const translations: Record<string, any> = {
       }
     },
     MENU: {
+      SECTION: 'Menú',
       DASHBOARD: 'Panel',
       WORKORDERS: 'Órdenes de trabajo',
       ASSETS: 'Activos',
@@ -80,6 +81,7 @@ const translations: Record<string, any> = {
       }
     },
     MENU: {
+      SECTION: 'Menu',
       DASHBOARD: 'Dashboard',
       WORKORDERS: 'Work Orders',
       ASSETS: 'Assets',

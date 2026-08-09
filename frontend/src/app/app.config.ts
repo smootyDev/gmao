@@ -23,18 +23,12 @@ export const appConfig: ApplicationConfig = {
             order: 'theme, base, primeng'
           }
         }
-        // ,
-        // options: {
-        //   darkModeSelector: '.p-dark',
-        //   cssLayer: false
-        // }
       },
       ripple: true
+    }),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
     })
-    // ,
-    // provideServiceWorker('ngsw-worker.js', {
-    //   enabled: !isDevMode(),
-    //   registrationStrategy: 'registerWhenStable:30000'
-    // })
   ]
 };

@@ -10,6 +10,7 @@
     }
   },
   "MENU": {
+    "SECTION": "Menú",
     "DASHBOARD": "Panel",
     "WORKORDERS": "Órdenes de trabajo",
     "ASSETS": "Activos",

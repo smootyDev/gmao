@@ -1,0 +1,31 @@
+<div class="layout-topbar">
+  <div class="layout-topbar-logo-container">
+    <button type="button" class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()" aria-label="Toggle menu">
+      <i class="pi pi-bars"></i>
+    </button>
+
+    <a class="layout-topbar-logo" routerLink="/dashboard">
+      <span class="layout-topbar-logo-icon"><i class="pi pi-wrench"></i></span>
+      <span class="layout-topbar-logo-text">GMAO CMMS</span>
+    </a>
+  </div>
+
+  <div class="layout-topbar-actions">
+    <div class="layout-config-menu">
+      <button type="button" class="layout-topbar-action" (click)="toggleTheme()" [attr.aria-label]="'THEME.TOGGLE' | translate">
+        <i [class]="themeIcon()"></i>
+      </button>
+
+      <button type="button" class="layout-topbar-action" (click)="languageMenu.toggle($event)" aria-label="Language">
+        <i class="pi pi-globe"></i>
+      </button>
+      <p-menu #languageMenu [popup]="true" [model]="languageItems"></p-menu>
+
+      <button type="button" class="layout-topbar-action" (click)="userMenu.toggle($event)" aria-label="User menu">
+        <i class="pi pi-user"></i>
+        <span class="layout-topbar-username" *ngIf="authService.currentUser()?.username">{{ authService.currentUser()?.username }}</span>
+      </button>
+      <p-menu #userMenu [popup]="true" [model]="userItems()"></p-menu>
+    </div>
+  </div>
+</div>
