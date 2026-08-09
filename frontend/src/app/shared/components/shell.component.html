@@ -26,7 +26,7 @@
   </p-toolbar>
 
   <div class="layout-content flex">
-    <aside class="layout-sidebar surface-card border-right-1 surface-border" [class.collapsed]="!sidebarVisible">
+    <aside class="layout-sidebar surface-card border-right-1 surface-border" [class.collapsed]="!sidebarVisible()">
       <nav class="p-3">
         <ul class="list-none p-0 m-0 flex flex-column gap-2">
           <li *ngFor="let item of menuItems">
@@ -34,7 +34,7 @@
                routerLinkActive="active"
                class="flex align-items-center gap-2 p-3 border-round-lg text-color hover:surface-hover no-underline transition-colors transition-duration-200">
               <i [class]="item.icon"></i>
-              <span *ngIf="sidebarVisible">{{ item.label | translate }}</span>
+              <span *ngIf="sidebarVisible()">{{ item.label | translate }}</span>
             </a>
           </li>
         </ul>

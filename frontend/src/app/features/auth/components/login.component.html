@@ -1,5 +1,5 @@
 <div class="login-container flex align-items-center justify-content-center min-h-screen p-3">
-  <p-card styleClass="login-card shadow-6">
+  <p-card class="login-card shadow-6">
     <ng-template pTemplate="header">
       <div class="text-center p-4">
         <h1 class="text-3xl font-bold m-0">GMAO CMMS</h1>
@@ -7,15 +7,15 @@
       </div>
     </ng-template>
 
-    <form (ngSubmit)="login()" class="flex flex-column gap-4">
+    <form [formGroup]="form" (ngSubmit)="login()" class="flex flex-column gap-4">
       <div class="field">
         <label for="username">{{ 'LOGIN.USERNAME' | translate }}</label>
-        <input pInputText id="username" [(ngModel)]="username" name="username" class="w-full" autocomplete="username" />
+        <input pInputText id="username" formControlName="username" class="w-full" autocomplete="username" />
       </div>
 
       <div class="field">
         <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
-        <p-password id="password" [(ngModel)]="password" name="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" />
+        <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="false" class="w-full" inputStyleClass="w-full" />
       </div>
 
       <div *ngIf="error()" class="p-3 border-round bg-red-100 text-red-900 text-sm">

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,7 +16,7 @@ import { WorkorderService, WorkOrder } from '../services/workorder.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     CardModule,
     InputTextModule,
@@ -29,19 +29,10 @@ import { WorkorderService, WorkOrder } from '../services/workorder.service';
   styleUrl: './workorder-form.component.scss'
 })
 export class WorkorderFormComponent implements OnInit {
-  workOrder: WorkOrder = {
-    title: '',
-    description: '',
-    status: 'OPEN',
-    priority: 3,
-    assetId: undefined,
-    assignedTo: undefined,
-    estimatedHours: undefined
-  };
-
-  isEdit = false;
-  id?: number;
-  saving = false;
+  form: FormGroup;
+  isEdit = signal(false);
+  id = signal<number | undefined>(undefined);
+  saving = signal(false);
 
   statuses = [
     { label: 'WORKORDERS.STATUSES.OPEN', value: 'OPEN' },
@@ -59,41 +50,63 @@ export class WorkorderFormComponent implements OnInit {
   ];
 
   constructor(
+    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private workorderService: WorkorderService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.form = this.fb.group({
+      title: ['', Validators.required],
+      description: [''],
+      status: ['OPEN'],
+      priority: [3],
+      assetId: [null],
+      assignedTo: [null],
+      estimatedHours: [null]
+    });
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
-      this.isEdit = true;
-      this.id = +idParam;
-      this.workorderService.get(this.id).subscribe({
-        next: (data) => this.workOrder = data,
+      this.isEdit.set(true);
+      this.id.set(+idParam);
+      this.workorderService.get(+idParam).subscribe({
+        next: (data) => this.form.patchValue(data),
         error: () => this.router.navigate(['/workorders'])
       });
     }
   }
 
   save(): void {
-    this.saving = true;
-    const operation = this.isEdit && this.id
-      ? this.workorderService.update(this.id, this.workOrder)
-      : this.workorderService.create(this.workOrder);
+    this.saving.set(true);
+    const raw = this.form.getRawValue();
+    const workOrder: WorkOrder = {
+      title: raw.title,
+      description: raw.description,
+      status: raw.status,
+      priority: Number(raw.priority),
+      assetId: this.toNumber(raw.assetId),
+      assignedTo: this.toNumber(raw.assignedTo),
+      estimatedHours: this.toNumber(raw.estimatedHours)
+    };
+
+    const operation = this.isEdit() && this.id() !== undefined
+      ? this.workorderService.update(this.id()!, workOrder)
+      : this.workorderService.create(workOrder);
 
     operation.subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: this.isEdit ? 'Orden actualizada' : 'Orden creada'
+          detail: this.isEdit() ? 'Orden actualizada' : 'Orden creada'
         });
         this.router.navigate(['/workorders']);
       },
       error: () => {
-        this.saving = false;
+        this.saving.set(false);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -101,5 +114,13 @@ export class WorkorderFormComponent implements OnInit {
         });
       }
     });
+  }
+
+  private toNumber(value: unknown): number | undefined {
+    if (value === null || value === '' || value === undefined) {
+      return undefined;
+    }
+    const n = Number(value);
+    return Number.isFinite(n) ? n : undefined;
   }
 }

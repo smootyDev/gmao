@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -29,7 +29,7 @@ import { LanguageService } from '../../core/services/language.service';
   styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
-  sidebarVisible = true;
+  sidebarVisible = signal(true);
 
   menuItems = [
     { label: 'MENU.DASHBOARD', icon: 'pi pi-home', routerLink: '/dashboard' },
@@ -53,6 +53,6 @@ export class ShellComponent {
   ) {}
 
   toggleSidebar(): void {
-    this.sidebarVisible = !this.sidebarVisible;
+    this.sidebarVisible.update((v) => !v);
   }
 }

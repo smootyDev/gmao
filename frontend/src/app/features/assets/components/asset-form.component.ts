@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,7 +16,7 @@ import { AssetService, Asset } from '../services/asset.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     CardModule,
     InputTextModule,
@@ -29,20 +29,10 @@ import { AssetService, Asset } from '../services/asset.service';
   styleUrl: './asset-form.component.scss'
 })
 export class AssetFormComponent implements OnInit {
-  asset: Asset = {
-    name: '',
-    type: '',
-    criticality: 'MEDIUM',
-    status: 'OPERATIVE',
-    location: '',
-    serialNumber: '',
-    hoursOfUse: undefined,
-    purchaseDate: undefined
-  };
-
-  isEdit = false;
-  id?: number;
-  saving = false;
+  form: FormGroup;
+  isEdit = signal(false);
+  id = signal<number | undefined>(undefined);
+  saving = signal(false);
 
   criticalities = [
     { label: 'Baja', value: 'LOW' },
@@ -58,23 +48,35 @@ export class AssetFormComponent implements OnInit {
   ];
 
   constructor(
+    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private assetService: AssetService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      type: [''],
+      serialNumber: [''],
+      criticality: ['MEDIUM'],
+      status: ['OPERATIVE'],
+      location: [''],
+      hoursOfUse: [null],
+      purchaseDate: [null]
+    });
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
-      this.isEdit = true;
-      this.id = +idParam;
-      this.assetService.get(this.id).subscribe({
+      this.isEdit.set(true);
+      this.id.set(+idParam);
+      this.assetService.get(+idParam).subscribe({
         next: (data) => {
-          this.asset = {
+          this.form.patchValue({
             ...data,
-            purchaseDate: data.purchaseDate ? data.purchaseDate.split('T')[0] : undefined
-          };
+            purchaseDate: data.purchaseDate ? data.purchaseDate.split('T')[0] : null
+          });
         },
         error: () => this.router.navigate(['/assets'])
       });
@@ -82,22 +84,23 @@ export class AssetFormComponent implements OnInit {
   }
 
   save(): void {
-    this.saving = true;
-    const operation = this.isEdit && this.id
-      ? this.assetService.update(this.id, this.asset)
-      : this.assetService.create(this.asset);
+    this.saving.set(true);
+    const asset: Asset = this.form.getRawValue();
+    const operation = this.isEdit() && this.id() !== undefined
+      ? this.assetService.update(this.id()!, asset)
+      : this.assetService.create(asset);
 
     operation.subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: this.isEdit ? 'Activo actualizado' : 'Activo creado'
+          detail: this.isEdit() ? 'Activo actualizado' : 'Activo creado'
         });
         this.router.navigate(['/assets']);
       },
       error: () => {
-        this.saving = false;
+        this.saving.set(false);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

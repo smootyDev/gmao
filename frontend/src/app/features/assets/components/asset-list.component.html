@@ -7,9 +7,9 @@
     </button>
   </div>
 
-  <p-card styleClass="shadow-2">
+  <p-card class="shadow-2">
     <p-table [value]="assets()" [loading]="loading()" [paginator]="true" [rows]="10"
-             [rowsPerPageOptions]="[5,10,20]" responsiveLayout="scroll">
+             [rowsPerPageOptions]="[5,10,20]">
       <ng-template pTemplate="header">
         <tr>
           <th>{{ 'ASSETS.ID' | translate }}</th>

@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -15,7 +15,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     CardModule,
     InputTextModule,
     PasswordModule,
@@ -26,15 +26,24 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  form: FormGroup;
   error = signal('');
   loading = signal(false);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.form = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
 
   login(): void {
-    if (!this.username || !this.password) {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       this.error.set('LOGIN.ERRORS.REQUIRED');
       return;
     }
@@ -42,7 +51,8 @@ export class LoginComponent {
     this.loading.set(true);
     this.error.set('');
 
-    this.authService.login({ username: this.username, password: this.password }).subscribe({
+    const { username, password } = this.form.getRawValue();
+    this.authService.login({ username, password }).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
