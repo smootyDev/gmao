@@ -1,0 +1,8 @@
+.kpi-card {
+  border-radius: 1rem;
+  transition: transform 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+}

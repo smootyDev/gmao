@@ -1,0 +1,65 @@
+<div class="fadein max-w-900 mx-auto">
+  <h1 class="text-3xl font-bold mb-4">
+    {{ (isEdit ? 'WORKORDERS.EDIT' : 'WORKORDERS.NEW') | translate }}
+  </h1>
+
+  <p-card styleClass="shadow-2">
+    <form (ngSubmit)="save()" class="flex flex-column gap-3">
+      <div class="field">
+        <label for="title">{{ 'WORKORDERS.TITLE' | translate }}</label>
+        <input pInputText id="title" [(ngModel)]="workOrder.title" name="title" class="w-full" required />
+      </div>
+
+      <div class="field">
+        <label for="description">{{ 'WORKORDERS.DESCRIPTION' | translate }}</label>
+        <textarea id="description" [(ngModel)]="workOrder.description" name="description" rows="4" class="w-full p-2 border-round border-1 surface-border"></textarea>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="status">{{ 'WORKORDERS.STATUS' | translate }}</label>
+          <select id="status" [(ngModel)]="workOrder.status" name="status" class="w-full p-2 border-round border-1 surface-border">
+            <option *ngFor="let s of statuses" [value]="s.value">{{ s.label | translate }}</option>
+          </select>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="priority">{{ 'WORKORDERS.PRIORITY' | translate }}</label>
+          <select id="priority" [(ngModel)]="workOrder.priority" name="priority" class="w-full p-2 border-round border-1 surface-border">
+            <option *ngFor="let p of priorities" [value]="p.value">{{ p.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-4">
+          <label for="assetId">{{ 'WORKORDERS.ASSET' | translate }}</label>
+          <input id="assetId" type="number" [(ngModel)]="workOrder.assetId" name="assetId" class="w-full p-2 border-round border-1 surface-border" />
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <label for="assignedTo">{{ 'WORKORDERS.ASSIGNED' | translate }}</label>
+          <input id="assignedTo" type="number" [(ngModel)]="workOrder.assignedTo" name="assignedTo" class="w-full p-2 border-round border-1 surface-border" />
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <label for="estimatedHours">{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</label>
+          <input id="estimatedHours" type="number" step="0.1" [(ngModel)]="workOrder.estimatedHours" name="estimatedHours" class="w-full p-2 border-round border-1 surface-border" />
+        </div>
+      </div>
+
+      <div class="flex justify-content-end gap-2 mt-3">
+        <button pButton type="button" severity="secondary" routerLink="/workorders">
+          <i class="pi pi-times" pButtonIcon></i>
+          <span pButtonLabel>{{ 'COMMON.CANCEL' | translate }}</span>
+        </button>
+        <button pButton type="submit" [loading]="saving">
+          <i class="pi pi-check" pButtonIcon></i>
+          <span pButtonLabel>{{ 'COMMON.SAVE' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-toast></p-toast>

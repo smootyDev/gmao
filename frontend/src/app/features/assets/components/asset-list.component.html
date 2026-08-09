@@ -1,0 +1,51 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'ASSETS.TITLE' | translate }}</h1>
+    <button pButton type="button" routerLink="/assets/new">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>{{ 'ASSETS.NEW' | translate }}</span>
+    </button>
+  </div>
+
+  <p-card styleClass="shadow-2">
+    <p-table [value]="assets()" [loading]="loading()" [paginator]="true" [rows]="10"
+             [rowsPerPageOptions]="[5,10,20]" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'ASSETS.ID' | translate }}</th>
+          <th>{{ 'ASSETS.NAME' | translate }}</th>
+          <th>{{ 'ASSETS.TYPE' | translate }}</th>
+          <th>{{ 'ASSETS.CRITICALITY' | translate }}</th>
+          <th>{{ 'ASSETS.STATUS' | translate }}</th>
+          <th>{{ 'ASSETS.LOCATION' | translate }}</th>
+          <th style="width: 8rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-asset>
+        <tr>
+          <td>{{ asset.id }}</td>
+          <td>{{ asset.name }}</td>
+          <td>{{ asset.type }}</td>
+          <td><p-tag [value]="asset.criticality" [severity]="getSeverity(asset.criticality)"></p-tag></td>
+          <td>{{ asset.status }}</td>
+          <td>{{ asset.location }}</td>
+          <td>
+            <div class="flex gap-2">
+              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/assets', asset.id]" aria-label="Edit">
+                <i class="pi pi-pencil" pButtonIcon></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(asset.id)" aria-label="Delete">
+                <i class="pi pi-trash" pButtonIcon></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

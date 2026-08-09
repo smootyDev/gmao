@@ -1,0 +1,36 @@
+<div class="login-container flex align-items-center justify-content-center min-h-screen p-3">
+  <p-card styleClass="login-card shadow-6">
+    <ng-template pTemplate="header">
+      <div class="text-center p-4">
+        <h1 class="text-3xl font-bold m-0">GMAO CMMS</h1>
+        <p class="text-secondary mt-2 mb-0">{{ 'LOGIN.SUBTITLE' | translate }}</p>
+      </div>
+    </ng-template>
+
+    <form (ngSubmit)="login()" class="flex flex-column gap-4">
+      <div class="field">
+        <label for="username">{{ 'LOGIN.USERNAME' | translate }}</label>
+        <input pInputText id="username" [(ngModel)]="username" name="username" class="w-full" autocomplete="username" />
+      </div>
+
+      <div class="field">
+        <label for="password">{{ 'LOGIN.PASSWORD' | translate }}</label>
+        <p-password id="password" [(ngModel)]="password" name="password" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full" />
+      </div>
+
+      <div *ngIf="error()" class="p-3 border-round bg-red-100 text-red-900 text-sm">
+        {{ error() | translate }}
+      </div>
+
+      <button pButton type="submit" [loading]="loading()" class="w-full">
+        <span pButtonLabel>{{ 'LOGIN.SUBMIT' | translate }}</span>
+      </button>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <div class="text-center text-secondary text-sm">
+        admin / admin
+      </div>
+    </ng-template>
+  </p-card>
+</div>

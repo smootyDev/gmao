@@ -1,0 +1,34 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "java",
+            "name": "Backend: Spring Boot (gmao-backend)",
+            "request": "launch",
+            "mainClass": "com.gmao.backend.GmaoBackendApplication",
+            "projectName": "backend",
+            "console": "integratedTerminal",
+            "preLaunchTask": "db: docker compose up"
+        },
+        {
+            "type": "chrome",
+            "name": "Frontend: ng serve + Chrome",
+            "request": "launch",
+            "preLaunchTask": "frontend: ng serve",
+            "url": "http://localhost:4200/",
+            "webRoot": "${workspaceFolder}/frontend",
+            "sourceMaps": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "App completa (DB + Backend + Frontend)",
+            "configurations": [
+                "Backend: Spring Boot (gmao-backend)",
+                "Frontend: ng serve + Chrome"
+            ],
+            "stopAll": true
+        }
+    ]
+}

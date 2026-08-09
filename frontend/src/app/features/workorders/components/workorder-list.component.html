@@ -1,0 +1,51 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'WORKORDERS.TITLE' | translate }}</h1>
+    <button pButton type="button" routerLink="/workorders/new">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>{{ 'WORKORDERS.NEW' | translate }}</span>
+    </button>
+  </div>
+
+  <p-card styleClass="shadow-2">
+    <p-table [value]="workOrders()" [loading]="loading()" [paginator]="true" [rows]="10"
+             [rowsPerPageOptions]="[5,10,20]" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'WORKORDERS.ID' | translate }}</th>
+          <th>{{ 'WORKORDERS.TITLE' | translate }}</th>
+          <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
+          <th>{{ 'WORKORDERS.PRIORITY' | translate }}</th>
+          <th>{{ 'WORKORDERS.ASSET' | translate }}</th>
+          <th>{{ 'WORKORDERS.ASSIGNED' | translate }}</th>
+          <th style="width: 8rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-wo>
+        <tr>
+          <td>{{ wo.id }}</td>
+          <td>{{ wo.title }}</td>
+          <td><p-tag [value]="'WORKORDERS.STATUSES.' + wo.status | translate" [severity]="getSeverity(wo.status)"></p-tag></td>
+          <td>{{ wo.priority }}</td>
+          <td>{{ wo.assetId }}</td>
+          <td>{{ wo.assignedTo }}</td>
+          <td>
+            <div class="flex gap-2">
+              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/workorders', wo.id]" aria-label="Edit">
+                <i class="pi pi-pencil" pButtonIcon></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(wo.id)" aria-label="Delete">
+                <i class="pi pi-trash" pButtonIcon></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

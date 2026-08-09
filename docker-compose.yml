@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gmao-db
+    environment:
+      POSTGRES_DB: gmao
+      POSTGRES_USER: gmao
+      POSTGRES_PASSWORD: gmao_pass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gmao -d gmao"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: gmao-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gmao
+      SPRING_DATASOURCE_USERNAME: gmao
+      SPRING_DATASOURCE_PASSWORD: gmao_pass
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/data/uploads:/app/data/uploads
+
+  frontend:
+    build: ./frontend
+    container_name: gmao-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
+volumes:
+  db_data:

@@ -1,0 +1,68 @@
+{
+  "LOGIN": {
+    "SUBTITLE": "Sistema de Gestión de Mantenimiento",
+    "USERNAME": "Usuario",
+    "PASSWORD": "Contraseña",
+    "SUBMIT": "Iniciar sesión",
+    "ERRORS": {
+      "REQUIRED": "Usuario y contraseña son obligatorios",
+      "INVALID": "Usuario o contraseña incorrectos"
+    }
+  },
+  "MENU": {
+    "DASHBOARD": "Panel",
+    "WORKORDERS": "Órdenes de trabajo",
+    "ASSETS": "Activos",
+    "LOGOUT": "Cerrar sesión"
+  },
+  "DASHBOARD": {
+    "TITLE": "Panel de control",
+    "OPEN": "Abiertas",
+    "IN_PROGRESS": "En curso",
+    "CLOSED": "Cerradas",
+    "URGENT": "Urgentes"
+  },
+  "WORKORDERS": {
+    "TITLE": "Órdenes de trabajo",
+    "NEW": "Nueva orden",
+    "EDIT": "Editar orden",
+    "ID": "ID",
+    "TITLE_LABEL": "Título",
+    "TITLE": "Título",
+    "DESCRIPTION": "Descripción",
+    "STATUS": "Estado",
+    "PRIORITY": "Prioridad",
+    "ASSET": "Activo",
+    "ASSIGNED": "Asignado a",
+    "ESTIMATED_HOURS": "Horas estimadas",
+    "STATUSES": {
+      "OPEN": "Abierta",
+      "ASSIGNED": "Asignada",
+      "IN_PROGRESS": "En progreso",
+      "ON_HOLD": "En espera",
+      "CLOSED": "Cerrada"
+    }
+  },
+  "ASSETS": {
+    "TITLE": "Activos",
+    "NEW": "Nuevo activo",
+    "EDIT": "Editar activo",
+    "ID": "ID",
+    "NAME": "Nombre",
+    "TYPE": "Tipo",
+    "CRITICALITY": "Criticidad",
+    "STATUS": "Estado",
+    "LOCATION": "Ubicación",
+    "SERIAL_NUMBER": "Número de serie",
+    "HOURS_OF_USE": "Horas de uso",
+    "PURCHASE_DATE": "Fecha de compra"
+  },
+  "COMMON": {
+    "SAVE": "Guardar",
+    "CANCEL": "Cancelar",
+    "NO_DATA": "No hay datos disponibles"
+  },
+  "THEME": {
+    "TOGGLE": "Cambiar tema"
+  }
+}

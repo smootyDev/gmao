@@ -1,0 +1,68 @@
+{
+  "LOGIN": {
+    "SUBTITLE": "Maintenance Management System",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SUBMIT": "Sign in",
+    "ERRORS": {
+      "REQUIRED": "Username and password are required",
+      "INVALID": "Invalid username or password"
+    }
+  },
+  "MENU": {
+    "DASHBOARD": "Dashboard",
+    "WORKORDERS": "Work Orders",
+    "ASSETS": "Assets",
+    "LOGOUT": "Logout"
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "OPEN": "Open",
+    "IN_PROGRESS": "In Progress",
+    "CLOSED": "Closed",
+    "URGENT": "Urgent"
+  },
+  "WORKORDERS": {
+    "TITLE": "Work Orders",
+    "NEW": "New Work Order",
+    "EDIT": "Edit Work Order",
+    "ID": "ID",
+    "TITLE_LABEL": "Title",
+    "TITLE": "Title",
+    "DESCRIPTION": "Description",
+    "STATUS": "Status",
+    "PRIORITY": "Priority",
+    "ASSET": "Asset",
+    "ASSIGNED": "Assigned to",
+    "ESTIMATED_HOURS": "Estimated hours",
+    "STATUSES": {
+      "OPEN": "Open",
+      "ASSIGNED": "Assigned",
+      "IN_PROGRESS": "In Progress",
+      "ON_HOLD": "On Hold",
+      "CLOSED": "Closed"
+    }
+  },
+  "ASSETS": {
+    "TITLE": "Assets",
+    "NEW": "New Asset",
+    "EDIT": "Edit Asset",
+    "ID": "ID",
+    "NAME": "Name",
+    "TYPE": "Type",
+    "CRITICALITY": "Criticality",
+    "STATUS": "Status",
+    "LOCATION": "Location",
+    "SERIAL_NUMBER": "Serial Number",
+    "HOURS_OF_USE": "Hours of Use",
+    "PURCHASE_DATE": "Purchase Date"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "NO_DATA": "No data available"
+  },
+  "THEME": {
+    "TOGGLE": "Toggle theme"
+  }
+}
