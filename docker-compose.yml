@@ -19,6 +19,29 @@ services:
       timeout: 5s
       retries: 5
 
+  db-migrate:
+    image: postgres:15-alpine
+    container_name: gmao-db-migrate
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: gmao
+      PGUSER: gmao
+      PGPASSWORD: gmao_pass
+    volumes:
+      - ./scripts/migrations/001_locations.sql:/migrations/001_locations.sql:ro
+      - ./scripts/migrations/002_asset_types.sql:/migrations/002_asset_types.sql:ro
+      - ./scripts/migrations/003_asset_description.sql:/migrations/003_asset_description.sql:ro
+      - ./scripts/migrations/004_asset_type_descriptions.sql:/migrations/004_asset_type_descriptions.sql:ro
+      - ./scripts/migrations/005_repair_asset_type_descriptions.sql:/migrations/005_repair_asset_type_descriptions.sql:ro
+      - ./scripts/migrations/006_users_assets_assignment.sql:/migrations/006_users_assets_assignment.sql:ro
+      - ./scripts/migrations/007_drop_asset_assignment.sql:/migrations/007_drop_asset_assignment.sql:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: "psql -v ON_ERROR_STOP=1 -f /migrations/001_locations.sql -f /migrations/002_asset_types.sql -f /migrations/003_asset_description.sql -f /migrations/004_asset_type_descriptions.sql -f /migrations/005_repair_asset_type_descriptions.sql -f /migrations/006_users_assets_assignment.sql -f /migrations/007_drop_asset_assignment.sql"
+
   backend:
     build: ./backend
     container_name: gmao-backend
@@ -28,8 +51,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: gmao_pass
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
-      db:
-        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
     ports:
       - "8080:8080"
     volumes:

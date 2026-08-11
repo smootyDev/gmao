@@ -8,27 +8,48 @@
   </div>
 
   <p-card class="shadow-2">
-    <p-table [value]="workOrders()" [loading]="loading()" [paginator]="true" [rows]="10"
+    <p-table #workOrderTable [value]="workOrders()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'title', 'description', 'status', 'priority', 'assetId', 'assignedTo', 'estimatedHours']" [paginator]="true" [rows]="10"
              [rowsPerPageOptions]="[5,10,20]">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between align-items-center">
+          <button pButton type="button" text severity="secondary" size="small" icon="pi pi-filter-slash" [label]="'COMMON.CLEAR_FILTERS' | translate" (click)="workOrderTable.clear()"></button>
+          <input pInputText type="text" [placeholder]="'COMMON.SEARCH' | translate" (input)="workOrderTable.filterGlobal($any($event.target).value, 'contains')" />
+        </div>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th>{{ 'WORKORDERS.ID' | translate }}</th>
           <th>{{ 'WORKORDERS.TITLE' | translate }}</th>
+          <th>{{ 'WORKORDERS.DESCRIPTION' | translate }}</th>
           <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
           <th>{{ 'WORKORDERS.PRIORITY' | translate }}</th>
           <th>{{ 'WORKORDERS.ASSET' | translate }}</th>
           <th>{{ 'WORKORDERS.ASSIGNED' | translate }}</th>
+          <th>{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</th>
           <th style="width: 8rem"></th>
+        </tr>
+        <tr>
+          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="title" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
+          <th><app-dropdown-column-filter field="priority" [options]="priorityOptions" placeholder="" /></th>
+          <th><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
+          <th><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
+          <th><p-columnFilter type="text" field="estimatedHours" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-wo>
         <tr>
           <td>{{ wo.id }}</td>
           <td>{{ wo.title }}</td>
+          <td>{{ wo.description || '-' }}</td>
           <td><p-tag [value]="'WORKORDERS.STATUSES.' + wo.status | translate" [severity]="getSeverity(wo.status)"></p-tag></td>
-          <td>{{ wo.priority }}</td>
-          <td>{{ wo.assetId }}</td>
-          <td>{{ wo.assignedTo }}</td>
+          <td>{{ priorityName(wo.priority) }}</td>
+          <td>{{ assetName(wo.assetId) }}</td>
+          <td>{{ userName(wo.assignedTo) }}</td>
+          <td>{{ wo.estimatedHours ?? '-' }}</td>
           <td>
             <div class="flex gap-2">
               <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/workorders', wo.id]" aria-label="Edit">
@@ -43,7 +64,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
+          <td colspan="9" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

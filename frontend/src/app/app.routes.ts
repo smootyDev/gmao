@@ -15,7 +15,16 @@ export const routes: Routes = [
       { path: 'workorders/:id', loadComponent: () => import('./features/workorders/components/workorder-form.component').then(m => m.WorkorderFormComponent) },
       { path: 'assets', loadComponent: () => import('./features/assets/components/asset-list.component').then(m => m.AssetListComponent) },
       { path: 'assets/new', loadComponent: () => import('./features/assets/components/asset-form.component').then(m => m.AssetFormComponent) },
-      { path: 'assets/:id', loadComponent: () => import('./features/assets/components/asset-form.component').then(m => m.AssetFormComponent) }
+      { path: 'assets/:id', loadComponent: () => import('./features/assets/components/asset-form.component').then(m => m.AssetFormComponent) },
+      { path: 'asset-types', loadComponent: () => import('./features/asset-types/components/asset-type-list.component').then(m => m.AssetTypeListComponent) },
+      { path: 'asset-types/new', loadComponent: () => import('./features/asset-types/components/asset-type-form.component').then(m => m.AssetTypeFormComponent) },
+      { path: 'asset-types/:id', loadComponent: () => import('./features/asset-types/components/asset-type-form.component').then(m => m.AssetTypeFormComponent) },
+      { path: 'users', loadComponent: () => import('./features/users/components/user-list.component').then(m => m.UserListComponent) },
+      { path: 'users/new', loadComponent: () => import('./features/users/components/user-form.component').then(m => m.UserFormComponent) },
+      { path: 'users/:id', loadComponent: () => import('./features/users/components/user-form.component').then(m => m.UserFormComponent) },
+      { path: 'locations', loadComponent: () => import('./features/locations/components/location-list.component').then(m => m.LocationListComponent) },
+      { path: 'locations/new', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) },
+      { path: 'locations/:id', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) }
     ]
   },
   { path: '**', redirectTo: 'login' }

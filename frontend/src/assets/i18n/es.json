@@ -14,6 +14,11 @@
     "DASHBOARD": "Panel",
     "WORKORDERS": "Órdenes de trabajo",
     "ASSETS": "Activos",
+    "LOCATIONS": "Localizaciones",
+    "CATALOGS": "Catálogos",
+    "ASSET_TYPES": "Tipos de activo",
+    "ADMINISTRATION": "Administración",
+    "USERS": "Usuarios",
     "LOGOUT": "Cerrar sesión"
   },
   "DASHBOARD": {
@@ -21,7 +26,18 @@
     "OPEN": "Abiertas",
     "IN_PROGRESS": "En curso",
     "CLOSED": "Cerradas",
-    "URGENT": "Urgentes"
+    "URGENT": "Urgentes",
+    "PENDING": "OTs pendientes",
+    "COMPLETED": "OTs completadas",
+    "ASSETS": "Activos",
+    "LOCATIONS": "Localizaciones",
+    "AVAILABILITY": "Disponibilidad",
+    "URGENT_LOWER": "urgentes",
+    "TOTAL": "total",
+    "ACTIVE_LOWER": "activos",
+    "STRUCTURE": "estructura registrada",
+    "WORKING": "en ejecución",
+    "AVERAGE_FLEET": "promedio de la flota"
   },
   "WORKORDERS": {
     "TITLE": "Órdenes de trabajo",
@@ -29,12 +45,11 @@
     "EDIT": "Editar orden",
     "ID": "ID",
     "TITLE_LABEL": "Título",
-    "TITLE": "Título",
     "DESCRIPTION": "Descripción",
     "STATUS": "Estado",
     "PRIORITY": "Prioridad",
     "ASSET": "Activo",
-    "ASSIGNED": "Asignado a",
+    "ASSIGNED": "Asignado",
     "ESTIMATED_HOURS": "Horas estimadas",
     "STATUSES": {
       "OPEN": "Abierta",
@@ -50,20 +65,80 @@
     "EDIT": "Editar activo",
     "ID": "ID",
     "NAME": "Nombre",
+    "DESCRIPTION": "Descripción",
     "TYPE": "Tipo",
     "CRITICALITY": "Criticidad",
     "STATUS": "Estado",
     "LOCATION": "Ubicación",
     "SERIAL_NUMBER": "Número de serie",
     "HOURS_OF_USE": "Horas de uso",
-    "PURCHASE_DATE": "Fecha de compra"
+    "PURCHASE_DATE": "Fecha de compra",
+    "FILTER_TYPE": "Filtrar por tipo"
+  },
+  "ASSET_TYPES": {
+    "TITLE": "Tipos de activo",
+    "NEW": "Nuevo tipo",
+    "EDIT": "Editar tipo",
+    "CODE": "Código",
+    "NAME": "Nombre",
+    "DESCRIPTION": "Descripción",
+    "ACTIVE": "Activo"
+  },
+  "USERS": {
+    "TITLE": "Usuarios",
+    "NEW": "Nuevo usuario",
+    "EDIT": "Editar usuario",
+    "EMPLOYEE_CODE": "Código de empleado",
+    "USERNAME": "Usuario",
+    "FIRST_NAME": "Nombre",
+    "LAST_NAME": "Apellidos",
+    "EMAIL": "Correo electrónico",
+    "PHONE": "Teléfono",
+    "DEPARTMENT": "Departamento",
+    "PASSWORD": "Contraseña",
+    "ROLE": "Rol",
+    "ACTIVE": "Activo"
+  },
+  "LOCATIONS": {
+    "TITLE": "Localizaciones",
+    "NEW": "Nueva localización",
+    "EDIT": "Editar localización",
+    "ID": "ID",
+    "CODE": "Código",
+    "NAME": "Nombre",
+    "DESCRIPTION": "Descripción",
+    "PARENT": "Localización padre",
+    "ACTIVE": "Activa",
+    "DELETE": "Eliminar localización",
+    "TREE_HINT": "Estructura jerárquica de localizaciones",
+    "DRAG_HINT": "Arrastra los nodos para reorganizar la jerarquía",
+    "ACTIVE_LABEL": "ACTIVA",
+    "INACTIVE_LABEL": "NO ACTIVA",
+    "ASSET": "Activo",
+    "SELECTED": "Localización seleccionada",
+    "SELECTED_ASSET": "Activo seleccionado",
+    "SELECT_HINT": "Selecciona un nodo para ver sus detalles",
+    "ROOT": "RAÍZ"
   },
   "COMMON": {
+    "ID": "ID",
     "SAVE": "Guardar",
     "CANCEL": "Cancelar",
-    "NO_DATA": "No hay datos disponibles"
+    "NO_DATA": "No hay datos disponibles",
+    "YES": "Sí",
+    "NO": "No",
+    "SEARCH": "Buscar",
+    "FILTER": "Filtrar",
+    "CLEAR_FILTERS": "Limpiar filtros"
   },
   "THEME": {
-    "TOGGLE": "Cambiar tema"
+    "TOGGLE": "Cambiar tema",
+    "LOGO_TEXT": "GMAO"
+  },
+  "CONFIGURATOR": {
+    "PRIMARY": "Color principal",
+    "SURFACE": "Superficie",
+    "PRESETS": "Presets",
+    "MENU_MODE": "Modo de menú"
   }
 }

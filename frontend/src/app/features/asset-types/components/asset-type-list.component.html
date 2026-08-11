@@ -1,0 +1,59 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'ASSET_TYPES.TITLE' | translate }}</h1>
+    <button pButton type="button" routerLink="/asset-types/new">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>{{ 'ASSET_TYPES.NEW' | translate }}</span>
+    </button>
+  </div>
+
+  <p-card class="shadow-2">
+    <p-table #assetTypeTable [value]="assetTypes()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'code', 'name', 'description', 'active']" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between align-items-center">
+          <button pButton type="button" text severity="secondary" size="small" icon="pi pi-filter-slash" [label]="'COMMON.CLEAR_FILTERS' | translate" (click)="assetTypeTable.clear()"></button>
+          <input pInputText type="text" [placeholder]="'COMMON.SEARCH' | translate" (input)="assetTypeTable.filterGlobal($any($event.target).value, 'contains')" />
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'ASSET_TYPES.CODE' | translate }}</th>
+          <th>{{ 'ASSET_TYPES.NAME' | translate }}</th>
+          <th>{{ 'ASSET_TYPES.DESCRIPTION' | translate }}</th>
+          <th>{{ 'ASSET_TYPES.ACTIVE' | translate }}</th>
+          <th style="width: 8rem"></th>
+        </tr>
+        <tr>
+          <th><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="boolean" field="active" matchMode="equals" [showMenu]="false" /></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-assetType>
+        <tr>
+          <td>{{ assetType.code }}</td>
+          <td>{{ assetType.name }}</td>
+          <td>{{ assetType.description || '-' }}</td>
+          <td>
+            <p-tag [value]="(assetType.active ? 'COMMON.YES' : 'COMMON.NO') | translate" [severity]="assetType.active ? 'success' : 'secondary'"></p-tag>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/asset-types', assetType.id]" aria-label="Edit">
+                <i class="pi pi-pencil" pButtonIcon></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(assetType.id)" aria-label="Delete">
+                <i class="pi pi-trash" pButtonIcon></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="5" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

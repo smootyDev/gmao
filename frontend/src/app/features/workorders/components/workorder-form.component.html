@@ -5,46 +5,58 @@
 
   <p-card class="shadow-2">
     <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+      <div class="formgrid grid" *ngIf="isEdit()">
+        <div class="field col-12 md:col-3">
+          <label for="id">{{ 'COMMON.ID' | translate }}</label>
+          <input pInputText id="id" [value]="id()" disabled class="w-full" />
+        </div>
+      </div>
+
       <div class="field">
-        <label for="title">{{ 'WORKORDERS.TITLE' | translate }}</label>
+        <label for="title">{{ 'WORKORDERS.TITLE_LABEL' | translate }}</label>
         <input pInputText id="title" formControlName="title" class="w-full" />
       </div>
 
       <div class="field">
         <label for="description">{{ 'WORKORDERS.DESCRIPTION' | translate }}</label>
-        <textarea id="description" formControlName="description" rows="4" class="w-full p-2 border-round border-1 surface-border"></textarea>
+        <textarea pTextarea id="description" formControlName="description" rows="4" class="w-full"></textarea>
       </div>
 
       <div class="formgrid grid">
         <div class="field col-12 md:col-6">
           <label for="status">{{ 'WORKORDERS.STATUS' | translate }}</label>
-          <select id="status" formControlName="status" class="w-full p-2 border-round border-1 surface-border">
-            <option *ngFor="let s of statuses" [value]="s.value">{{ s.label | translate }}</option>
-          </select>
+          <p-select inputId="status" formControlName="status" [options]="statuses" optionLabel="label" optionValue="value" styleClass="w-full">
+            <ng-template let-status pTemplate="item">{{ status.label | translate }}</ng-template>
+            <ng-template let-status pTemplate="selectedItem">{{ status.label | translate }}</ng-template>
+          </p-select>
         </div>
 
         <div class="field col-12 md:col-6">
           <label for="priority">{{ 'WORKORDERS.PRIORITY' | translate }}</label>
-          <select id="priority" formControlName="priority" class="w-full p-2 border-round border-1 surface-border">
-            <option *ngFor="let p of priorities" [value]="p.value">{{ p.label }}</option>
-          </select>
+          <p-select inputId="priority" formControlName="priority" [options]="priorities" optionLabel="label" optionValue="value" styleClass="w-full"></p-select>
         </div>
       </div>
 
       <div class="formgrid grid">
         <div class="field col-12 md:col-4">
           <label for="assetId">{{ 'WORKORDERS.ASSET' | translate }}</label>
-          <input id="assetId" type="number" formControlName="assetId" class="w-full p-2 border-round border-1 surface-border" />
+          <p-select inputId="assetId" formControlName="assetId" [options]="assets()" optionLabel="name" optionValue="id" [showClear]="true" [filter]="true" filterBy="name,serialNumber" [placeholder]="'-'" styleClass="w-full">
+            <ng-template let-asset pTemplate="item">{{ asset.serialNumber || asset.id }} - {{ asset.name }}</ng-template>
+            <ng-template let-asset pTemplate="selectedItem">{{ asset ? (asset.serialNumber || asset.id) + ' - ' + asset.name : '-' }}</ng-template>
+          </p-select>
         </div>
 
         <div class="field col-12 md:col-4">
           <label for="assignedTo">{{ 'WORKORDERS.ASSIGNED' | translate }}</label>
-          <input id="assignedTo" type="number" formControlName="assignedTo" class="w-full p-2 border-round border-1 surface-border" />
+          <p-select inputId="assignedTo" formControlName="assignedTo" [options]="users()" optionLabel="employeeCode" optionValue="id" [showClear]="true" [filter]="true" filterBy="employeeCode,firstName,lastName,username" [placeholder]="'-'" styleClass="w-full">
+            <ng-template let-user pTemplate="item">{{ user.employeeCode }} - {{ user.firstName }} {{ user.lastName }}</ng-template>
+            <ng-template let-user pTemplate="selectedItem">{{ user ? user.employeeCode + ' - ' + user.firstName + ' ' + user.lastName : '-' }}</ng-template>
+          </p-select>
         </div>
 
         <div class="field col-12 md:col-4">
           <label for="estimatedHours">{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</label>
-          <input id="estimatedHours" type="number" step="0.1" formControlName="estimatedHours" class="w-full p-2 border-round border-1 surface-border" />
+          <p-inputnumber inputId="estimatedHours" formControlName="estimatedHours" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
         </div>
       </div>
 

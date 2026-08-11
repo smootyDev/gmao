@@ -31,6 +31,8 @@ export class LayoutService {
 
   isDarkTheme = computed(() => this.layoutConfig().darkTheme);
 
+  getSurface = computed(() => this.layoutConfig().surface);
+
   isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
 
   transitionComplete = signal<boolean>(false);
@@ -65,7 +67,11 @@ export class LayoutService {
 
   onMenuToggle(): void {
     if (this.isDesktop()) {
-      this.layoutState.update((prev) => ({ ...prev, staticMenuDesktopInactive: !prev.staticMenuDesktopInactive }));
+      if (this.isOverlay()) {
+        this.layoutState.update((prev) => ({ ...prev, overlayMenuActive: !prev.overlayMenuActive }));
+      } else {
+        this.layoutState.update((prev) => ({ ...prev, staticMenuDesktopInactive: !prev.staticMenuDesktopInactive }));
+      }
     } else {
       this.layoutState.update((prev) => ({ ...prev, mobileMenuActive: !prev.mobileMenuActive }));
     }

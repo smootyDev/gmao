@@ -21,13 +21,17 @@ public class Asset {
     @Column(nullable = false)
     private String name;
 
-    private String type;
+    @Column(name = "type_id")
+    private Long typeId;
+
+    private String description;
 
     private String criticality;
 
     private String status;
 
-    private String location;
+    @Column(name = "location_id")
+    private Long locationId;
 
     @Column(name = "serial_number")
     private String serialNumber;

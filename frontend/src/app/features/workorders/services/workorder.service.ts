@@ -10,8 +10,8 @@ export interface WorkOrder {
   priority: number;
   createdAt?: string;
   updatedAt?: string;
-  assetId?: number;
-  assignedTo?: number;
+  assetId?: number | null;
+  assignedTo?: number | null;
   estimatedHours?: number;
 }
 

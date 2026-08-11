@@ -110,6 +110,21 @@ La aplicación estará disponible en http://localhost:4200
 - `GET /api/assets/{id}` - Ver activo
 - `PUT /api/assets/{id}` - Actualizar activo
 - `DELETE /api/assets/{id}` - Eliminar activo
+- `GET /api/asset-types` - Listar tipos de activo
+- `POST /api/asset-types` - Crear tipo de activo
+- `GET /api/asset-types/{id}` - Ver tipo de activo
+- `PUT /api/asset-types/{id}` - Actualizar tipo de activo
+- `DELETE /api/asset-types/{id}` - Eliminar tipo de activo
+- `GET /api/users` - Listar usuarios
+- `POST /api/users` - Crear usuario
+- `GET /api/users/{id}` - Ver usuario
+- `PUT /api/users/{id}` - Actualizar usuario
+- `DELETE /api/users/{id}` - Eliminar usuario
+- `GET /api/locations` - Listar localizaciones
+- `POST /api/locations` - Crear localización
+- `GET /api/locations/{id}` - Ver localización
+- `PUT /api/locations/{id}` - Actualizar localización
+- `DELETE /api/locations/{id}` - Eliminar localización
 
 ## Ejemplo de login con curl
 

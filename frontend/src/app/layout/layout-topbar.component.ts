@@ -3,16 +3,18 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
+import { StyleClass } from 'primeng/styleclass';
 import { TranslatePipe } from '../core/pipes/translate.pipe';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../core/services/auth.service';
 import { LanguageService } from '../core/services/language.service';
-import { TranslateService } from '../core/services/translate.service';
 import { LayoutService } from './layout.service';
+import { LayoutConfiguratorComponent } from './layout-configurator.component';
 
 @Component({
   selector: 'app-layout-topbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, MenuModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, MenuModule, TranslatePipe, LayoutConfiguratorComponent, StyleClass],
   templateUrl: './layout-topbar.component.html'
 })
 export class LayoutTopbarComponent {
@@ -29,7 +31,7 @@ export class LayoutTopbarComponent {
 
   userItems = computed<MenuItem[]>(() => [
     {
-      label: this.translateService.translate('MENU.LOGOUT'),
+      label: this.translateService.instant('MENU.LOGOUT'),
       icon: 'pi pi-sign-out',
       command: () => this.authService.logout()
     }

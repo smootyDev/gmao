@@ -26,9 +26,31 @@ export class LayoutMenuComponent {
       {
         label: 'MENU.SECTION',
         items: [
-          { label: 'MENU.DASHBOARD', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] },
-          { label: 'MENU.WORKORDERS', icon: 'pi pi-fw pi-wrench', routerLink: ['/workorders'] },
-          { label: 'MENU.ASSETS', icon: 'pi pi-fw pi-box', routerLink: ['/assets'] }
+          { label: 'MENU.DASHBOARD', icon: 'pi pi-fw pi-home', path: '/dashboard', routerLink: ['/dashboard'] },
+          { label: 'MENU.WORKORDERS', icon: 'pi pi-fw pi-wrench', path: '/workorders', routerLink: ['/workorders'] },
+          { label: 'MENU.ASSETS', icon: 'pi pi-fw pi-box', path: '/assets', routerLink: ['/assets'] },
+          
+          { label: 'MENU.LOCATIONS', icon: 'pi pi-fw pi-map-marker', path: '/locations', routerLink: ['/locations'] }
+          // ,
+          // {
+          //   label: 'MENU.CATALOGS',
+          //   icon: 'pi pi-fw pi-list',
+          //   path: '/catalogs',
+          //   items: [
+          //     { label: 'MENU.ASSET_TYPES', icon: 'pi pi-fw pi-tags', path: '/catalogs/asset-types', routerLink: ['/asset-types'] }
+          //   ]
+          // }
+        ]
+      }, {
+        label: 'MENU.CATALOGS',
+        items: [
+          { label: 'MENU.ASSET_TYPES', icon: 'pi pi-fw pi-tags', path: '/catalogs/asset-types', routerLink: ['/asset-types'] }
+        ]
+      },
+      {
+        label: 'MENU.ADMINISTRATION',
+        items: [
+          { label: 'MENU.USERS', icon: 'pi pi-fw pi-users', path: '/users', routerLink: ['/users'] }
         ]
       }
     ];

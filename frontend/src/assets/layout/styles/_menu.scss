@@ -11,6 +11,9 @@
   user-select: none;
   background: var(--v-body-bg);
   z-index: 999;
+  transform: translateX(0);
+  transition: transform var(--layout-section-transition-duration), box-shadow var(--layout-section-transition-duration);
+  will-change: transform;
 
   .layout-menu-container {
     overflow: auto;

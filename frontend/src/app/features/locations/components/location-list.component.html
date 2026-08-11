@@ -1,0 +1,118 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'LOCATIONS.TITLE' | translate }}</h1>
+    <button pButton type="button" routerLink="/locations/new">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>{{ 'LOCATIONS.NEW' | translate }}</span>
+    </button>
+  </div>
+
+  <div class="locations-layout">
+    <p-card class="shadow-2 locations-tree-card">
+      <p-tree
+        [value]="treeNodes()"
+        [loading]="loading() || moving()"
+        [filter]="true"
+        filterMode="lenient"
+        filterBy="label"
+        selectionMode="single"
+        [selection]="selectedNode()"
+        (selectionChange)="selectNode($event)"
+        [draggableNodes]="true"
+        [droppableNodes]="true"
+        draggableScope="locations"
+        droppableScope="locations"
+        (onNodeDrop)="onNodeDrop($event)"
+        [emptyMessage]="'COMMON.NO_DATA' | translate"
+        scrollHeight="32rem"
+        styleClass="locations-tree"
+      >
+        <ng-template pTemplate="header">
+          <div class="flex align-items-center gap-2 p-2">
+            <i class="pi pi-sitemap text-primary"></i>
+            <span class="font-semibold">{{ 'LOCATIONS.DRAG_HINT' | translate }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-node pTemplate="default">
+          <div class="location-tree-node">
+            <div class="location-tree-node-content">
+              <div class="flex align-items-center gap-2">
+                <i [class]="node.data.kind === 'location' ? 'pi pi-building-columns location-node-icon' : 'pi pi-box asset-node-icon'"></i>
+                <span class="location-tree-node-id">#{{ node.data.value.id }}</span>
+                <span class="font-semibold">{{ node.data.value.name }}</span>
+                <p-tag *ngIf="node.data.kind === 'location'" [value]="node.data.value.code" severity="secondary"></p-tag>
+                <p-tag *ngIf="node.data.kind === 'location' && node.data.value.systemRoot" [value]="'LOCATIONS.ROOT' | translate" severity="contrast"></p-tag>
+                <p-tag *ngIf="node.data.kind === 'asset'" [value]="node.data.value.serialNumber || ('LOCATIONS.ASSET' | translate)" severity="info"></p-tag>
+                <p-tag
+                  *ngIf="node.data.kind === 'location'"
+                  [value]="(node.data.value.active ? 'LOCATIONS.ACTIVE_LABEL' : 'LOCATIONS.INACTIVE_LABEL') | translate"
+                  [severity]="node.data.value.active ? 'success' : 'danger'"
+                ></p-tag>
+              </div>
+              <small *ngIf="node.data.kind === 'location' && node.data.value.description" class="text-color-secondary">
+                {{ node.data.value.description }}
+              </small>
+              <small *ngIf="node.data.kind === 'asset'" class="text-color-secondary">
+                {{ node.data.value.type || ('LOCATIONS.ASSET' | translate) }}
+              </small>
+            </div>
+            <div class="location-tree-node-actions">
+              <button
+                *ngIf="node.data.kind === 'location' && !node.data.value.systemRoot"
+                pButton type="button" icon="pi pi-pencil" text rounded severity="secondary"
+                [routerLink]="['/locations', node.data.value.id]"
+                [attr.aria-label]="'LOCATIONS.EDIT' | translate"
+                (click)="$event.stopPropagation()"
+              ></button>
+              <button
+                *ngIf="node.data.kind === 'location' && !node.data.value.systemRoot"
+                pButton type="button" icon="pi pi-trash" text rounded severity="danger"
+                [attr.aria-label]="'LOCATIONS.DELETE' | translate"
+                (click)="$event.stopPropagation(); delete(node.data.value.id!)"
+              ></button>
+            </div>
+          </div>
+        </ng-template>
+      </p-tree>
+    </p-card>
+
+    <p-card class="shadow-2 locations-selection-card">
+      <ng-container *ngIf="selectedNode() as selected; else noSelection">
+        <ng-container *ngIf="isLocationNode(selected); else selectedAsset">
+          <div class="selection-heading">
+            <i class="pi pi-building-columns location-node-icon"></i>
+            <div>
+              <span class="text-color-secondary">{{ 'LOCATIONS.SELECTED' | translate }}</span>
+              <h2>{{ locationFrom(selected)?.name }}</h2>
+            </div>
+          </div>
+          <div class="selection-details">
+            <div><span>ID</span><strong>#{{ locationFrom(selected)?.id }}</strong></div>
+            <div><span>{{ 'LOCATIONS.CODE' | translate }}</span><strong>{{ locationFrom(selected)?.code }}</strong></div>
+            <div><span>{{ 'LOCATIONS.ACTIVE' | translate }}</span><strong [class.text-green-500]="locationFrom(selected)?.active" [class.text-red-500]="!locationFrom(selected)?.active">{{ (locationFrom(selected)?.active ? 'LOCATIONS.ACTIVE_LABEL' : 'LOCATIONS.INACTIVE_LABEL') | translate }}</strong></div>
+          </div>
+        </ng-container>
+        <ng-template #selectedAsset>
+          <div class="selection-heading">
+            <i class="pi pi-box asset-node-icon"></i>
+            <div>
+              <span class="text-color-secondary">{{ 'LOCATIONS.SELECTED_ASSET' | translate }}</span>
+              <h2>{{ assetFrom(selected)?.name }}</h2>
+            </div>
+          </div>
+          <div class="selection-details">
+            <div><span>ID</span><strong>#{{ assetFrom(selected)?.id }}</strong></div>
+            <div><span>{{ 'ASSETS.TYPE' | translate }}</span><strong>{{ assetTypeName(assetFrom(selected)?.typeId) }}</strong></div>
+            <div><span>{{ 'ASSETS.SERIAL_NUMBER' | translate }}</span><strong>{{ assetFrom(selected)?.serialNumber || '-' }}</strong></div>
+          </div>
+        </ng-template>
+      </ng-container>
+      <ng-template #noSelection>
+        <div class="empty-selection">
+          <i class="pi pi-hand-pointer"></i>
+          <span>{{ 'LOCATIONS.SELECT_HINT' | translate }}</span>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

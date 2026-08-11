@@ -21,8 +21,21 @@ public class User {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+    @Column(name = "employee_code", nullable = false, unique = true, length = 30)
+    private String employeeCode;
+
+    @Column(name = "first_name", nullable = false, length = 100)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 100)
+    private String lastName;
+
     @Column(nullable = false, unique = true, length = 100)
     private String email;
+
+    private String phone;
+
+    private String department;
 
     @Column(nullable = false)
     private String password;

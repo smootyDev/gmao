@@ -1,25 +1,38 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+import { forkJoin } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
+import { ASSET_CRITICALITY_OPTIONS, ASSET_STATUS_OPTIONS } from '../../../core/constants/select-options';
+import { FilterOption } from '../../../core/models/filter-option';
 
 import { AssetService, Asset } from '../services/asset.service';
+import { Location, LocationService } from '../../locations/services/location.service';
+import { AssetType, AssetTypeService } from '../../asset-types/services/asset-type.service';
+import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-asset-list',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     CardModule,
     TableModule,
     ButtonModule,
     TagModule,
-    TranslatePipe
+    SelectModule,
+    InputTextModule,
+    TranslatePipe,
+    DropdownColumnFilterComponent
   ],
   templateUrl: './asset-list.component.html',
   styleUrl: './asset-list.component.scss'
@@ -27,8 +40,30 @@ import { AssetService, Asset } from '../services/asset.service';
 export class AssetListComponent implements OnInit {
   assets = signal<Asset[]>([]);
   loading = signal(true);
+  locations = signal<Location[]>([]);
+  assetTypes = signal<AssetType[]>([]);
+  selectedTypeId = signal<number | null>(null);
 
-  constructor(private assetService: AssetService) {}
+  criticalityOptions = ASSET_CRITICALITY_OPTIONS;
+  statusOptions = ASSET_STATUS_OPTIONS;
+  typeFilterOptions = computed<FilterOption<number | undefined>[]>(() =>
+    this.assetTypes().map((assetType) => ({
+      label: `${assetType.code} - ${assetType.name}`,
+      value: assetType.id
+    }))
+  );
+  locationFilterOptions = computed<FilterOption<number | undefined>[]>(() =>
+    this.locations().map((location) => ({
+      label: `${location.code} - ${location.name}`,
+      value: location.id
+    }))
+  );
+
+  constructor(
+    private readonly assetService: AssetService,
+    private readonly locationService: LocationService,
+    private readonly assetTypeService: AssetTypeService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -36,15 +71,32 @@ export class AssetListComponent implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.assetService.list().subscribe({
-      next: (data) => {
-        this.assets.set(data);
+    forkJoin({
+      locations: this.locationService.list(),
+      assets: this.assetService.list(),
+      assetTypes: this.assetTypeService.list()
+    }).subscribe({
+      next: ({ locations, assets, assetTypes }) => {
+        this.locations.set(locations);
+        this.assets.set(assets);
+        this.assetTypes.set(assetTypes);
         this.loading.set(false);
       },
-      error: () => {
-        this.loading.set(false);
-      }
+      error: () => this.loading.set(false)
     });
+  }
+
+  filteredAssets(): Asset[] {
+    const typeId = this.selectedTypeId();
+    return typeId == null ? this.assets() : this.assets().filter((asset) => asset.typeId === typeId);
+  }
+
+  typeName(typeId?: number | null): string {
+    return this.assetTypes().find((assetType) => assetType.id === typeId)?.name || '-';
+  }
+
+  locationName(locationId?: number | null): string {
+    return this.locations().find((location) => location.id === locationId)?.name || '-';
   }
 
   delete(id: number): void {

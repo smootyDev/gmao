@@ -4,12 +4,19 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
+import { forkJoin } from 'rxjs';
 
 import { WorkorderService, WorkOrder } from '../services/workorder.service';
+import { Asset, AssetService } from '../../assets/services/asset.service';
+import { User, UserService } from '../../users/services/user.service';
 
 @Component({
   selector: 'app-workorder-form',
@@ -20,6 +27,9 @@ import { WorkorderService, WorkOrder } from '../services/workorder.service';
     RouterModule,
     CardModule,
     InputTextModule,
+    InputNumberModule,
+    SelectModule,
+    TextareaModule,
     ButtonModule,
     ToastModule,
     TranslatePipe
@@ -33,27 +43,19 @@ export class WorkorderFormComponent implements OnInit {
   isEdit = signal(false);
   id = signal<number | undefined>(undefined);
   saving = signal(false);
+  assets = signal<Asset[]>([]);
+  users = signal<User[]>([]);
 
-  statuses = [
-    { label: 'WORKORDERS.STATUSES.OPEN', value: 'OPEN' },
-    { label: 'WORKORDERS.STATUSES.ASSIGNED', value: 'ASSIGNED' },
-    { label: 'WORKORDERS.STATUSES.IN_PROGRESS', value: 'IN_PROGRESS' },
-    { label: 'WORKORDERS.STATUSES.ON_HOLD', value: 'ON_HOLD' },
-    { label: 'WORKORDERS.STATUSES.CLOSED', value: 'CLOSED' }
-  ];
-
-  priorities = [
-    { label: '1 - Urgente', value: 1 },
-    { label: '2 - Alta', value: 2 },
-    { label: '3 - Media', value: 3 },
-    { label: '4 - Baja', value: 4 }
-  ];
+  statuses = WORKORDER_STATUS_OPTIONS;
+  priorities = WORKORDER_PRIORITY_OPTIONS;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private workorderService: WorkorderService,
+    private assetService: AssetService,
+    private userService: UserService,
     private messageService: MessageService
   ) {
     this.form = this.fb.group({
@@ -68,6 +70,10 @@ export class WorkorderFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    forkJoin({ assets: this.assetService.list(), users: this.userService.list() }).subscribe(({ assets, users }) => {
+      this.assets.set(assets);
+      this.users.set(users);
+    });
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.isEdit.set(true);

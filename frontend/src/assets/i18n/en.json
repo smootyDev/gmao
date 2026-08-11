@@ -14,6 +14,11 @@
     "DASHBOARD": "Dashboard",
     "WORKORDERS": "Work Orders",
     "ASSETS": "Assets",
+    "LOCATIONS": "Locations",
+    "CATALOGS": "Catalogs",
+    "ASSET_TYPES": "Asset types",
+    "ADMINISTRATION": "Administration",
+    "USERS": "Users",
     "LOGOUT": "Logout"
   },
   "DASHBOARD": {
@@ -21,7 +26,18 @@
     "OPEN": "Open",
     "IN_PROGRESS": "In Progress",
     "CLOSED": "Closed",
-    "URGENT": "Urgent"
+    "URGENT": "Urgent",
+    "PENDING": "Pending WOs",
+    "COMPLETED": "Completed WOs",
+    "ASSETS": "Assets",
+    "LOCATIONS": "Locations",
+    "AVAILABILITY": "Availability",
+    "URGENT_LOWER": "urgent",
+    "TOTAL": "total",
+    "ACTIVE_LOWER": "active",
+    "STRUCTURE": "registered structure",
+    "WORKING": "in progress",
+    "AVERAGE_FLEET": "fleet average"
   },
   "WORKORDERS": {
     "TITLE": "Work Orders",
@@ -29,12 +45,11 @@
     "EDIT": "Edit Work Order",
     "ID": "ID",
     "TITLE_LABEL": "Title",
-    "TITLE": "Title",
     "DESCRIPTION": "Description",
     "STATUS": "Status",
     "PRIORITY": "Priority",
     "ASSET": "Asset",
-    "ASSIGNED": "Assigned to",
+    "ASSIGNED": "Assigned",
     "ESTIMATED_HOURS": "Estimated hours",
     "STATUSES": {
       "OPEN": "Open",
@@ -50,20 +65,80 @@
     "EDIT": "Edit Asset",
     "ID": "ID",
     "NAME": "Name",
+    "DESCRIPTION": "Description",
     "TYPE": "Type",
     "CRITICALITY": "Criticality",
     "STATUS": "Status",
     "LOCATION": "Location",
     "SERIAL_NUMBER": "Serial Number",
     "HOURS_OF_USE": "Hours of Use",
-    "PURCHASE_DATE": "Purchase Date"
+    "PURCHASE_DATE": "Purchase Date",
+    "FILTER_TYPE": "Filter by type"
+  },
+  "ASSET_TYPES": {
+    "TITLE": "Asset types",
+    "NEW": "New type",
+    "EDIT": "Edit type",
+    "CODE": "Code",
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "ACTIVE": "Active"
+  },
+  "USERS": {
+    "TITLE": "Users",
+    "NEW": "New user",
+    "EDIT": "Edit user",
+    "EMPLOYEE_CODE": "Employee code",
+    "USERNAME": "Username",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "DEPARTMENT": "Department",
+    "PASSWORD": "Password",
+    "ROLE": "Role",
+    "ACTIVE": "Active"
+  },
+  "LOCATIONS": {
+    "TITLE": "Locations",
+    "NEW": "New location",
+    "EDIT": "Edit location",
+    "ID": "ID",
+    "CODE": "Code",
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "PARENT": "Parent location",
+    "ACTIVE": "Active",
+    "DELETE": "Delete location",
+    "TREE_HINT": "Hierarchical location structure",
+    "DRAG_HINT": "Drag nodes to reorganize the hierarchy",
+    "ACTIVE_LABEL": "ACTIVE",
+    "INACTIVE_LABEL": "NOT ACTIVE",
+    "ASSET": "Asset",
+    "SELECTED": "Selected location",
+    "SELECTED_ASSET": "Selected asset",
+    "SELECT_HINT": "Select a node to see its details",
+    "ROOT": "ROOT"
   },
   "COMMON": {
+    "ID": "ID",
     "SAVE": "Save",
     "CANCEL": "Cancel",
-    "NO_DATA": "No data available"
+    "NO_DATA": "No data available",
+    "YES": "Yes",
+    "NO": "No",
+    "SEARCH": "Search",
+    "FILTER": "Filter",
+    "CLEAR_FILTERS": "Clear filters"
   },
   "THEME": {
-    "TOGGLE": "Toggle theme"
+    "TOGGLE": "Toggle theme",
+    "LOGO_TEXT": "CMMS"
+  },
+  "CONFIGURATOR": {
+    "PRIMARY": "Primary",
+    "SURFACE": "Surface",
+    "PRESETS": "Presets",
+    "MENU_MODE": "Menu Mode"
   }
 }

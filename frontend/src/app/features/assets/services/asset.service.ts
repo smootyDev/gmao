@@ -5,10 +5,11 @@ import { Observable } from 'rxjs';
 export interface Asset {
   id?: number;
   name: string;
-  type?: string;
+  typeId?: number | null;
+  description?: string;
   criticality?: string;
   status?: string;
-  location?: string;
+  locationId?: number | null;
   serialNumber?: string;
   hoursOfUse?: number;
   purchaseDate?: string;

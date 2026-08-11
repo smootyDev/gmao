@@ -32,7 +32,6 @@
       .layout-sidebar {
         z-index: 999;
         transform: translate(-100%);
-        transition: transform var(--layout-section-transition-duration);
         box-shadow: 3px 0 4px rgba(0, 0, 0, 0.1);
       }
 

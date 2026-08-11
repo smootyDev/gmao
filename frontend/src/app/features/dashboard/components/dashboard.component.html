@@ -1,53 +1,11 @@
-<div class="fadein">
+<div class="fadein dashboard-page">
   <h1 class="text-3xl font-bold mb-4">{{ 'DASHBOARD.TITLE' | translate }}</h1>
-
-  <div class="grid">
-    <div class="col-12 md:col-6 lg:col-3">
-      <p-card class="kpi-card surface-card shadow-2">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <p class="text-secondary m-0">{{ 'DASHBOARD.OPEN' | translate }}</p>
-            <p class="text-4xl font-bold m-0">{{ openCount() }}</p>
-          </div>
-          <i class="pi pi-folder-open text-primary text-4xl"></i>
-        </div>
-      </p-card>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <p-card class="kpi-card surface-card shadow-2">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <p class="text-secondary m-0">{{ 'DASHBOARD.IN_PROGRESS' | translate }}</p>
-            <p class="text-4xl font-bold m-0">{{ inProgressCount() }}</p>
-          </div>
-          <i class="pi pi-spinner text-orange-500 text-4xl"></i>
-        </div>
-      </p-card>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <p-card class="kpi-card surface-card shadow-2">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <p class="text-secondary m-0">{{ 'DASHBOARD.CLOSED' | translate }}</p>
-            <p class="text-4xl font-bold m-0">{{ closedCount() }}</p>
-          </div>
-          <i class="pi pi-check-circle text-green-500 text-4xl"></i>
-        </div>
-      </p-card>
-    </div>
-
-    <div class="col-12 md:col-6 lg:col-3">
-      <p-card class="kpi-card surface-card shadow-2">
-        <div class="flex justify-content-between align-items-center">
-          <div>
-            <p class="text-secondary m-0">{{ 'DASHBOARD.URGENT' | translate }}</p>
-            <p class="text-4xl font-bold m-0">{{ urgentCount() }}</p>
-          </div>
-          <i class="pi pi-exclamation-triangle text-red-500 text-4xl"></i>
-        </div>
-      </p-card>
-    </div>
+  <div class="grid dashboard-kpis">
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-warning"><div class="kpi-content"><div><span>{{ 'DASHBOARD.PENDING' | translate }}</span><strong>{{ pendingCount() }}</strong><small>{{ urgentCount() }} {{ 'DASHBOARD.URGENT_LOWER' | translate }}</small></div><i class="pi pi-clock"></i></div></p-card></div>
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-success"><div class="kpi-content"><div><span>{{ 'DASHBOARD.COMPLETED' | translate }}</span><strong>{{ closedCount() }}</strong><small>{{ workOrders().length }} {{ 'DASHBOARD.TOTAL' | translate }}</small></div><i class="pi pi-check-circle"></i></div></p-card></div>
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-info"><div class="kpi-content"><div><span>{{ 'DASHBOARD.ASSETS' | translate }}</span><strong>{{ assets().length }}</strong><small>{{ activeAssetCount() }} {{ 'DASHBOARD.ACTIVE_LOWER' | translate }}</small></div><i class="pi pi-box"></i></div></p-card></div>
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-teal"><div class="kpi-content"><div><span>{{ 'DASHBOARD.LOCATIONS' | translate }}</span><strong>{{ locations().length }}</strong><small>{{ 'DASHBOARD.STRUCTURE' | translate }}</small></div><i class="pi pi-map-marker"></i></div></p-card></div>
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-purple"><div class="kpi-content"><div><span>{{ 'DASHBOARD.IN_PROGRESS' | translate }}</span><strong>{{ inProgressCount() }}</strong><small>{{ 'DASHBOARD.WORKING' | translate }}</small></div><i class="pi pi-cog"></i></div></p-card></div>
+    <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-blue"><div class="kpi-content"><div><span>{{ 'DASHBOARD.AVAILABILITY' | translate }}</span><strong>{{ availability() }}%</strong><small>{{ 'DASHBOARD.AVERAGE_FLEET' | translate }}</small></div><i class="pi pi-chart-line"></i></div></p-card></div>
   </div>
 </div>
