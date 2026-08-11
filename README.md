@@ -4,21 +4,29 @@ Sistema de Gestión de Mantenimiento (GMAO/CMMS) moderno, modular y listo para p
 
 ## Stack tecnológico
 
-- **Backend:** Spring Boot 4 (Java 21) + PostgreSQL + JWT
-- **Frontend:** Angular 21 + PrimeNG + PWA
+- **Backend:** Spring Boot 4.1 (Java 21) + PostgreSQL + JWT + MapStruct
+- **Frontend:** Angular 21 + PrimeNG + PWA (service worker)
 - **Infraestructura:** Docker + docker-compose
 - **Tests:** JUnit/Mockito (backend) + Vitest (frontend)
 
 ## Características MVP
 
-- Autenticación JWT con roles ADMIN, MANAGER y TECH
-- Gestión de órdenes de trabajo (CRUD completo)
-- Gestión de activos/equipos (CRUD completo)
-- Dashboard con KPIs visuales
-- Interfaz responsive con modo claro/oscuro
-- Soporte multi-idioma (español/inglés)
-- PWA lista para instalar
-- Dockerizado para despliegue sencillo
+Estado actual de la implementación:
+
+| Funcionalidad | Estado |
+|---|---|
+| Autenticación JWT con roles ADMIN, MANAGER y TECH | ✅ Implementado |
+| Gestión de órdenes de trabajo (CRUD completo) | ✅ Implementado |
+| Gestión de activos/equipos (CRUD completo) | ✅ Implementado |
+| Gestión de tipos de activo (CRUD) | ✅ Implementado |
+| Gestión de ubicaciones (CRUD) | ✅ Implementado |
+| Gestión de usuarios (CRUD) | ✅ Implementado |
+| Dashboard con 6 KPIs visuales | ✅ Implementado |
+| Interfaz responsive con modo claro/oscuro | ✅ Implementado |
+| Soporte multi-idioma (español/inglés) | ✅ Implementado |
+| PWA instalable (manifest + service worker) | ✅ Implementado |
+| Sincronización offline | 🔜 Pendiente |
+| Dockerizado para despliegue sencillo | ✅ Implementado |
 
 ## Requisitos
 
@@ -31,9 +39,21 @@ Sistema de Gestión de Mantenimiento (GMAO/CMMS) moderno, modular y listo para p
 
 ```
 gmao/
-├── backend/          # Spring Boot
-├── frontend/         # Angular
-├── scripts/          # Scripts de inicialización
+├── backend/                    # Spring Boot 4.1
+│   └── src/main/java/com/gmao/backend/
+│       ├── auth/               # Autenticación, usuarios y roles
+│       ├── workorders/         # Órdenes de trabajo
+│       ├── assets/             # Activos/equipos
+│       ├── assettypes/         # Tipos de activo
+│       ├── locations/          # Ubicaciones
+│       ├── storage/            # Almacenamiento de archivos
+│       └── config/             # Configuración de seguridad
+├── frontend/                   # Angular 21 + PrimeNG
+│   └── src/app/
+│       ├── core/               # Guards, interceptors, pipes, servicios
+│       ├── features/           # login, dashboard, workorders, assets, asset-types, locations, users
+│       └── layout/             # Layout (Verona): topbar, menu, sidebar, footer
+├── scripts/                    # Scripts de inicialización y migraciones SQL
 ├── docker-compose.yml
 ├── .env
 └── README.md
@@ -146,6 +166,8 @@ cd backend
 ./mvnw test
 ```
 
+Cobertura actual: `WorkOrderServiceTest`, `AssetTypeServiceTest`, `LocationServiceTest` y prueba de contexto de la aplicación.
+
 ### Frontend
 
 ```bash
@@ -153,7 +175,15 @@ cd frontend
 npm test
 ```
 
+Cobertura actual: specs de `app`, `user-list`, `workorder-list`, `layout-configurator` y `layout.service`.
+
 ## Próximas funcionalidades
+
+### MVP pendiente
+
+- Sincronización offline de datos
+
+### Post-MVP
 
 - Checklists dinámicos en órdenes de trabajo
 - Firma digital de técnicos

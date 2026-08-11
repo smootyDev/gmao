@@ -4,7 +4,7 @@
 ```markdown
 # GMAO CMMS – Bootstrap para Visual Studio Code  
 Sistema completo GMAO/CMMS modular listo para producción  
-Backend: **Spring Boot 3 + Java 21 + PostgreSQL + JWT**  
+Backend: **Spring Boot 4.1 + Java 21 + PostgreSQL + JWT + MapStruct**  
 Frontend: **Angular 21 + PrimeNG + PWA + Offline Sync**  
 Infra: **Docker + docker-compose**
 
@@ -27,6 +27,8 @@ gmao-cmms/
 │   │   ├── auth/
 │   │   ├── workorders/
 │   │   ├── assets/
+│   │   ├── assettypes/        # Implementado
+│   │   ├── locations/         # Implementado
 │   │   ├── preventive/
 │   │   ├── inventory/
 │   │   ├── procedures/
@@ -44,7 +46,8 @@ gmao-cmms/
 ├── docker-compose.yml
 ├── README.md
 └── scripts/
-    └── init-db.sql
+    ├── init-db.sql
+    └── migrations/           # Implementado (001-007)
 ```
 
 ---
@@ -64,7 +67,7 @@ cd gmao-cmms
 mkdir backend
 cd backend
 
-curl "https://start.spring.io/starter.tgz?type=maven-project&language=java&bootVersion=3.2.0&baseDir=backend&groupId=com.gmao&artifactId=backend&name=gmao-backend&packageName=com.gmao.backend&javaVersion=17&dependencies=web,data-jpa,postgresql,security,validation" | tar -xzvf -
+curl "https://start.spring.io/starter.tgz?type=maven-project&language=java&bootVersion=4.1.0&baseDir=backend&groupId=com.gmao&artifactId=backend&name=gmao-backend&packageName=com.gmao.backend&javaVersion=21&dependencies=web,data-jpa,postgresql,security,validation" | tar -xzvf -
 
 cd ..
 ```
@@ -427,7 +430,7 @@ public class WorkOrderServiceTest {
 # GMAO CMMS
 
 ## Requisitos
-Java 17, Maven, Node 20+, Angular CLI, Docker.
+Java 21, Maven, Node 20+, Angular CLI, Docker.
 
 ## Levantar en local
 export JWT_SECRET=$(openssl rand -base64 32)
@@ -448,25 +451,82 @@ curl -X POST http://localhost:8080/api/workorders \
 
 ---
 
-# 8. Informe final
+# 8. Estado de implementación
 
-## Estructura creada
-- backend con módulos completos
-- frontend Angular con PWA
-- docker-compose funcional
-- tests base
-- README
+Estado real del proyecto al momento de esta actualización.
 
-## Pendientes
-- Checklists dinámicos
-- Firma digital
-- Notificaciones reales
-- Métricas avanzadas
-- S3 para evidencias
+## Backend
+
+| Módulo | Estado | Detalles |
+|---|---|---|
+| `auth` | ✅ Implementado | Login JWT, roles ADMIN/MANAGER/TECH, CRUD de usuarios |
+| `workorders` | ✅ Implementado | CRUD completo con estados OPEN/ASSIGNED/IN_PROGRESS/ON_HOLD/CLOSED |
+| `assets` | ✅ Implementado | CRUD completo con tipo, ubicación, criticidad y horas de uso |
+| `assettypes` | ✅ Implementado | CRUD de tipos de activo |
+| `locations` | ✅ Implementado | CRUD de ubicaciones |
+| `storage` | ✅ Implementado | `FileStorageService` local (sin endpoint REST aún) |
+| `config` | ✅ Implementado | Seguridad Spring, `ddl-auto: validate` |
+| `preventive` | 🔜 Pendiente | Tareas preventivas y scheduler |
+| `invesntory` | 🔜 Pendiente | Módulo de partes/repuestos |
+| `procedures` | 🔜 Pendiente | Procedimientos de mantenimiento |
+| `reports` | 🔜 Pendiente | Métricas avanzadas y reportes |
+| `notifications` | 🔜 Pendiente | Notificaciones push |
+
+## Frontend
+
+| Área | Estado | Detalles |
+|---|---|---|
+| Login | ✅ Implementado | `features/auth` |
+| Dashboard | ✅ Implementado | 6 KPIs (pendientes, cerradas, activos, ubicaciones, en curso, disponibilidad %) |
+| WorkOrders | ✅ Implementado | Lista + formulario (`features/workorders`) |
+| Assets | ✅ Implementado | Lista + formulario (`features/assets`) |
+| AssetTypes | ✅ Implementado | Lista + formulario (`features/asset-types`) |
+| Locations | ✅ Implementado | Lista + formulario (`features/locations`) |
+| Users | ✅ Implementado | Lista + formulario (`features/users`) |
+| i18n | ✅ Implementado | Español/inglés con pipe `translate` |
+| Tema claro/oscuro | ✅ Implementado | Servicio `theme` + layout Verona |
+| PWA | ✅ Implementado | Manifest + service worker (`ngsw-config.json`) |
+| Offline sync | 🔜 Pendiente | Sincronización offline de datos |
+
+## Base de datos
+
+| Elemento | Estado |
+|---|---|
+| `scripts/init-db.sql` | ✅ Datos semilla (assets, users, workorders) |
+| `scripts/migrations/` | ✅ Migraciones 001-007 con control `schema_migrations` |
+
+## Tests
+
+| Suite | Estado | Archivos |
+|---|---|---|
+| Backend | ✅ | `WorkOrderServiceTest`, `AssetTypeServiceTest`, `LocationServiceTest`, `GmaoBackendApplicationTests` |
+| Frontend | ✅ Parcial | `app.spec`, `user-list`, `workorder-list`, `layout-configurator`, `layout.service` |
 
 ---
 
-# 9. Cómo usar este archivo
+# 9. Informe final
+
+## Estructura creada
+- backend con módulos auth, workorders, assets, assettypes, locations, storage y config
+- frontend Angular con PWA, i18n y tema claro/oscuro
+- docker-compose funcional
+- tests base (backend + frontend)
+- migraciones SQL con control `schema_migrations`
+- README
+
+## Pendientes
+- Sincronización offline (PWA)
+- Checklists dinámicos
+- Firma digital
+- Notificaciones reales
+- Métricas avanzadas y reportes
+- S3 para evidencias
+- Módulo de inventario
+- Mantenimiento preventivo programado
+
+---
+
+# 10. Cómo usar este archivo
 
 1. Guarda este archivo como **GMAO-CMMS-BOOTSTRAP.md**  
 2. Ábrelo en Visual Studio Code  
