@@ -3,6 +3,7 @@ package com.gmao.backend.auth.dto;
 import com.gmao.backend.auth.entity.Role;
 
 public record UserRequest(
+    String clientId,
     String employeeCode,
     String username,
     String firstName,

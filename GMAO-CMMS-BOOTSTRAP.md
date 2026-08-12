@@ -486,14 +486,14 @@ Estado real del proyecto al momento de esta actualización.
 | i18n | ✅ Implementado | Español/inglés con pipe `translate` |
 | Tema claro/oscuro | ✅ Implementado | Servicio `theme` + layout Verona |
 | PWA | ✅ Implementado | Manifest + service worker (`ngsw-config.json`) |
-| Offline sync | 🔜 Pendiente | Sincronización offline de datos |
+| Offline sync | ✅ Implementado | Caché `localforage` + cola outbox + banner de estado (`core/services/offline-storage.service.ts`, `core/services/sync.service.ts`, `core/interceptors/offline.interceptor.ts`, `shared/components/sync-status.component.ts`) |
 
 ## Base de datos
 
 | Elemento | Estado |
 |---|---|
 | `scripts/init-db.sql` | ✅ Datos semilla (assets, users, workorders) |
-| `scripts/migrations/` | ✅ Migraciones 001-007 con control `schema_migrations` |
+| `scripts/migrations/` | ✅ Migraciones 001-008 con control `schema_migrations` |
 
 ## Tests
 
@@ -515,7 +515,6 @@ Estado real del proyecto al momento de esta actualización.
 - README
 
 ## Pendientes
-- Sincronización offline (PWA)
 - Checklists dinámicos
 - Firma digital
 - Notificaciones reales

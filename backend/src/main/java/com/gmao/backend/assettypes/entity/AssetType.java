@@ -35,4 +35,7 @@ public class AssetType {
 
     @Column(nullable = false)
     private Boolean active = true;
+
+    @Column(name = "client_id", length = 36)
+    private String clientId;
 }

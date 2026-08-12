@@ -45,6 +45,9 @@ public class WorkOrder {
     @Column(name = "estimated_hours")
     private Double estimatedHours;
 
+    @Column(name = "client_id", length = 36)
+    private String clientId;
+
     @PrePersist
     public void prePersist() {
         Instant now = Instant.now();

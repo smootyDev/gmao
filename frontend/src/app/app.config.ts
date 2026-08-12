@@ -9,6 +9,7 @@ import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { offlineInterceptor } from './core/interceptors/offline.interceptor';
 
 export function translateLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([jwtInterceptor])),
+    provideHttpClient(withInterceptors([jwtInterceptor, offlineInterceptor])),
     provideTranslateService({
       loader: {
         provide: TranslateLoader,

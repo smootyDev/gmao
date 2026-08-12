@@ -50,6 +50,9 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    @Column(name = "client_id", length = 36)
+    private String clientId;
+
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {

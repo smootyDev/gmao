@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -6,8 +6,10 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
+import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { AssetType, AssetTypeService } from '../services/asset-type.service';
+import { SyncService } from '../../../core/services/sync.service';
 
 @Component({
   selector: 'app-asset-type-list',
@@ -16,14 +18,26 @@ import { AssetType, AssetTypeService } from '../services/asset-type.service';
   templateUrl: './asset-type-list.component.html',
   styleUrl: './asset-type-list.component.scss'
 })
-export class AssetTypeListComponent implements OnInit {
+export class AssetTypeListComponent implements OnInit, OnDestroy {
   assetTypes = signal<AssetType[]>([]);
   loading = signal(true);
 
-  constructor(private readonly assetTypeService: AssetTypeService) {}
+  private readonly subscriptions: Subscription[] = [];
+
+  constructor(
+    private readonly assetTypeService: AssetTypeService,
+    private readonly syncService: SyncService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.subscriptions.push(
+      this.syncService.syncCompleted.subscribe(() => this.loadData())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   loadData(): void {

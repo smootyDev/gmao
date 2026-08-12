@@ -140,5 +140,11 @@
     "SURFACE": "Surface",
     "PRESETS": "Presets",
     "MENU_MODE": "Menu Mode"
+  },
+  "SYNC": {
+    "OFFLINE": "Offline — changes will be saved locally",
+    "PENDING": "pending changes",
+    "SYNC_NOW": "Sync",
+    "SYNCING": "Syncing…"
   }
 }

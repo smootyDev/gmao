@@ -41,4 +41,7 @@ public class Location {
 
     @Column(name = "system_root", nullable = false)
     private Boolean systemRoot = false;
+
+    @Column(name = "client_id", length = 36)
+    private String clientId;
 }

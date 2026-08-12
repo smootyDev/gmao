@@ -6,6 +6,7 @@ import java.time.Instant;
 
 public record UserResponse(
     Long id,
+    String clientId,
     String employeeCode,
     String username,
     String firstName,

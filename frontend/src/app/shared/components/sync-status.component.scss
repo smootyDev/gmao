@@ -1,0 +1,41 @@
+.sync-status {
+  position: relative;
+  z-index: 1000;
+
+  .sync-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .sync-syncing {
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+  }
+
+  .sync-offline {
+    background: #fff3cd;
+    color: #856404;
+
+    .pi-wifi-off {
+      font-size: 1rem;
+    }
+
+    .sync-pending {
+      font-weight: 600;
+      margin-left: auto;
+    }
+  }
+
+  .sync-pending-online {
+    background: #cce5ff;
+    color: #004085;
+
+    .pi-cloud-upload {
+      font-size: 1rem;
+    }
+  }
+}

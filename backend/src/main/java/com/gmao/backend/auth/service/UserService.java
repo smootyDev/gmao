@@ -28,6 +28,15 @@ public class UserService {
     }
 
     public UserResponse create(UserRequest request) {
+        if (request.clientId() != null && !request.clientId().isBlank()) {
+            return userRepository.findByClientId(request.clientId())
+                .map(this::toResponse)
+                .orElseGet(() -> createInternal(request));
+        }
+        return createInternal(request);
+    }
+
+    private UserResponse createInternal(UserRequest request) {
         validate(request, null, true);
         User user = new User();
         apply(user, request, true);
@@ -66,6 +75,7 @@ public class UserService {
     }
 
     private void apply(User user, UserRequest request, boolean creating) {
+        user.setClientId(request.clientId());
         user.setEmployeeCode(request.employeeCode());
         user.setUsername(request.username());
         user.setFirstName(request.firstName());
@@ -81,7 +91,7 @@ public class UserService {
     }
 
     private UserResponse toResponse(User user) {
-        return new UserResponse(user.getId(), user.getEmployeeCode(), user.getUsername(), user.getFirstName(), user.getLastName(),
+        return new UserResponse(user.getId(), user.getClientId(), user.getEmployeeCode(), user.getUsername(), user.getFirstName(), user.getLastName(),
             user.getEmail(), user.getPhone(), user.getDepartment(), user.getRole(), user.getActive(), user.getCreatedAt());
     }
 }

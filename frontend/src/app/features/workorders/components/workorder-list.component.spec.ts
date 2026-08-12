@@ -8,6 +8,7 @@ import { AssetService } from '../../assets/services/asset.service';
 import { UserService } from '../../users/services/user.service';
 import { Asset } from '../../assets/services/asset.service';
 import { User } from '../../users/services/user.service';
+import { SyncService } from '../../../core/services/sync.service';
 
 describe('WorkorderListComponent', () => {
   beforeEach(async () => {
@@ -18,7 +19,8 @@ describe('WorkorderListComponent', () => {
         provideTranslateService(),
         { provide: WorkorderService, useValue: { list: () => of([]) } },
         { provide: AssetService, useValue: { list: () => of([]) } },
-        { provide: UserService, useValue: { list: () => of([]) } }
+        { provide: UserService, useValue: { list: () => of([]) } },
+        { provide: SyncService, useValue: { syncCompleted: { subscribe: () => ({ unsubscribe: () => {} }) } } }
       ]
     }).compileComponents();
   });

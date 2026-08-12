@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -6,17 +6,17 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
 import { ASSET_CRITICALITY_OPTIONS, ASSET_STATUS_OPTIONS } from '../../../core/constants/select-options';
 import { FilterOption } from '../../../core/models/filter-option';
-
 import { AssetService, Asset } from '../services/asset.service';
 import { Location, LocationService } from '../../locations/services/location.service';
 import { AssetType, AssetTypeService } from '../../asset-types/services/asset-type.service';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
+import { SyncService } from '../../../core/services/sync.service';
 
 @Component({
   selector: 'app-asset-list',
@@ -37,7 +37,7 @@ import { InputTextModule } from 'primeng/inputtext';
   templateUrl: './asset-list.component.html',
   styleUrl: './asset-list.component.scss'
 })
-export class AssetListComponent implements OnInit {
+export class AssetListComponent implements OnInit, OnDestroy {
   assets = signal<Asset[]>([]);
   loading = signal(true);
   locations = signal<Location[]>([]);
@@ -59,14 +59,24 @@ export class AssetListComponent implements OnInit {
     }))
   );
 
+  private readonly subscriptions: Subscription[] = [];
+
   constructor(
     private readonly assetService: AssetService,
     private readonly locationService: LocationService,
-    private readonly assetTypeService: AssetTypeService
+    private readonly assetTypeService: AssetTypeService,
+    private readonly syncService: SyncService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.subscriptions.push(
+      this.syncService.syncCompleted.subscribe(() => this.loadData())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   loadData(): void {

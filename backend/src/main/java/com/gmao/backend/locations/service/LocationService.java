@@ -18,6 +18,14 @@ public class LocationService {
     }
 
     public Location create(Location location) {
+        if (location.getClientId() != null && !location.getClientId().isBlank()) {
+            return locationRepository.findByClientId(location.getClientId())
+                .orElseGet(() -> createInternal(location));
+        }
+        return createInternal(location);
+    }
+
+    private Location createInternal(Location location) {
         if (Boolean.TRUE.equals(location.getSystemRoot())) {
             throw new IllegalArgumentException("La localización raíz está protegida");
         }

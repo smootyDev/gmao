@@ -75,4 +75,21 @@ class LocationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> locationService.update(root.getId(), root));
         assertThrows(IllegalArgumentException.class, () -> locationService.delete(root.getId()));
     }
+
+    @Test
+    void createWithClientIdIsIdempotent() {
+        Location first = locationService.create(Location.builder()
+            .code("SYNC-001")
+            .name("Sync location")
+            .clientId("client-loc-001")
+            .build());
+
+        Location second = locationService.create(Location.builder()
+            .code("SYNC-001")
+            .name("Sync location")
+            .clientId("client-loc-001")
+            .build());
+
+        assertEquals(first.getId(), second.getId());
+    }
 }

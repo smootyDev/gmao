@@ -10,5 +10,7 @@ public interface AssetTypeRepository extends JpaRepository<AssetType, Long> {
 
     Optional<AssetType> findByCodeIgnoreCase(String code);
 
+    Optional<AssetType> findByClientId(String clientId);
+
     List<AssetType> findAllByOrderByNameAsc();
 }

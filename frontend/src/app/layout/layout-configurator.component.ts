@@ -413,8 +413,10 @@ export class LayoutConfiguratorComponent implements OnInit {
   onPresetChange(event: any) {
     this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
     const preset = presets[event as KeyOfType<typeof presets>];
-    const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
-    $t().preset(preset).preset(this.getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
+    const selectedSurface = this.surfaces.find((s) => s.name === this.selectedSurfaceColor());
+    const surfacePalette = selectedSurface?.palette;
+    const surfaceToken = surfacePalette as Parameters<ReturnType<typeof $t>['surfacePalette']>[0];
+    $t().preset(preset).preset(this.getPresetExt()).surfacePalette(surfaceToken).use({ useDefaultOptions: true });
   }
 
   onMenuModeChange(event: string) {

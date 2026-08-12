@@ -25,7 +25,7 @@ Estado actual de la implementación:
 | Interfaz responsive con modo claro/oscuro | ✅ Implementado |
 | Soporte multi-idioma (español/inglés) | ✅ Implementado |
 | PWA instalable (manifest + service worker) | ✅ Implementado |
-| Sincronización offline | 🔜 Pendiente |
+| Sincronización offline | ✅ Implementado |
 | Dockerizado para despliegue sencillo | ✅ Implementado |
 
 ## Requisitos
@@ -146,6 +146,17 @@ La aplicación estará disponible en http://localhost:4200
 - `PUT /api/locations/{id}` - Actualizar localización
 - `DELETE /api/locations/{id}` - Eliminar localización
 
+## Sincronización offline
+
+La aplicación funciona en modo lectura/escritura sin conexión:
+
+- **Caché local** (`localforage`): los listados (`GET`) se sirven desde caché cuando no hay red.
+- **Cola outbox**: los cambios (`POST`, `PUT`, `DELETE`) se encolan localmente y se sincronizan cuando la conexión se restablece (automática o con el botón *Sincronizar* del banner).
+- **Idempotencia**: cada operación envía un `clientId`; si un `create` llega con un `clientId` ya existente, el backend devuelve el registro existente en lugar de duplicarlo.
+- El banner de estado informa de la conectividad y del número de operaciones pendientes de sincronizar.
+
+La sincronización cubre los cinco módulos principales: `workorders`, `assets`, `asset-types`, `locations` y `users`.
+
 ## Ejemplo de login con curl
 
 ```bash
@@ -178,10 +189,6 @@ npm test
 Cobertura actual: specs de `app`, `user-list`, `workorder-list`, `layout-configurator` y `layout.service`.
 
 ## Próximas funcionalidades
-
-### MVP pendiente
-
-- Sincronización offline de datos
 
 ### Post-MVP
 

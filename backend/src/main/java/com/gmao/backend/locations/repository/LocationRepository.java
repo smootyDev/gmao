@@ -10,6 +10,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     Optional<Location> findByCodeIgnoreCase(String code);
 
+    Optional<Location> findByClientId(String clientId);
+
     Optional<Location> findBySystemRootTrue();
 
     List<Location> findAllByOrderByNameAsc();

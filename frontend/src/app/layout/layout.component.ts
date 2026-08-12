@@ -6,11 +6,12 @@ import { LayoutFooterComponent } from './layout-footer.component';
 import { LayoutSidebarComponent } from './layout-sidebar.component';
 import { LayoutTopbarComponent } from './layout-topbar.component';
 import { LayoutService } from './layout.service';
+import { SyncStatusComponent } from '../shared/components/sync-status.component';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, LayoutTopbarComponent, LayoutSidebarComponent, LayoutFooterComponent],
+  imports: [CommonModule, RouterModule, LayoutTopbarComponent, LayoutSidebarComponent, LayoutFooterComponent, SyncStatusComponent],
   templateUrl: './layout.component.html'
 })
 export class LayoutComponent {

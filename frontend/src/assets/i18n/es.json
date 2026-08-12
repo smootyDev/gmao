@@ -140,5 +140,11 @@
     "SURFACE": "Superficie",
     "PRESETS": "Presets",
     "MENU_MODE": "Modo de menú"
+  },
+  "SYNC": {
+    "OFFLINE": "Sin conexión — los cambios se guardarán localmente",
+    "PENDING": "cambios pendientes",
+    "SYNC_NOW": "Sincronizar",
+    "SYNCING": "Sincronizando…"
   }
 }

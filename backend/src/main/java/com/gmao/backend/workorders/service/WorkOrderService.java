@@ -18,6 +18,13 @@ public class WorkOrderService {
     }
 
     public WorkOrder create(WorkOrder workOrder) {
+        if (workOrder.getClientId() != null && !workOrder.getClientId().isBlank()) {
+            return workOrderRepository.findByClientId(workOrder.getClientId())
+                .orElseGet(() -> {
+                    workOrder.setStatus(WorkOrderStatus.OPEN);
+                    return workOrderRepository.save(workOrder);
+                });
+        }
         workOrder.setStatus(WorkOrderStatus.OPEN);
         return workOrderRepository.save(workOrder);
     }

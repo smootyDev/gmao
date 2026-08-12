@@ -4,12 +4,18 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { UserListComponent } from './user-list.component';
 import { UserService } from '../services/user.service';
+import { SyncService } from '../../../core/services/sync.service';
 
 describe('UserListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UserListComponent],
-      providers: [provideRouter([]), provideTranslateService(), { provide: UserService, useValue: { list: () => of([]) } }]
+      providers: [
+        provideRouter([]),
+        provideTranslateService(),
+        { provide: UserService, useValue: { list: () => of([]) } },
+        { provide: SyncService, useValue: { syncCompleted: { subscribe: () => ({ unsubscribe: () => {} }) } } }
+      ]
     }).compileComponents();
   });
 

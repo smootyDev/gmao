@@ -27,6 +27,14 @@ public class AssetService {
     }
 
     public Asset create(Asset asset) {
+        if (asset.getClientId() != null && !asset.getClientId().isBlank()) {
+            return assetRepository.findByClientId(asset.getClientId())
+                .orElseGet(() -> {
+                    validateLocation(asset.getLocationId());
+                    validateType(asset.getTypeId());
+                    return assetRepository.save(asset);
+                });
+        }
         validateLocation(asset.getLocationId());
         validateType(asset.getTypeId());
         return assetRepository.save(asset);

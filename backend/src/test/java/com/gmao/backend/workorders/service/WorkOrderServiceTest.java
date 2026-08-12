@@ -50,4 +50,20 @@ class WorkOrderServiceTest {
 
         assertEquals(2, orders.size());
     }
+
+    @Test
+    void createWithClientIdIsIdempotent() {
+        WorkOrder workOrder = new WorkOrder();
+        workOrder.setTitle("Sync order");
+        workOrder.setClientId("client-wo-001");
+
+        WorkOrder first = workOrderService.create(workOrder);
+        WorkOrder second = workOrderService.create(workOrder);
+
+        assertEquals(first.getId(), second.getId());
+        long count = workOrderRepository.findAll().stream()
+            .filter(w -> "client-wo-001".equals(w.getClientId()))
+            .count();
+        assertEquals(1, count);
+    }
 }

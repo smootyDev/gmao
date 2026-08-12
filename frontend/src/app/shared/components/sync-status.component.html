@@ -1,0 +1,26 @@
+<div class="sync-status" [class.sync-online]="!isSyncing() && isOnline() && !hasPending()">
+  @if (isSyncing()) {
+    <div class="sync-banner sync-syncing">
+      <p-progressSpinner styleClass="w-4 h-4" strokeWidth="4" />
+      <span>{{ 'SYNC.SYNCING' | translate }}</span>
+    </div>
+  } @else if (!isOnline()) {
+    <div class="sync-banner sync-offline">
+      <i class="pi pi-wifi" [ngClass]="{ 'pi-wifi-off': true }"></i>
+      <span>{{ 'SYNC.OFFLINE' | translate }}</span>
+      @if (hasPending()) {
+        <span class="sync-pending">{{ pendingCount() }} {{ 'SYNC.PENDING' | translate }}</span>
+      }
+    </div>
+  } @else if (hasPending()) {
+    <div class="sync-banner sync-pending-online">
+      <i class="pi pi-cloud-upload"></i>
+      <span>{{ pendingCount() }} {{ 'SYNC.PENDING' | translate }}</span>
+      <p-button
+        label="{{ 'SYNC.SYNC_NOW' | translate }}"
+        size="small"
+        (onClick)="syncNow()"
+      />
+    </div>
+  }
+</div>

@@ -1,7 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { TreeNode, TreeDragDropService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { Asset, AssetService } from '../../assets/services/asset.service';
 import { AssetType, AssetTypeService } from '../../asset-types/services/asset-type.service';
 import { Location, LocationService } from '../services/location.service';
+import { SyncService } from '../../../core/services/sync.service';
 
 type LocationTreeData =
   | { kind: 'location'; value: Location }
@@ -25,7 +26,7 @@ type LocationTreeData =
   templateUrl: './location-list.component.html',
   styleUrl: './location-list.component.scss'
 })
-export class LocationListComponent implements OnInit {
+export class LocationListComponent implements OnInit, OnDestroy {
   locations = signal<Location[]>([]);
   treeNodes = signal<TreeNode<LocationTreeData>[]>([]);
   selectedNode = signal<TreeNode<LocationTreeData> | null>(null);
@@ -33,14 +34,24 @@ export class LocationListComponent implements OnInit {
   moving = signal(false);
   assetTypes = signal<AssetType[]>([]);
 
+  private readonly subscriptions: Subscription[] = [];
+
   constructor(
     private readonly locationService: LocationService,
     private readonly assetService: AssetService,
-    private readonly assetTypeService: AssetTypeService
+    private readonly assetTypeService: AssetTypeService,
+    private readonly syncService: SyncService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.subscriptions.push(
+      this.syncService.syncCompleted.subscribe(() => this.loadData())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   loadData(): void {

@@ -36,4 +36,21 @@ class AssetTypeServiceTest {
             AssetType.builder().code("dup-type").name("Second").build()
         ));
     }
+
+    @Test
+    void createWithClientIdIsIdempotent() {
+        AssetType first = assetTypeService.create(AssetType.builder()
+            .code("SYNC-TYPE")
+            .name("Sync type")
+            .clientId("client-at-001")
+            .build());
+
+        AssetType second = assetTypeService.create(AssetType.builder()
+            .code("SYNC-TYPE")
+            .name("Sync type")
+            .clientId("client-at-001")
+            .build());
+
+        assertEquals(first.getId(), second.getId());
+    }
 }

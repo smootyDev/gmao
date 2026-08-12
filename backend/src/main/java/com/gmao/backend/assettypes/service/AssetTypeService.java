@@ -18,6 +18,15 @@ public class AssetTypeService {
     }
 
     public AssetType create(AssetType assetType) {
+        if (assetType.getClientId() != null && !assetType.getClientId().isBlank()) {
+            return assetTypeRepository.findByClientId(assetType.getClientId())
+                .orElseGet(() -> {
+                    validate(assetType);
+                    ensureCodeAvailable(assetType.getCode(), null);
+                    assetType.setActive(assetType.getActive() == null || assetType.getActive());
+                    return assetTypeRepository.save(assetType);
+                });
+        }
         validate(assetType);
         ensureCodeAvailable(assetType.getCode(), null);
         assetType.setActive(assetType.getActive() == null || assetType.getActive());

@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -10,11 +10,12 @@ import { DropdownColumnFilterComponent } from '../../../core/components/dropdown
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
 import { FilterOption } from '../../../core/models/filter-option';
 import { InputTextModule } from 'primeng/inputtext';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 import { WorkorderService, WorkOrder } from '../services/workorder.service';
 import { Asset, AssetService } from '../../assets/services/asset.service';
 import { User, UserService } from '../../users/services/user.service';
+import { SyncService } from '../../../core/services/sync.service';
 
 @Component({
   selector: 'app-workorder-list',
@@ -32,7 +33,7 @@ import { User, UserService } from '../../users/services/user.service';
   templateUrl: './workorder-list.component.html',
   styleUrl: './workorder-list.component.scss'
 })
-export class WorkorderListComponent implements OnInit {
+export class WorkorderListComponent implements OnInit, OnDestroy {
   workOrders = signal<WorkOrder[]>([]);
   loading = signal(true);
   assets = signal<Asset[]>([]);
@@ -53,10 +54,24 @@ export class WorkorderListComponent implements OnInit {
     }))
   );
 
-  constructor(private workorderService: WorkorderService, private assetService: AssetService, private userService: UserService) {}
+  private readonly subscriptions: Subscription[] = [];
+
+  constructor(
+    private workorderService: WorkorderService,
+    private assetService: AssetService,
+    private userService: UserService,
+    private syncService: SyncService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.subscriptions.push(
+      this.syncService.syncCompleted.subscribe(() => this.loadData())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   loadData(): void {

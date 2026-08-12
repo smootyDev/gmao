@@ -41,4 +41,7 @@ public class Asset {
 
     @Column(name = "purchase_date")
     private LocalDate purchaseDate;
+
+    @Column(name = "client_id", length = 36)
+    private String clientId;
 }
