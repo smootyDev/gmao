@@ -17,6 +17,7 @@
     "LOCATIONS": "Localizaciones",
     "CATALOGS": "Catálogos",
     "ASSET_TYPES": "Tipos de activo",
+    "INVENTORY": "Inventario",
     "ADMINISTRATION": "Administración",
     "USERS": "Usuarios",
     "LOGOUT": "Cerrar sesión"
@@ -119,6 +120,21 @@
     "SELECTED_ASSET": "Activo seleccionado",
     "SELECT_HINT": "Selecciona un nodo para ver sus detalles",
     "ROOT": "RAÍZ"
+  },
+  "INVENTORY": {
+    "TITLE": "Inventario",
+    "NEW": "Nuevo artículo",
+    "EDIT": "Editar artículo",
+    "CODE": "Código",
+    "NAME": "Nombre",
+    "DESCRIPTION": "Descripción",
+    "CATEGORY": "Categoría",
+    "UNIT": "Unidad",
+    "CURRENT_STOCK": "Stock actual",
+    "MINIMUM_STOCK": "Stock mínimo",
+    "LOCATION": "Ubicación",
+    "ACTIVE": "Activo",
+    "LOW_STOCK": "con stock bajo"
   },
   "COMMON": {
     "ID": "ID",

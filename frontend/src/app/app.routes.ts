@@ -24,7 +24,10 @@ export const routes: Routes = [
       { path: 'users/:id', loadComponent: () => import('./features/users/components/user-form.component').then(m => m.UserFormComponent) },
       { path: 'locations', loadComponent: () => import('./features/locations/components/location-list.component').then(m => m.LocationListComponent) },
       { path: 'locations/new', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) },
-      { path: 'locations/:id', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) }
+      { path: 'locations/:id', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) },
+      { path: 'inventory', loadComponent: () => import('./features/inventory/components/inventory-list.component').then(m => m.InventoryListComponent) },
+      { path: 'inventory/new', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) },
+      { path: 'inventory/:id', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) }
     ]
   },
   { path: '**', redirectTo: 'login' }

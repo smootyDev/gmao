@@ -12,7 +12,8 @@ const ENTITY_BY_URL: { prefix: string; entity: string }[] = [
   { prefix: '/api/assets', entity: 'assets' },
   { prefix: '/api/asset-types', entity: 'asset-types' },
   { prefix: '/api/locations', entity: 'locations' },
-  { prefix: '/api/users', entity: 'users' }
+  { prefix: '/api/users', entity: 'users' },
+  { prefix: '/api/inventory-items', entity: 'inventory-items' }
 ];
 
 function entityFor(url: string): string | null {

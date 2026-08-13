@@ -17,6 +17,7 @@
     "LOCATIONS": "Locations",
     "CATALOGS": "Catalogs",
     "ASSET_TYPES": "Asset types",
+    "INVENTORY": "Inventory",
     "ADMINISTRATION": "Administration",
     "USERS": "Users",
     "LOGOUT": "Logout"
@@ -119,6 +120,21 @@
     "SELECTED_ASSET": "Selected asset",
     "SELECT_HINT": "Select a node to see its details",
     "ROOT": "ROOT"
+  },
+  "INVENTORY": {
+    "TITLE": "Inventory",
+    "NEW": "New item",
+    "EDIT": "Edit item",
+    "CODE": "Code",
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "CATEGORY": "Category",
+    "UNIT": "Unit",
+    "CURRENT_STOCK": "Current stock",
+    "MINIMUM_STOCK": "Minimum stock",
+    "LOCATION": "Location",
+    "ACTIVE": "Active",
+    "LOW_STOCK": "low stock"
   },
   "COMMON": {
     "ID": "ID",

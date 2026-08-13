@@ -33,3 +33,24 @@ export const USER_ROLE_OPTIONS: FilterOption<string>[] = [
   { label: 'Responsable', value: 'MANAGER' },
   { label: 'Técnico', value: 'TECH' }
 ];
+
+export const INVENTORY_UNIT_OPTIONS: FilterOption<string>[] = [
+  { label: 'Unidades', value: 'ud' },
+  { label: 'Kilogramos', value: 'kg' },
+  { label: 'Gramos', value: 'g' },
+  { label: 'Litros', value: 'l' },
+  { label: 'Metros', value: 'm' },
+  { label: 'Cajas', value: 'caja' },
+  { label: 'Pares', value: 'par' }
+];
+
+export const INVENTORY_CATEGORY_OPTIONS: FilterOption<string>[] = [
+  { label: 'Mecánica', value: 'MECHANICAL' },
+  { label: 'Eléctrica', value: 'ELECTRICAL' },
+  { label: 'Hidráulica', value: 'HYDRAULIC' },
+  { label: 'Filtros', value: 'FILTERS' },
+  { label: 'Lubricantes', value: 'LUBRICANTS' },
+  { label: 'Herramientas', value: 'TOOLS' },
+  { label: 'Seguridad', value: 'SAFETY' },
+  { label: 'Otros', value: 'OTHER' }
+];
