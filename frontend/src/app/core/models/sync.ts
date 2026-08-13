@@ -21,6 +21,6 @@ export interface SyncMeta {
   entities: string[];
 }
 
-export const SYNC_ENTITIES = ['workorders', 'assets', 'asset-types', 'locations', 'users', 'inventory-items'] as const;
+export const SYNC_ENTITIES = ['workorders', 'assets', 'asset-types', 'locations', 'users', 'inventory-items', 'preventive-plans'] as const;
 
 export type SyncEntity = (typeof SYNC_ENTITIES)[number];

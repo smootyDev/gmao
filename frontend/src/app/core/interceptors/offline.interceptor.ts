@@ -13,7 +13,8 @@ const ENTITY_BY_URL: { prefix: string; entity: string }[] = [
   { prefix: '/api/asset-types', entity: 'asset-types' },
   { prefix: '/api/locations', entity: 'locations' },
   { prefix: '/api/users', entity: 'users' },
-  { prefix: '/api/inventory-items', entity: 'inventory-items' }
+  { prefix: '/api/inventory-items', entity: 'inventory-items' },
+  { prefix: '/api/preventive-plans', entity: 'preventive-plans' }
 ];
 
 function entityFor(url: string): string | null {
@@ -87,6 +88,9 @@ function handleOffline(
     );
   }
   if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
+    if (url.endsWith('/run')) {
+      return throwError(() => error);
+    }
     return enqueueAndEmit(method, url, body, entity, storage, error);
   }
   return throwError(() => error);

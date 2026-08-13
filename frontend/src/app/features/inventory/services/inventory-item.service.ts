@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { WorkOrder } from '../../workorders/services/workorder.service';
 
 export interface InventoryItem {
   id?: number;
@@ -40,4 +41,9 @@ export class InventoryItemService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
   }
+
+  usedInWorkOrders(itemId: number): Observable<WorkOrder[]> {
+    return this.http.get<WorkOrder[]>(`/api/workorders/by-inventory-item/${itemId}`);
+  }
 }
+

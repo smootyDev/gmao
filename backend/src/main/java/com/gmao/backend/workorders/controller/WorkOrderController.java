@@ -43,6 +43,11 @@ public class WorkOrderController {
         return ResponseEntity.ok(workOrderService.list());
     }
 
+    @GetMapping("/by-inventory-item/{itemId}")
+    public ResponseEntity<List<WorkOrder>> listByInventoryItem(@PathVariable Long itemId) {
+        return ResponseEntity.ok(workOrderService.findByInventoryItem(itemId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<WorkOrder> get(@PathVariable Long id) {
         return workOrderService.get(id)

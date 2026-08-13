@@ -1,6 +1,7 @@
 package com.gmao.backend.workorders.service;
 
 import com.gmao.backend.workorders.entity.WorkOrder;
+import com.gmao.backend.workorders.entity.WorkOrderItem;
 import com.gmao.backend.workorders.entity.WorkOrderStatus;
 import com.gmao.backend.workorders.repository.WorkOrderRepository;
 import org.junit.jupiter.api.Test;
@@ -65,5 +66,35 @@ class WorkOrderServiceTest {
             .filter(w -> "client-wo-001".equals(w.getClientId()))
             .count();
         assertEquals(1, count);
+    }
+
+    @Test
+    void createWorkOrderPersistsItems() {
+        WorkOrder workOrder = new WorkOrder();
+        workOrder.setTitle("Order with items");
+        workOrder.setItems(List.of(
+            WorkOrderItem.builder().inventoryItemId(1L).quantity(2.0).build(),
+            WorkOrderItem.builder().inventoryItemId(2L).quantity(1.0).build()
+        ));
+
+        WorkOrder saved = workOrderService.create(workOrder);
+        WorkOrder fetched = workOrderService.get(saved.getId()).orElseThrow();
+
+        assertEquals(2, fetched.getItems().size());
+        assertTrue(fetched.getItems().stream().allMatch(item -> item.getWorkOrderId() != null));
+    }
+
+    @Test
+    void findWorkOrdersByInventoryItem() {
+        WorkOrder workOrder = new WorkOrder();
+        workOrder.setTitle("Uses item 42");
+        workOrder.setItems(List.of(
+            WorkOrderItem.builder().inventoryItemId(42L).quantity(3.0).build()
+        ));
+        WorkOrder saved = workOrderService.create(workOrder);
+
+        List<WorkOrder> matches = workOrderService.findByInventoryItem(42L);
+
+        assertTrue(matches.stream().anyMatch(w -> w.getId().equals(saved.getId())));
     }
 }

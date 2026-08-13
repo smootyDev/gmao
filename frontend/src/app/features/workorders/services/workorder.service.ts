@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface WorkOrderItem {
+  id?: number;
+  workOrderId?: number;
+  inventoryItemId: number;
+  quantity: number;
+}
+
 export interface WorkOrder {
   id?: number;
   title: string;
@@ -13,6 +20,8 @@ export interface WorkOrder {
   assetId?: number | null;
   assignedTo?: number | null;
   estimatedHours?: number;
+  preventivePlanId?: number;
+  items?: WorkOrderItem[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -42,5 +51,9 @@ export class WorkorderService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
+  listByInventoryItem(itemId: number): Observable<WorkOrder[]> {
+    return this.http.get<WorkOrder[]>(`${this.base}/by-inventory-item/${itemId}`);
   }
 }

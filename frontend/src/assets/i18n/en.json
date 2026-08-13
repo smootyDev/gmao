@@ -18,6 +18,7 @@
     "CATALOGS": "Catalogs",
     "ASSET_TYPES": "Asset types",
     "INVENTORY": "Inventory",
+    "PREVENTIVE": "Preventive",
     "ADMINISTRATION": "Administration",
     "USERS": "Users",
     "LOGOUT": "Logout"
@@ -52,6 +53,13 @@
     "ASSET": "Asset",
     "ASSIGNED": "Assigned",
     "ESTIMATED_HOURS": "Estimated hours",
+    "ITEMS": "Items",
+    "ADD_ITEM": "Add item",
+    "NO_ITEMS": "No items assigned",
+    "QUANTITY": "Quantity",
+    "ORIGIN": "Origin",
+    "ORIGIN_PREVENTIVE": "Preventive",
+    "ORIGIN_MANUAL": "Manual",
     "STATUSES": {
       "OPEN": "Open",
       "ASSIGNED": "Assigned",
@@ -134,7 +142,25 @@
     "MINIMUM_STOCK": "Minimum stock",
     "LOCATION": "Location",
     "ACTIVE": "Active",
-    "LOW_STOCK": "low stock"
+    "LOW_STOCK": "low stock",
+    "WORK_ORDERS": "WOs",
+    "USED_IN_WOS": "Used in work orders",
+    "USED_IN_WOS_NONE": "This item is not used in any work order"
+  },
+  "PREVENTIVE": {
+    "TITLE": "Preventive maintenance",
+    "NEW": "New plan",
+    "EDIT": "Edit plan",
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "ASSET": "Asset",
+    "FREQUENCY": "Frequency (days)",
+    "NEXT_DUE": "Next due",
+    "LAST_RUN": "Last run",
+    "GENERATED_WOS": "Generated WOs",
+    "ACTIVE": "Active",
+    "RUN": "Generate WO",
+    "OVERDUE": "overdue"
   },
   "COMMON": {
     "ID": "ID",

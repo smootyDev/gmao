@@ -1,0 +1,59 @@
+<div class="fadein max-w-900 mx-auto">
+  <h1 class="text-3xl font-bold mb-4">
+    {{ (isEdit() ? 'PREVENTIVE.EDIT' : 'PREVENTIVE.NEW') | translate }}
+  </h1>
+
+  <p-card class="shadow-2">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+      <div class="formgrid grid" *ngIf="isEdit()">
+        <div class="field col-12 md:col-3">
+          <label for="id">{{ 'COMMON.ID' | translate }}</label>
+          <input pInputText id="id" [value]="id()" disabled class="w-full" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="name">{{ 'PREVENTIVE.NAME' | translate }}</label>
+        <input pInputText id="name" formControlName="name" class="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="description">{{ 'PREVENTIVE.DESCRIPTION' | translate }}</label>
+        <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-8">
+          <label for="assetId">{{ 'PREVENTIVE.ASSET' | translate }}</label>
+          <p-select inputId="assetId" formControlName="assetId" [options]="assets()" optionLabel="name" optionValue="id" [filter]="true" filterBy="name,serialNumber" [placeholder]="'-'" styleClass="w-full">
+            <ng-template let-asset pTemplate="item">{{ asset.serialNumber || asset.id }} - {{ asset.name }}</ng-template>
+            <ng-template let-asset pTemplate="selectedItem">{{ asset ? (asset.serialNumber || asset.id) + ' - ' + asset.name : '-' }}</ng-template>
+          </p-select>
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <label for="frequencyDays">{{ 'PREVENTIVE.FREQUENCY' | translate }}</label>
+          <p-inputnumber inputId="frequencyDays" formControlName="frequencyDays" [min]="1" [useGrouping]="false" suffix=" d" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+        </div>
+      </div>
+
+      <div class="field flex align-items-center gap-2">
+        <p-checkbox inputId="active" formControlName="active" [binary]="true"></p-checkbox>
+        <label for="active">{{ 'PREVENTIVE.ACTIVE' | translate }}</label>
+      </div>
+
+      <div class="flex justify-content-end gap-2 mt-3">
+        <button pButton type="button" severity="secondary" routerLink="/preventive">
+          <i class="pi pi-times" pButtonIcon></i>
+          <span pButtonLabel>{{ 'COMMON.CANCEL' | translate }}</span>
+        </button>
+        <button pButton type="submit" [loading]="saving()">
+          <i class="pi pi-check" pButtonIcon></i>
+          <span pButtonLabel>{{ 'COMMON.SAVE' | translate }}</span>
+        </button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-toast></p-toast>

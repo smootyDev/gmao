@@ -14,4 +14,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
     List<WorkOrder> findByAssignedTo(Long assignedTo);
     List<WorkOrder> findByStatusAndAssignedTo(WorkOrderStatus status, Long assignedTo);
     Optional<WorkOrder> findByClientId(String clientId);
+    List<WorkOrder> findByItems_InventoryItemId(Long inventoryItemId);
+    List<WorkOrder> findByPreventivePlanId(Long preventivePlanId);
+    long countByPreventivePlanId(Long preventivePlanId);
 }

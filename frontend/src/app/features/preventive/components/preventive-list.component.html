@@ -1,0 +1,72 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'PREVENTIVE.TITLE' | translate }}</h1>
+    <button pButton type="button" routerLink="/preventive/new">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>{{ 'PREVENTIVE.NEW' | translate }}</span>
+    </button>
+  </div>
+
+  <p-card class="shadow-2">
+    <p-table #preventiveTable [value]="plans()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'name', 'description', 'assetId', 'frequencyDays']" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between align-items-center">
+          <button pButton type="button" text severity="secondary" size="small" icon="pi pi-filter-slash" [label]="'COMMON.CLEAR_FILTERS' | translate" (click)="preventiveTable.clear()"></button>
+          <input pInputText type="text" [placeholder]="'COMMON.SEARCH' | translate" (input)="preventiveTable.filterGlobal($any($event.target).value, 'contains')" />
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'PREVENTIVE.NAME' | translate }}</th>
+          <th>{{ 'PREVENTIVE.ASSET' | translate }}</th>
+          <th>{{ 'PREVENTIVE.FREQUENCY' | translate }}</th>
+          <th>{{ 'PREVENTIVE.NEXT_DUE' | translate }}</th>
+          <th>{{ 'PREVENTIVE.LAST_RUN' | translate }}</th>
+          <th>{{ 'PREVENTIVE.GENERATED_WOS' | translate }}</th>
+          <th style="width: 12rem"></th>
+        </tr>
+        <tr>
+          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
+          <th><p-columnFilter type="text" field="frequencyDays" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-plan>
+        <tr>
+          <td>{{ plan.name }}</td>
+          <td>{{ assetName(plan.assetId) }}</td>
+          <td>{{ plan.frequencyDays }}</td>
+          <td>
+            <p-tag [value]="dueLabel(plan)" [severity]="dueSeverity(plan)"></p-tag>
+          </td>
+          <td>{{ plan.lastRunAt ? (plan.lastRunAt | date: 'short') : '-' }}</td>
+          <td>
+            @if ((plan.workOrderCount ?? 0) > 0) {
+              <p-tag [value]="plan.workOrderCount" severity="info"></p-tag>
+            } @else {
+              0
+            }
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <button pButton type="button" size="small" icon="pi pi-play" [label]="'PREVENTIVE.RUN' | translate" [loading]="generating()" (click)="generate(plan)"></button>
+              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/preventive', plan.id]" aria-label="Edit">
+                <i class="pi pi-pencil" pButtonIcon></i>
+              </button>
+              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(plan.id)" aria-label="Delete">
+                <i class="pi pi-trash" pButtonIcon></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

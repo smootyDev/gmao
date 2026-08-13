@@ -27,7 +27,10 @@ export const routes: Routes = [
       { path: 'locations/:id', loadComponent: () => import('./features/locations/components/location-form.component').then(m => m.LocationFormComponent) },
       { path: 'inventory', loadComponent: () => import('./features/inventory/components/inventory-list.component').then(m => m.InventoryListComponent) },
       { path: 'inventory/new', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) },
-      { path: 'inventory/:id', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) }
+      { path: 'inventory/:id', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) },
+      { path: 'preventive', loadComponent: () => import('./features/preventive/components/preventive-list.component').then(m => m.PreventiveListComponent) },
+      { path: 'preventive/new', loadComponent: () => import('./features/preventive/components/preventive-form.component').then(m => m.PreventiveFormComponent) },
+      { path: 'preventive/:id', loadComponent: () => import('./features/preventive/components/preventive-form.component').then(m => m.PreventiveFormComponent) }
     ]
   },
   { path: '**', redirectTo: 'login' }

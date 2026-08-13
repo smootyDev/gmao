@@ -29,6 +29,7 @@
           <th>{{ 'INVENTORY.CURRENT_STOCK' | translate }}</th>
           <th>{{ 'INVENTORY.MINIMUM_STOCK' | translate }}</th>
           <th>{{ 'INVENTORY.LOCATION' | translate }}</th>
+          <th>{{ 'INVENTORY.WORK_ORDERS' | translate }}</th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
@@ -36,6 +37,7 @@
           <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th><p-columnFilter type="text" field="category" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th><p-columnFilter type="text" field="unit" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
           <th></th>
           <th></th>
           <th></th>
@@ -58,7 +60,15 @@
           <td>{{ item.minimumStock }}</td>
           <td>{{ locationName(item.locationId) }}</td>
           <td>
+            @if (isAssociated(item)) {
+              <p-tag [value]="'COMMON.YES' | translate" severity="success"></p-tag>
+            } @else {
+              <p-tag [value]="'COMMON.NO' | translate" severity="secondary"></p-tag>
+            }
+          </td>
+          <td>
             <div class="flex gap-2">
+              <button pButton type="button" class="p-button-text p-button-sm" icon="pi pi-clipboard" (click)="showUsage(item)" aria-label="Usage"></button>
               <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/inventory', item.id]" aria-label="Edit">
                 <i class="pi pi-pencil" pButtonIcon></i>
               </button>
@@ -70,8 +80,36 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        <tr><td colspan="8" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+        <tr><td colspan="9" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
       </ng-template>
     </p-table>
   </p-card>
 </div>
+
+<p-dialog [header]="usageTitle()" [(visible)]="usageDialogVisible" [style]="{ width: '40rem' }" [modal]="true" [closable]="true">
+  @if (usageLoading()) {
+    <p-progressSpinner styleClass="w-4 h-4" strokeWidth="4" />
+  } @else if (usageWorkOrders().length > 0) {
+    <p-table [value]="usageWorkOrders()" size="small">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'WORKORDERS.ID' | translate }}</th>
+          <th>{{ 'WORKORDERS.TITLE_LABEL' | translate }}</th>
+          <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-wo>
+        <tr>
+          <td>{{ wo.id }}</td>
+          <td>{{ wo.title }}</td>
+          <td><p-tag [value]="'WORKORDERS.STATUSES.' + wo.status | translate" [severity]="getSeverity(wo.status)"></p-tag></td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="3" class="text-center p-3">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p class="m-0">{{ 'INVENTORY.USED_IN_WOS_NONE' | translate }}</p>
+  }
+</p-dialog>

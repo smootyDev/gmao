@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { InventoryListComponent } from './inventory-list.component';
 import { InventoryItemService } from '../services/inventory-item.service';
 import { LocationService } from '../../locations/services/location.service';
+import { WorkorderService } from '../../workorders/services/workorder.service';
 import { SyncService } from '../../../core/services/sync.service';
 
 describe('InventoryListComponent', () => {
@@ -16,6 +17,7 @@ describe('InventoryListComponent', () => {
         provideTranslateService(),
         { provide: InventoryItemService, useValue: { list: () => of([]) } },
         { provide: LocationService, useValue: { list: () => of([]) } },
+        { provide: WorkorderService, useValue: { list: () => of([]) } },
         { provide: SyncService, useValue: { syncCompleted: { subscribe: () => ({ unsubscribe: () => {} }) } } }
       ]
     }).compileComponents();

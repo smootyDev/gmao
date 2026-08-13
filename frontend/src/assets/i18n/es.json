@@ -18,6 +18,7 @@
     "CATALOGS": "Catálogos",
     "ASSET_TYPES": "Tipos de activo",
     "INVENTORY": "Inventario",
+    "PREVENTIVE": "Preventivo",
     "ADMINISTRATION": "Administración",
     "USERS": "Usuarios",
     "LOGOUT": "Cerrar sesión"
@@ -52,6 +53,13 @@
     "ASSET": "Activo",
     "ASSIGNED": "Asignado",
     "ESTIMATED_HOURS": "Horas estimadas",
+    "ITEMS": "Artículos",
+    "ADD_ITEM": "Añadir artículo",
+    "NO_ITEMS": "Sin artículos asignados",
+    "QUANTITY": "Cantidad",
+    "ORIGIN": "Origen",
+    "ORIGIN_PREVENTIVE": "Preventivo",
+    "ORIGIN_MANUAL": "Manual",
     "STATUSES": {
       "OPEN": "Abierta",
       "ASSIGNED": "Asignada",
@@ -134,7 +142,25 @@
     "MINIMUM_STOCK": "Stock mínimo",
     "LOCATION": "Ubicación",
     "ACTIVE": "Activo",
-    "LOW_STOCK": "con stock bajo"
+    "LOW_STOCK": "con stock bajo",
+    "WORK_ORDERS": "OTs",
+    "USED_IN_WOS": "Usado en órdenes",
+    "USED_IN_WOS_NONE": "Este artículo no se usa en ninguna orden de trabajo"
+  },
+  "PREVENTIVE": {
+    "TITLE": "Mantenimiento preventivo",
+    "NEW": "Nuevo plan",
+    "EDIT": "Editar plan",
+    "NAME": "Nombre",
+    "DESCRIPTION": "Descripción",
+    "ASSET": "Activo",
+    "FREQUENCY": "Frecuencia (días)",
+    "NEXT_DUE": "Próximo vencimiento",
+    "LAST_RUN": "Última ejecución",
+    "GENERATED_WOS": "OTs generadas",
+    "ACTIVE": "Activo",
+    "RUN": "Generar OT",
+    "OVERDUE": "vencido"
   },
   "COMMON": {
     "ID": "ID",

@@ -30,6 +30,7 @@ export class LayoutMenuComponent {
           { label: 'MENU.WORKORDERS', icon: 'pi pi-fw pi-wrench', path: '/workorders', routerLink: ['/workorders'] },
           { label: 'MENU.ASSETS', icon: 'pi pi-fw pi-box', path: '/assets', routerLink: ['/assets'] },
           { label: 'MENU.INVENTORY', icon: 'pi pi-fw pi-shopping-cart', path: '/inventory', routerLink: ['/inventory'] },
+          { label: 'MENU.PREVENTIVE', icon: 'pi pi-fw pi-calendar-clock', path: '/preventive', routerLink: ['/preventive'] },
           { label: 'MENU.LOCATIONS', icon: 'pi pi-fw pi-map-marker', path: '/locations', routerLink: ['/locations'] }
         ]
       }, {

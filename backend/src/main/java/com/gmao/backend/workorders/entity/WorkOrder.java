@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "work_orders")
@@ -47,6 +49,13 @@ public class WorkOrder {
 
     @Column(name = "client_id", length = 36)
     private String clientId;
+
+    @Column(name = "preventive_plan_id")
+    private Long preventivePlanId;
+
+    @Transient
+    @Builder.Default
+    private List<WorkOrderItem> items = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

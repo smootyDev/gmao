@@ -26,6 +26,8 @@
           <th>{{ 'WORKORDERS.ASSET' | translate }}</th>
           <th>{{ 'WORKORDERS.ASSIGNED' | translate }}</th>
           <th>{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</th>
+          <th>{{ 'WORKORDERS.ITEMS' | translate }}</th>
+          <th>{{ 'WORKORDERS.ORIGIN' | translate }}</th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
@@ -37,6 +39,8 @@
           <th><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
           <th><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
           <th><p-columnFilter type="text" field="estimatedHours" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
+          <th></th>
           <th></th>
         </tr>
       </ng-template>
@@ -51,6 +55,20 @@
           <td>{{ userName(wo.assignedTo) }}</td>
           <td>{{ wo.estimatedHours ?? '-' }}</td>
           <td>
+            @if ((wo.items ?? []).length > 0) {
+              <p-tag [value]="(wo.items ?? []).length" severity="info"></p-tag>
+            } @else {
+              -
+            }
+          </td>
+          <td>
+            @if (wo.preventivePlanId) {
+              <p-tag [value]="'WORKORDERS.ORIGIN_PREVENTIVE' | translate" severity="success"></p-tag>
+            } @else {
+              <p-tag [value]="'WORKORDERS.ORIGIN_MANUAL' | translate" severity="secondary"></p-tag>
+            }
+          </td>
+          <td>
             <div class="flex gap-2">
               <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/workorders', wo.id]" aria-label="Edit">
                 <i class="pi pi-pencil" pButtonIcon></i>
@@ -64,7 +82,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="9" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
+          <td colspan="11" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
         </tr>
       </ng-template>
     </p-table>

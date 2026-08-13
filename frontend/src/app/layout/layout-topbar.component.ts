@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { StyleClass } from 'primeng/styleclass';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../core/pipes/translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../core/services/auth.service';
@@ -29,9 +30,11 @@ export class LayoutTopbarComponent {
     { label: 'English', command: () => this.languageService.setLanguage('en') }
   ];
 
+  private readonly logoutLabel = toSignal(this.translateService.stream('MENU.LOGOUT'), { initialValue: 'MENU.LOGOUT' });
+
   userItems = computed<MenuItem[]>(() => [
     {
-      label: this.translateService.instant('MENU.LOGOUT'),
+      label: this.logoutLabel() ?? 'MENU.LOGOUT',
       icon: 'pi pi-sign-out',
       command: () => this.authService.logout()
     }

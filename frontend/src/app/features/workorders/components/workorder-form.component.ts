@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,9 +14,15 @@ import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
 import { forkJoin } from 'rxjs';
 
-import { WorkorderService, WorkOrder } from '../services/workorder.service';
+import { WorkorderService, WorkOrder, WorkOrderItem } from '../services/workorder.service';
 import { Asset, AssetService } from '../../assets/services/asset.service';
 import { User, UserService } from '../../users/services/user.service';
+import { InventoryItem, InventoryItemService } from '../../inventory/services/inventory-item.service';
+
+interface WorkOrderItemRow extends WorkOrderItem {
+  name?: string;
+  unit?: string;
+}
 
 @Component({
   selector: 'app-workorder-form',
@@ -24,6 +30,7 @@ import { User, UserService } from '../../users/services/user.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule,
     CardModule,
     InputTextModule,
@@ -45,6 +52,8 @@ export class WorkorderFormComponent implements OnInit {
   saving = signal(false);
   assets = signal<Asset[]>([]);
   users = signal<User[]>([]);
+  inventoryItems = signal<InventoryItem[]>([]);
+  itemRows = signal<WorkOrderItemRow[]>([]);
 
   statuses = WORKORDER_STATUS_OPTIONS;
   priorities = WORKORDER_PRIORITY_OPTIONS;
@@ -56,6 +65,7 @@ export class WorkorderFormComponent implements OnInit {
     private workorderService: WorkorderService,
     private assetService: AssetService,
     private userService: UserService,
+    private inventoryItemService: InventoryItemService,
     private messageService: MessageService
   ) {
     this.form = this.fb.group({
@@ -70,22 +80,77 @@ export class WorkorderFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    forkJoin({ assets: this.assetService.list(), users: this.userService.list() }).subscribe(({ assets, users }) => {
+    forkJoin({
+      assets: this.assetService.list(),
+      users: this.userService.list(),
+      inventoryItems: this.inventoryItemService.list()
+    }).subscribe(({ assets, users, inventoryItems }) => {
       this.assets.set(assets);
       this.users.set(users);
+      this.inventoryItems.set(inventoryItems);
     });
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.isEdit.set(true);
       this.id.set(+idParam);
       this.workorderService.get(+idParam).subscribe({
-        next: (data) => this.form.patchValue(data),
+        next: (data) => {
+          this.form.patchValue(data);
+          this.itemRows.set(this.decorateItems(data.items ?? []));
+        },
         error: () => this.router.navigate(['/workorders'])
       });
     }
   }
 
+  addItem(): void {
+    const available = this.inventoryItems().filter(
+      (item) => !this.itemRows().some((row) => row.inventoryItemId === item.id)
+    );
+    if (available.length === 0) {
+      return;
+    }
+    const first = available[0];
+    this.itemRows.update((rows) => [...rows, { inventoryItemId: first.id!, quantity: 1, name: first.name, unit: first.unit }]);
+  }
+
+  removeItem(index: number): void {
+    this.itemRows.update((rows) => rows.filter((_, i) => i !== index));
+  }
+
+  onItemSelected(index: number, inventoryItemId: number): void {
+    const selected = this.inventoryItems().find((item) => item.id === inventoryItemId);
+    this.itemRows.update((rows) => {
+      const updated = [...rows];
+      updated[index] = {
+        ...updated[index],
+        inventoryItemId,
+        name: selected?.name,
+        unit: selected?.unit
+      };
+      return updated;
+    });
+  }
+
+  itemOptionsFor(index: number): InventoryItem[] {
+    const row = this.itemRows()[index];
+    const available = this.inventoryItems().filter(
+      (item) => !this.itemRows().some((candidate, i) => i !== index && candidate.inventoryItemId === item.id)
+    );
+    if (row && row.inventoryItemId) {
+      const selected = this.inventoryItems().find((item) => item.id === row.inventoryItemId);
+      if (selected && !available.some((item) => item.id === selected.id)) {
+        return [...available, selected];
+      }
+    }
+    return available;
+  }
+
   save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.saving.set(true);
     const raw = this.form.getRawValue();
     const workOrder: WorkOrder = {
@@ -95,7 +160,11 @@ export class WorkorderFormComponent implements OnInit {
       priority: Number(raw.priority),
       assetId: this.toNumber(raw.assetId),
       assignedTo: this.toNumber(raw.assignedTo),
-      estimatedHours: this.toNumber(raw.estimatedHours)
+      estimatedHours: this.toNumber(raw.estimatedHours),
+      items: this.itemRows().map((row) => ({
+        inventoryItemId: row.inventoryItemId,
+        quantity: row.quantity
+      }))
     };
 
     const operation = this.isEdit() && this.id() !== undefined
@@ -119,6 +188,13 @@ export class WorkorderFormComponent implements OnInit {
           detail: 'No se pudo guardar la orden'
         });
       }
+    });
+  }
+
+  private decorateItems(items: WorkOrderItem[]): WorkOrderItemRow[] {
+    return items.map((item) => {
+      const inventory = this.inventoryItems().find((candidate) => candidate.id === item.inventoryItemId);
+      return { ...item, name: inventory?.name, unit: inventory?.unit };
     });
   }
 

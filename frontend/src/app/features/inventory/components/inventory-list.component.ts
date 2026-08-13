@@ -6,16 +6,19 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { SyncService } from '../../../core/services/sync.service';
 import { InventoryItem, InventoryItemService } from '../services/inventory-item.service';
 import { Location, LocationService } from '../../locations/services/location.service';
+import { WorkOrder, WorkorderService } from '../../workorders/services/workorder.service';
 
 @Component({
   selector: 'app-inventory-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, DialogModule, ProgressSpinnerModule, TranslatePipe],
   templateUrl: './inventory-list.component.html',
   styleUrl: './inventory-list.component.scss'
 })
@@ -24,13 +27,22 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   locations = signal<Location[]>([]);
   loading = signal(true);
 
+  usageDialogVisible = signal(false);
+  usageItem = signal<InventoryItem | null>(null);
+  usageWorkOrders = signal<WorkOrder[]>([]);
+  usageLoading = signal(false);
+
   lowStockCount = computed(() => this.items().filter((item) => (item.currentStock ?? 0) <= (item.minimumStock ?? 0)).length);
+
+  private usedItemIds = signal<Set<number>>(new Set());
+  associatedCount = computed(() => this.items().filter((item) => item.id != null && this.usedItemIds().has(item.id)).length);
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private readonly inventoryItemService: InventoryItemService,
     private readonly locationService: LocationService,
+    private readonly workorderService: WorkorderService,
     private readonly syncService: SyncService
   ) {}
 
@@ -49,11 +61,15 @@ export class InventoryListComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     forkJoin({
       items: this.inventoryItemService.list(),
-      locations: this.locationService.list()
+      locations: this.locationService.list(),
+      workOrders: this.workorderService.list()
     }).subscribe({
-      next: ({ items, locations }) => {
+      next: ({ items, locations, workOrders }) => {
         this.items.set(items);
         this.locations.set(locations);
+        this.usedItemIds.set(new Set(
+          workOrders.flatMap((wo) => (wo.items ?? []).map((item) => item.inventoryItemId))
+        ));
         this.loading.set(false);
       },
       error: () => {
@@ -70,9 +86,50 @@ export class InventoryListComponent implements OnInit, OnDestroy {
     return (item.currentStock ?? 0) <= (item.minimumStock ?? 0);
   }
 
+  isAssociated(item: InventoryItem): boolean {
+    return item.id != null && this.usedItemIds().has(item.id);
+  }
+
+  showUsage(item: InventoryItem): void {
+    this.usageItem.set(item);
+    this.usageDialogVisible.set(true);
+    this.usageWorkOrders.set([]);
+    this.usageLoading.set(true);
+    this.inventoryItemService.usedInWorkOrders(item.id!).subscribe({
+      next: (workOrders) => {
+        this.usageWorkOrders.set(workOrders);
+        this.usageLoading.set(false);
+      },
+      error: () => {
+        this.usageLoading.set(false);
+      }
+    });
+  }
+
+  usageTitle(): string {
+    const item = this.usageItem();
+    if (!item) {
+      return '';
+    }
+    return `#${item.id} - ${item.code} - ${item.name}`;
+  }
+
   delete(id: number): void {
     if (confirm('¿Eliminar este artículo de inventario?')) {
       this.inventoryItemService.delete(id).subscribe(() => this.loadData());
     }
   }
+
+  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
+    switch (status) {
+      case 'OPEN': return 'info';
+      case 'ASSIGNED': return 'secondary';
+      case 'IN_PROGRESS': return 'warn';
+      case 'ON_HOLD': return 'danger';
+      case 'CLOSED': return 'success';
+      default: return 'info';
+    }
+  }
 }
+
+
