@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpRequest, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { offlineInterceptor } from './offline.interceptor';
 import { OfflineStorageService } from '../services/offline-storage.service';
@@ -31,7 +31,9 @@ describe('offlineInterceptor', () => {
 
   it('should pass through successful requests untouched', async () => {
     const req = new HttpRequest('GET', '/api/workorders');
-    const result = await callInterceptor(req, () => of(new HttpResponse({ status: 200, body: [] })));
+    const result = await callInterceptor(req, () =>
+      of(new HttpResponse({ status: 200, body: [], headers: new HttpHeaders({ 'X-GMAO-Backend': 'true' }) }))
+    );
     expect(result!.status).toBe(200);
   });
 
@@ -115,8 +117,28 @@ describe('offlineInterceptor', () => {
     connectivity.markOffline();
     const req = new HttpRequest('GET', '/api/workorders');
 
-    await callInterceptor(req, () => of(new HttpResponse({ status: 200, body: [] })));
+    await callInterceptor(req, () =>
+      of(new HttpResponse({ status: 200, body: [], headers: new HttpHeaders({ 'X-GMAO-Backend': 'true' }) }))
+    );
 
     expect(connectivity.online()).toBe(true);
+  });
+
+  it('should not mark the app online from api-like responses without the backend header', async () => {
+    connectivity.markOffline();
+    const req = new HttpRequest('GET', '/api/workorders');
+
+    await callInterceptor(req, () => of(new HttpResponse({ status: 200, body: [] })));
+
+    expect(connectivity.online()).toBe(false);
+  });
+
+  it('should not mark the app online from non-api responses served by the service worker', async () => {
+    connectivity.markOffline();
+    const req = new HttpRequest('GET', '/assets/i18n/es.json');
+
+    await callInterceptor(req, () => of(new HttpResponse({ status: 200, body: {} })));
+
+    expect(connectivity.online()).toBe(false);
   });
 });

@@ -11,7 +11,12 @@
           "/index.html",
           "/manifest.webmanifest",
           "/*.css",
-          "/*.js"
+          "/*.js",
+          "/media/*.woff",
+          "/media/*.woff2",
+          "/media/*.ttf",
+          "/media/*.eot",
+          "/media/*.svg"
         ]
       }
     },
@@ -21,7 +26,8 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/**"
+          "/assets/**",
+          "/logo.png"
         ]
       }
     }

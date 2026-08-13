@@ -16,7 +16,9 @@ describe('ConnectivityService', () => {
   it('should mark offline and online', () => {
     service.markOffline();
     expect(service.online()).toBe(false);
+    expect(service.verified()).toBe(false);
     service.markOnline();
     expect(service.online()).toBe(true);
+    expect(service.verified()).toBe(true);
   });
 });

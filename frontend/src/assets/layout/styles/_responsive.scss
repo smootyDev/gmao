@@ -56,11 +56,11 @@
   .layout-wrapper {
     .layout-content-wrapper {
       margin-left: 0;
-      padding-top: 5rem;
-      height: calc(100% - 5rem);
+      padding-top: calc(5rem + var(--sync-banner-height, 0));
+      height: calc(100% - 5rem - var(--sync-banner-height, 0));
 
       .layout-content {
-        height: calc(100vh - 5rem);
+        height: calc(100vh - 5rem - var(--sync-banner-height, 0));
         padding: 1rem;
       }
     }
@@ -68,8 +68,8 @@
     .layout-sidebar {
       transform: translateY(100%);
       width: 100%;
-      top: 5rem;
-      height: calc(100% - 5rem);
+      top: calc(5rem + var(--sync-banner-height, 0));
+      height: calc(100% - 5rem - var(--sync-banner-height, 0));
       mix-blend-mode: normal;
       -webkit-backdrop-filter: blur(200px);
       backdrop-filter: blur(200px);

@@ -1,13 +1,13 @@
 .layout-content-wrapper {
   margin-left: 0;
-  padding-top: 5rem;
-  height: calc(100% - 5rem);
+  padding-top: calc(5rem + var(--sync-banner-height, 0));
+  height: calc(100% - 5rem - var(--sync-banner-height, 0));
   transition: margin-left var(--layout-section-transition-duration);
 
   .layout-content {
     border-top: 1px solid var(--surface-border);
     overflow: auto;
-    height: calc(100vh - 5rem);
+    height: calc(100vh - 5rem - var(--sync-banner-height, 0));
     padding: 2rem;
     background-color: var(--surface-ground);
     border-top-left-radius: 30px;

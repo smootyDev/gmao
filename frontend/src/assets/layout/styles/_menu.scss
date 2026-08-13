@@ -5,9 +5,9 @@
   width: 14rem;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 5rem);
+  height: calc(100% - 5rem - var(--sync-banner-height, 0));
   left: 0;
-  top: 5rem;
+  top: calc(5rem + var(--sync-banner-height, 0));
   user-select: none;
   background: var(--v-body-bg);
   z-index: 999;

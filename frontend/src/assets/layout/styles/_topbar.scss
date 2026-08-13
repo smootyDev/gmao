@@ -5,7 +5,7 @@
   padding: 0 2rem 0 1rem;
   position: fixed;
   left: 0;
-  top: 0;
+  top: var(--sync-banner-height, 0);
   width: 100%;
   z-index: 1000;
   display: flex;

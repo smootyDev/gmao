@@ -1,10 +1,10 @@
-<div class="sync-status" [class.sync-online]="!isSyncing() && isOnline() && !hasPending()">
+<div class="sync-status" [class.sync-online]="!isSyncing() && isOnline() && connectionVerified() && !hasPending()">
   @if (isSyncing()) {
     <div class="sync-banner sync-syncing">
       <p-progressSpinner styleClass="w-4 h-4" strokeWidth="4" />
       <span>{{ 'SYNC.SYNCING' | translate }}</span>
     </div>
-  } @else if (!isOnline()) {
+  } @else if (!isOnline() || (hasPending() && !connectionVerified())) {
     <div class="sync-banner sync-offline">
       <i class="pi pi-wifi" [ngClass]="{ 'pi-wifi-off': true }"></i>
       <span>{{ 'SYNC.OFFLINE' | translate }}</span>

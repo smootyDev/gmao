@@ -49,7 +49,11 @@ export const offlineInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     tap({
-      next: () => connectivity.markOnline()
+      next: (event) => {
+        if (entity !== null && event instanceof HttpResponse && event.headers.get('X-GMAO-Backend') === 'true') {
+          connectivity.markOnline();
+        }
+      }
     }),
     catchError((error) => {
       if (!isNetworkError(error)) {

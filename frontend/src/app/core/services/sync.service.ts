@@ -13,6 +13,7 @@ export class SyncService {
   private readonly syncingSignal = signal<boolean>(false);
 
   isOnline = computed(() => this.connectivity.online());
+  connectionVerified = computed(() => this.connectivity.verified());
   hasPending = computed(() => this.pendingSignal() > 0);
   isSyncing = computed(() => this.syncingSignal());
   pendingCount = computed(() => this.pendingSignal());
