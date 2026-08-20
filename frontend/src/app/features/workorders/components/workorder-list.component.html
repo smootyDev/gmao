@@ -31,14 +31,14 @@
           <th style="width: 8rem"></th>
         </tr>
         <tr>
-          <!-- <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th> -->
-          <th class="col-w-14"><p-columnFilter type="text" field="title" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th class="col-w-16"><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <!-- <th><app-text-column-filter field="id" /></th> -->
+          <th class="col-w-14"><app-text-column-filter field="title" /></th>
+          <th class="col-w-16"><app-text-column-filter field="description" /></th>
           <th class="col-w-8"><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
           <th class="col-w-8"><app-dropdown-column-filter field="priority" [options]="priorityOptions" placeholder="" /></th>
           <th class="col-w-12"><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
           <th class="col-w-12"><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
-          <th><p-columnFilter type="text" field="estimatedHours" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><app-text-column-filter field="estimatedHours" /></th>
           <th></th>
           <th></th>
           <th></th>

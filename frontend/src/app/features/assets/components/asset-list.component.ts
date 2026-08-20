@@ -9,6 +9,7 @@ import { TagModule } from 'primeng/tag';
 import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { ASSET_CRITICALITY_OPTIONS, ASSET_STATUS_OPTIONS } from '../../../core/constants/select-options';
 import { FilterOption } from '../../../core/models/filter-option';
 import { AssetService, Asset } from '../services/asset.service';
@@ -38,7 +39,8 @@ interface AssetView extends Asset {
     SelectModule,
     InputTextModule,
     TranslatePipe,
-    DropdownColumnFilterComponent
+    DropdownColumnFilterComponent,
+    TextColumnFilterComponent
   ],
   templateUrl: './asset-list.component.html',
   styleUrl: './asset-list.component.scss'

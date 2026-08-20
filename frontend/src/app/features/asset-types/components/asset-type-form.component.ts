@@ -10,7 +10,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { AssetType, AssetTypeService } from '../services/asset-type.service';
-import { ASSET_TYPE_ICONS, assetTypeIconColor } from '../../../core/utils/asset-type-visual';
+import { ASSET_TYPE_ICONS, assetTypeIconLabel, assetTypeIconColor, normalizeAssetTypeIcon } from '../../../core/utils/asset-type-visual';
 
 @Component({
   selector: 'app-asset-type-form',
@@ -24,7 +24,7 @@ export class AssetTypeFormComponent implements OnInit {
   isEdit = signal(false);
   id = signal<number | undefined>(undefined);
   saving = signal(false);
-  iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: icon.replace('pi-', ''), value: icon }));
+  iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: assetTypeIconLabel(icon), value: icon }));
 
   constructor(
     private readonly fb: FormBuilder,
@@ -51,7 +51,7 @@ export class AssetTypeFormComponent implements OnInit {
       this.isEdit.set(true);
       this.id.set(+idParam);
       this.assetTypeService.get(+idParam).subscribe({
-        next: (assetType) => this.form.patchValue(assetType),
+        next: (assetType) => this.form.patchValue({ ...assetType, icon: normalizeAssetTypeIcon(assetType.icon) }),
         error: () => this.router.navigate(['/asset-types'])
       });
     }

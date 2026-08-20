@@ -28,7 +28,7 @@ export const ASSET_TYPE_ICONS: string[] = [
 const ICON_COLORS: Record<string, string> = {
   'pi pi-cog': '#3b82f6',
   'pi pi-sitemap': '#8b5cf6',
-  'pi i-bolt': '#eab308',
+  'pi pi-bolt': '#eab308',
   'pi pi-building': '#ec4899',
   'pi pi-truck': '#f97316',
   'pi pi-wrench': '#22c55e',
@@ -61,9 +61,26 @@ const ICON_SEVERITIES: Record<string, TagSeverity> = {
 
 const DEFAULT_ICON = 'pi pi-box';
 
+/**
+ * Older data may have been stored without the leading "pi " class (e.g. "pi-bolt"
+ * instead of "pi pi-bolt"), which never matches ASSET_TYPE_ICONS. Normalize to the
+ * canonical "pi pi-x" form so stored values line up with the icon picker options.
+ */
+export function normalizeAssetTypeIcon(icon: string | undefined | null): string | undefined {
+  if (!icon) {
+    return undefined;
+  }
+  const trimmed = icon.trim();
+  if (ASSET_TYPE_ICONS.includes(trimmed)) {
+    return trimmed;
+  }
+  const prefixed = trimmed.startsWith('pi-') ? `pi ${trimmed}` : trimmed;
+  return ASSET_TYPE_ICONS.includes(prefixed) ? prefixed : undefined;
+}
+
 export function assetTypeVisual(types: AssetType[], typeId?: number | null): AssetTypeVisual {
   const type = types.find((candidate) => candidate.id === typeId);
-  const icon = type?.icon && ASSET_TYPE_ICONS.includes(type.icon) ? type.icon : fallbackIcon(types, typeId);
+  const icon = normalizeAssetTypeIcon(type?.icon) ?? fallbackIcon(types, typeId);
   return {
     icon,
     color: ICON_COLORS[icon] ?? '#64748b',
@@ -73,6 +90,10 @@ export function assetTypeVisual(types: AssetType[], typeId?: number | null): Ass
 
 export function assetTypeIconColor(icon: string | undefined): string {
   return (icon && ICON_COLORS[icon]) || '#64748b';
+}
+
+export function assetTypeIconLabel(icon: string): string {
+  return icon.replace('pi pi-', '');
 }
 
 function fallbackIcon(types: AssetType[], typeId?: number | null): string {

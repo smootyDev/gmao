@@ -17,27 +17,27 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="id" class="col-id">{{ 'COMMON.ID' | translate }}<p-sortIcon field="id" /></th>
+          <th pSortableColumn="id" >{{ 'COMMON.ID' | translate }}<p-sortIcon field="id" /></th>
           <th pSortableColumn="code">{{ 'ASSET_TYPES.CODE' | translate }}<p-sortIcon field="code" /></th>
           <th pSortableColumn="name">{{ 'ASSET_TYPES.NAME' | translate }}<p-sortIcon field="name" /></th>
-          <th pSortableColumn="icon" style="width: 11rem">{{ 'ASSET_TYPES.ICON' | translate }}<p-sortIcon field="icon" /></th>
+          <th pSortableColumn="icon" class="col-w-10">{{ 'ASSET_TYPES.ICON' | translate }}<p-sortIcon field="icon" /></th>
           <th pSortableColumn="description">{{ 'ASSET_TYPES.DESCRIPTION' | translate }}<p-sortIcon field="description" /></th>
           <th pSortableColumn="active">{{ 'ASSET_TYPES.ACTIVE' | translate }}<p-sortIcon field="active" /></th>
-          <th style="width: 8rem"></th>
+          <th class="col-w-8"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th class="col-w-8"><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th class="col-w-14"><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th></th>
-          <th class="col-w-16"><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="boolean" field="active" matchMode="equals" [showMenu]="false" /></th>
-          <th></th>
+          <th class="col-w-6"><app-text-column-filter field="id" /></th>
+          <th class="col-w-8"><app-text-column-filter field="code" /></th>
+          <th class="col-w-10"><app-text-column-filter field="name" /></th>
+          <th class="col-w-10"></th>
+          <th class="col-w-20"><app-text-column-filter field="description" /></th>
+          <th class="col-w-4"><p-columnFilter type="boolean" field="active"  /></th>
+          <th class="col-w-4"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-assetType>
         <tr>
-          <td class="col-id">{{ assetType.id }}</td>
+          <td>{{ assetType.id }}</td>
           <td>{{ assetType.code }}</td>
           <td>{{ assetType.name }}</td>
           <td>

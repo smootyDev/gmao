@@ -1,11 +1,89 @@
-<div class="fadein max-w-900 mx-auto"><h1 class="text-3xl font-bold mb-4">{{ (isEdit() ? 'USERS.EDIT' : 'USERS.NEW') | translate }}</h1><p-card class="shadow-2"><form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
-  @if (isEdit()) {
-    <div class="formgrid grid"><div class="field col-12 md:col-3"><label>{{ 'COMMON.ID' | translate }}</label><input pInputText [value]="id()" disabled class="w-full" /></div></div>
-  }
-  <div class="formgrid grid"><div class="field col-12 md:col-4"><label>{{ 'USERS.EMPLOYEE_CODE' | translate }}</label><input pInputText formControlName="employeeCode" class="w-full" /></div><div class="field col-12 md:col-4"><label>{{ 'USERS.FIRST_NAME' | translate }}</label><input pInputText formControlName="firstName" class="w-full" /></div><div class="field col-12 md:col-4"><label>{{ 'USERS.LAST_NAME' | translate }}</label><input pInputText formControlName="lastName" class="w-full" /></div></div>
-  <div class="formgrid grid"><div class="field col-12 md:col-6"><label>{{ 'USERS.USERNAME' | translate }}</label><input pInputText formControlName="username" class="w-full" /></div><div class="field col-12 md:col-6"><label>{{ 'USERS.EMAIL' | translate }}</label><input pInputText formControlName="email" class="w-full" /></div></div>
-  <div class="formgrid grid"><div class="field col-12 md:col-4"><label>{{ 'USERS.PHONE' | translate }}</label><input pInputText formControlName="phone" class="w-full" /></div><div class="field col-12 md:col-4"><label>{{ 'USERS.DEPARTMENT' | translate }}</label><input pInputText formControlName="department" class="w-full" /></div><div class="field col-12 md:col-4"><label>{{ 'USERS.ROLE' | translate }}</label><p-select formControlName="role" [options]="roles" optionLabel="label" optionValue="value" styleClass="w-full"></p-select></div></div>
-  <div class="field"><label>{{ 'USERS.PASSWORD' | translate }}</label><p-password formControlName="password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full"></p-password></div>
-  <div class="flex align-items-center gap-2"><p-checkbox formControlName="active" [binary]="true" inputId="active"></p-checkbox><label for="active">{{ 'USERS.ACTIVE' | translate }}</label></div>
-  <div class="flex justify-content-end gap-2"><button pButton type="button" severity="secondary" routerLink="/users">{{ 'COMMON.CANCEL' | translate }}</button><button pButton type="submit" [loading]="saving()">{{ 'COMMON.SAVE' | translate }}</button></div>
-</form></p-card></div>
+<div class="fadein max-w-900 mx-auto">
+  <h1 class="text-3xl font-bold mb-4">{{ (isEdit() ? 'USERS.EDIT' : 'USERS.NEW') | translate }}</h1>
+  <p-card class="shadow-2">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+      @if (submitted() && form.invalid) {
+        <p-message severity="error" styleClass="w-full">{{ 'COMMON.VALIDATION.FORM_HAS_ERRORS' | translate }}</p-message>
+      }
+      @if (isEdit()) {
+        <div class="formgrid grid">
+          <div class="field col-12 md:col-3">
+            <label>{{ 'COMMON.ID' | translate }}</label>
+            <input pInputText [value]="id()" disabled class="w-full" />
+          </div>
+        </div>
+      }
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-4">
+          <label for="employeeCode">{{ 'USERS.EMPLOYEE_CODE' | translate }}</label>
+          <input pInputText id="employeeCode" formControlName="employeeCode" class="w-full" [invalid]="isInvalid('employeeCode')" />
+          @if (errorKey('employeeCode'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('employeeCode') }}</small>
+          }
+        </div>
+        <div class="field col-12 md:col-4">
+          <label for="firstName">{{ 'USERS.FIRST_NAME' | translate }}</label>
+          <input pInputText id="firstName" formControlName="firstName" class="w-full" [invalid]="isInvalid('firstName')" />
+          @if (errorKey('firstName'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('firstName') }}</small>
+          }
+        </div>
+        <div class="field col-12 md:col-4">
+          <label for="lastName">{{ 'USERS.LAST_NAME' | translate }}</label>
+          <input pInputText id="lastName" formControlName="lastName" class="w-full" [invalid]="isInvalid('lastName')" />
+          @if (errorKey('lastName'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('lastName') }}</small>
+          }
+        </div>
+      </div>
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-6">
+          <label for="username">{{ 'USERS.USERNAME' | translate }}</label>
+          <input pInputText id="username" formControlName="username" class="w-full" [invalid]="isInvalid('username')" />
+          @if (errorKey('username'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('username') }}</small>
+          }
+        </div>
+        <div class="field col-12 md:col-6">
+          <label for="email">{{ 'USERS.EMAIL' | translate }}</label>
+          <input pInputText id="email" formControlName="email" class="w-full" [invalid]="isInvalid('email')" />
+          @if (errorKey('email'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('email') }}</small>
+          }
+        </div>
+      </div>
+      <div class="formgrid grid">
+        <div class="field col-12 md:col-4">
+          <label for="phone">{{ 'USERS.PHONE' | translate }}</label>
+          <input pInputText id="phone" formControlName="phone" class="w-full" />
+        </div>
+        <div class="field col-12 md:col-4">
+          <label for="department">{{ 'USERS.DEPARTMENT' | translate }}</label>
+          <input pInputText id="department" formControlName="department" class="w-full" />
+        </div>
+        <div class="field col-12 md:col-4">
+          <label for="role">{{ 'USERS.ROLE' | translate }}</label>
+          <p-select inputId="role" formControlName="role" [options]="roles" optionLabel="label" optionValue="value" styleClass="w-full" [invalid]="isInvalid('role')"></p-select>
+          @if (errorKey('role'); as key) {
+            <small class="text-red-500">{{ key | translate: errorParams('role') }}</small>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <label for="password">{{ 'USERS.PASSWORD' | translate }}</label>
+        <p-password inputId="password" formControlName="password" [feedback]="false" [toggleMask]="true" styleClass="w-full" inputStyleClass="w-full" [invalid]="isInvalid('password')"></p-password>
+        @if (errorKey('password'); as key) {
+          <small class="text-red-500">{{ key | translate: errorParams('password') }}</small>
+        }
+      </div>
+      <div class="flex align-items-center gap-2">
+        <p-checkbox formControlName="active" [binary]="true" inputId="active"></p-checkbox>
+        <label for="active">{{ 'USERS.ACTIVE' | translate }}</label>
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <button pButton type="button" severity="secondary" routerLink="/users">{{ 'COMMON.CANCEL' | translate }}</button>
+        <button pButton type="submit" [loading]="saving()">{{ 'COMMON.SAVE' | translate }}</button>
+      </div>
+    </form>
+  </p-card>
+</div>

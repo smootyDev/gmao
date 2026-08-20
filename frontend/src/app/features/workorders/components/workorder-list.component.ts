@@ -8,6 +8,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
 import { FilterOption } from '../../../core/models/filter-option';
 import { InputTextModule } from 'primeng/inputtext';
@@ -39,7 +40,8 @@ interface WorkOrderView extends WorkOrder {
     TagModule,
     TooltipModule,
     TranslatePipe, InputTextModule,
-    DropdownColumnFilterComponent
+    DropdownColumnFilterComponent,
+    TextColumnFilterComponent
   ],
   templateUrl: './workorder-list.component.html',
   styleUrl: './workorder-list.component.scss'

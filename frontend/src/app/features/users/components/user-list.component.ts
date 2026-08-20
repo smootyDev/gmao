@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { USER_ROLE_OPTIONS } from '../../../core/constants/select-options';
 import { User, UserService } from '../services/user.service';
 import { SyncService } from '../../../core/services/sync.service';
@@ -16,7 +17,7 @@ import { SyncService } from '../../../core/services/sync.service';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, CardModule, TableModule, TagModule, InputTextModule, TranslatePipe, DropdownColumnFilterComponent],
+  imports: [CommonModule, RouterModule, ButtonModule, CardModule, TableModule, TagModule, InputTextModule, TranslatePipe, DropdownColumnFilterComponent, TextColumnFilterComponent],
   templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit, OnDestroy {

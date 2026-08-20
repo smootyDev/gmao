@@ -8,6 +8,7 @@ import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
 import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { SyncService } from '../../../core/services/sync.service';
 import { PreventivePlan, PreventivePlanService } from '../services/preventive-plan.service';
 import { Asset, AssetService } from '../../assets/services/asset.service';
@@ -17,7 +18,7 @@ type DueSeverity = 'danger' | 'warn' | 'success' | 'secondary';
 @Component({
   selector: 'app-preventive-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, TranslatePipe, TextColumnFilterComponent],
   templateUrl: './preventive-list.component.html',
   styleUrl: './preventive-list.component.scss'
 })

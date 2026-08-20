@@ -176,7 +176,14 @@
     "NO": "No",
     "SEARCH": "Buscar",
     "FILTER": "Filtrar",
-    "CLEAR_FILTERS": "Limpiar filtros"
+    "CLEAR_FILTERS": "Limpiar filtros",
+    "VALIDATION": {
+      "REQUIRED": "Este campo es obligatorio",
+      "EMAIL": "Introduce un correo electrónico válido",
+      "MIN_LENGTH": "Debe tener al menos {{requiredLength}} caracteres",
+      "MAX_LENGTH": "No puede superar los {{requiredLength}} caracteres",
+      "FORM_HAS_ERRORS": "Revisa los campos marcados en rojo antes de guardar"
+    }
   },
   "THEME": {
     "TOGGLE": "Cambiar tema",

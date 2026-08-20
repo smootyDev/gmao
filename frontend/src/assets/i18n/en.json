@@ -176,7 +176,14 @@
     "NO": "No",
     "SEARCH": "Search",
     "FILTER": "Filter",
-    "CLEAR_FILTERS": "Clear filters"
+    "CLEAR_FILTERS": "Clear filters",
+    "VALIDATION": {
+      "REQUIRED": "This field is required",
+      "EMAIL": "Enter a valid email address",
+      "MIN_LENGTH": "Must be at least {{requiredLength}} characters",
+      "MAX_LENGTH": "Cannot exceed {{requiredLength}} characters",
+      "FORM_HAS_ERRORS": "Review the highlighted fields before saving"
+    }
   },
   "THEME": {
     "TOGGLE": "Toggle theme",

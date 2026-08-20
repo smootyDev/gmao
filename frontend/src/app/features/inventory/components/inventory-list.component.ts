@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { SyncService } from '../../../core/services/sync.service';
 import { InventoryItem, InventoryItemService } from '../services/inventory-item.service';
 import { Location, LocationService } from '../../locations/services/location.service';
@@ -23,7 +24,7 @@ interface InventoryItemView extends InventoryItem {
 @Component({
   selector: 'app-inventory-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, DialogModule, ProgressSpinnerModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, CardModule, TableModule, ButtonModule, TagModule, InputTextModule, DialogModule, ProgressSpinnerModule, TranslatePipe, TextColumnFilterComponent],
   templateUrl: './inventory-list.component.html',
   styleUrl: './inventory-list.component.scss'
 })

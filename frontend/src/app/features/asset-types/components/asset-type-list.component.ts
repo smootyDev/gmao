@@ -10,21 +10,22 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { AssetType, AssetTypeService } from '../services/asset-type.service';
 import { SyncService } from '../../../core/services/sync.service';
-import { ASSET_TYPE_ICONS, assetTypeIconColor } from '../../../core/utils/asset-type-visual';
+import { ASSET_TYPE_ICONS, assetTypeIconLabel, assetTypeIconColor, normalizeAssetTypeIcon } from '../../../core/utils/asset-type-visual';
 
 @Component({
   selector: 'app-asset-type-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonModule, CardModule, TableModule, TagModule, InputTextModule, SelectModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, RouterModule, ButtonModule, CardModule, TableModule, TagModule, InputTextModule, SelectModule, TextColumnFilterComponent, TranslatePipe],
   templateUrl: './asset-type-list.component.html',
   styleUrl: './asset-type-list.component.scss'
 })
 export class AssetTypeListComponent implements OnInit, OnDestroy {
   assetTypes = signal<AssetType[]>([]);
   loading = signal(true);
-  iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: icon.replace('pi-', ''), value: icon }));
+  iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: assetTypeIconLabel(icon), value: icon }));
   savingIconId = signal<number | undefined>(undefined);
 
   private readonly subscriptions: Subscription[] = [];
@@ -49,7 +50,7 @@ export class AssetTypeListComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     this.assetTypeService.list().subscribe({
       next: (assetTypes) => {
-        this.assetTypes.set(assetTypes);
+        this.assetTypes.set(assetTypes.map((assetType) => ({ ...assetType, icon: normalizeAssetTypeIcon(assetType.icon) })));
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
