@@ -28,6 +28,12 @@ interface WorkOrderView extends WorkOrder {
   origin: 'preventive' | 'manual';
 }
 
+interface WorkOrderMetric {
+  label: string;
+  value: string;
+  color: 'blue' | 'amber' | 'green' | 'red' | 'cyan';
+}
+
 @Component({
   selector: 'app-workorder-list',
   standalone: true,
@@ -63,6 +69,28 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
       origin: wo.preventivePlanId ? 'preventive' : 'manual'
     }))
   );
+
+  metrics = computed<WorkOrderMetric[]>(() => {
+    const orders = this.workOrders();
+    const completed = orders.filter((wo) => wo.status === 'CLOSED').length;
+    const open = orders.filter((wo) => wo.status !== 'CLOSED').length;
+    const urgent = orders.filter((wo) => wo.priority === 1 && wo.status !== 'CLOSED').length;
+    const corrective = orders.filter((wo) => !wo.preventivePlanId).length;
+    const preventive = orders.filter((wo) => !!wo.preventivePlanId).length;
+    const compliance = orders.length ? Math.round((completed / orders.length) * 100) : 0;
+
+    return [
+      { label: 'WORKORDERS.METRICS.TOTAL', value: `${orders.length}`, color: 'blue' },
+      { label: 'WORKORDERS.METRICS.OPEN', value: `${open}`, color: 'amber' },
+      { label: 'WORKORDERS.METRICS.COMPLETED', value: `${completed}`, color: 'green' },
+      { label: 'WORKORDERS.METRICS.URGENT', value: `${urgent}`, color: 'red' },
+      { label: 'WORKORDERS.METRICS.CORRECTIVE', value: `${corrective}`, color: 'red' },
+      { label: 'WORKORDERS.METRICS.PREVENTIVE', value: `${preventive}`, color: 'cyan' },
+      { label: 'WORKORDERS.METRICS.COMPLIANCE', value: `${compliance}%`, color: 'amber' },
+      { label: 'WORKORDERS.METRICS.MTTR', value: this.averageRepairHours(orders), color: 'cyan' },
+      { label: 'WORKORDERS.METRICS.TOTAL_COST', value: this.totalCost(orders), color: 'amber' }
+    ];
+  });
 
   statusOptions = WORKORDER_STATUS_OPTIONS;
   priorityOptions = WORKORDER_PRIORITY_OPTIONS;
@@ -124,6 +152,23 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
   }
   priorityName(priority?: number): string {
     return WORKORDER_PRIORITY_OPTIONS.find((option) => option.value === priority)?.label ?? '';
+  }
+
+  private averageRepairHours(orders: WorkOrder[]): string {
+    const hours = orders
+      .filter((wo) => wo.status === 'CLOSED')
+      .map((wo) => wo.actualHours ?? wo.estimatedHours)
+      .filter((value): value is number => value !== undefined && value >= 0);
+    return hours.length ? `${(hours.reduce((sum, value) => sum + value, 0) / hours.length).toFixed(1)}h` : '—';
+  }
+
+  private totalCost(orders: WorkOrder[]): string {
+    const costs = orders
+      .map((wo) => wo.actualCost ?? wo.cost)
+      .filter((value): value is number => value !== undefined && value >= 0);
+    if (!costs.length) return '—';
+    const total = costs.reduce((sum, value) => sum + value, 0);
+    return total >= 1000 ? `$${(total / 1000).toFixed(1)}K` : `$${total.toFixed(0)}`;
   }
 
   itemsTooltip(wo: WorkOrder): string {

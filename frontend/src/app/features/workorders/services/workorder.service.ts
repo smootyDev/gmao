@@ -20,6 +20,9 @@ export interface WorkOrder {
   assetId?: number | null;
   assignedTo?: number | null;
   estimatedHours?: number;
+  actualHours?: number;
+  cost?: number;
+  actualCost?: number;
   preventivePlanId?: number;
   items?: WorkOrderItem[];
 }

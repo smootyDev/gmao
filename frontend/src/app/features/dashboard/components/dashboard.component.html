@@ -8,4 +8,86 @@
     <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-purple"><div class="kpi-content"><div><span>{{ 'DASHBOARD.IN_PROGRESS' | translate }}</span><strong>{{ inProgressCount() }}</strong><small>{{ 'DASHBOARD.WORKING' | translate }}</small></div><i class="pi pi-cog"></i></div></p-card></div>
     <div class="col-12 md:col-6 lg:col-3"><p-card class="kpi-card kpi-blue"><div class="kpi-content"><div><span>{{ 'DASHBOARD.AVAILABILITY' | translate }}</span><strong>{{ availability() }}%</strong><small>{{ 'DASHBOARD.AVERAGE_FLEET' | translate }}</small></div><i class="pi pi-chart-line"></i></div></p-card></div>
   </div>
+
+  <div class="grid dashboard-charts">
+    <div class="col-12 lg:col-5">
+      <p-card class="dashboard-card chart-card">
+        <div class="section-heading">
+          <div>
+            <h2>{{ 'DASHBOARD.WORKORDERS_BY_STATUS' | translate }}</h2>
+            <span>{{ 'DASHBOARD.LAST_30_DAYS' | translate }}</span>
+          </div>
+          <i class="pi pi-chart-pie"></i>
+        </div>
+        <div class="chart-wrapper chart-doughnut">
+          <p-chart type="doughnut" [data]="statusChartData()" [options]="doughnutChartOptions" />
+        </div>
+      </p-card>
+    </div>
+    <div class="col-12 lg:col-7">
+      <p-card class="dashboard-card chart-card">
+        <div class="section-heading">
+          <div>
+            <h2>{{ 'DASHBOARD.MONTHLY_TREND' | translate }}</h2>
+            <span>{{ 'DASHBOARD.OPENED_CLOSED' | translate }}</span>
+          </div>
+          <i class="pi pi-chart-line"></i>
+        </div>
+        <div class="chart-wrapper chart-line">
+          <p-chart type="line" [data]="monthlyTrendData()" [options]="chartOptions" />
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="grid dashboard-lower">
+    <div class="col-12 lg:col-7">
+      <p-card class="dashboard-card recent-orders-card">
+        <div class="section-heading">
+          <div class="heading-with-icon"><i class="pi pi-bolt"></i><h2>{{ 'DASHBOARD.RECENT_ACTIVE_WORKORDERS' | translate }}</h2></div>
+          <a pButton text size="small" icon="pi pi-arrow-right" iconPos="right" [label]="'COMMON.VIEW_ALL' | translate" routerLink="/workorders"></a>
+        </div>
+        <p-table [value]="recentWorkOrders()" [loading]="loading()" responsiveLayout="scroll" class="dashboard-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'WORKORDERS.ID' | translate }}</th>
+              <th>{{ 'WORKORDERS.TITLE_LABEL' | translate }}</th>
+              <th>{{ 'WORKORDERS.ASSET' | translate }}</th>
+              <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-workOrder>
+            <tr>
+              <td><a class="order-link" [routerLink]="['/workorders', workOrder.id]">OT-{{ workOrder.id }}</a></td>
+              <td class="font-medium">{{ workOrder.title }}</td>
+              <td>{{ workOrder.assetId || ('COMMON.EMPTY' | translate) }}</td>
+              <td><p-tag [value]="('WORKORDERS.STATUSES.' + workOrder.status) | translate" [severity]="workOrder.status === 'ON_HOLD' ? 'warn' : workOrder.status === 'IN_PROGRESS' ? 'info' : 'success'"></p-tag></td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage"><tr><td colspan="4" class="empty-state">{{ 'DASHBOARD.NO_RECENT_WORKORDERS' | translate }}</td></tr></ng-template>
+        </p-table>
+      </p-card>
+    </div>
+
+    <div class="col-12 lg:col-5">
+      <p-card class="dashboard-card alerts-card">
+        <div class="section-heading">
+          <div class="heading-with-icon"><i class="pi pi-bell"></i><h2>{{ 'DASHBOARD.SYSTEM_ALERTS' | translate }}</h2></div>
+          <p-tag [value]="alerts().length.toString()" severity="info" [rounded]="true"></p-tag>
+        </div>
+        <div class="alerts-list">
+          @if (alerts().length) {
+            @for (alert of alerts(); track alert.message) {
+              <div class="alert-row">
+                <i [class]="alert.icon" [class.alert-danger]="alert.severity === 'danger'" [class.alert-warn]="alert.severity === 'warn'" [class.alert-info]="alert.severity === 'info'"></i>
+                <div><strong>{{ alert.message | translate }}</strong><span>{{ alert.count }} {{ 'DASHBOARD.AFFECTED_ITEMS' | translate }}</span></div>
+              </div>
+            }
+          } @else {
+            <div class="empty-alerts"><i class="pi pi-check-circle"></i><strong>{{ 'DASHBOARD.NO_ALERTS' | translate }}</strong><span>{{ 'DASHBOARD.SYSTEM_HEALTHY' | translate }}</span></div>
+          }
+        </div>
+      </p-card>
+    </div>
+  </div>
 </div>

@@ -52,3 +52,167 @@
     opacity: 0.18;
   }
 }
+
+.dashboard-page {
+  padding-bottom: 1rem;
+}
+
+.dashboard-charts,
+.dashboard-lower {
+  margin-top: 0.25rem;
+}
+
+.dashboard-card {
+  height: 100%;
+  border-radius: 1rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  span {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-color-secondary);
+    font-size: 0.82rem;
+  }
+
+  > i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+  }
+}
+
+.heading-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+
+  > i {
+    color: var(--primary-color);
+  }
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.chart-doughnut {
+  height: 13rem;
+
+  ::ng-deep .p-chart {
+    display: block;
+    height: 100%;
+  }
+
+  ::ng-deep canvas {
+    max-height: 13rem !important;
+  }
+}
+
+.chart-line {
+  height: 17rem;
+}
+
+.dashboard-table {
+  ::ng-deep .p-datatable-thead > tr > th {
+    background: transparent;
+    color: var(--text-color-secondary);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+  }
+
+  ::ng-deep .p-datatable-tbody > tr > td {
+    padding: 0.85rem 0.65rem;
+  }
+}
+
+.order-link {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.empty-state,
+.empty-alerts {
+  color: var(--text-color-secondary);
+  text-align: center;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.alert-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--surface-border);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  > i {
+    margin-top: 0.15rem;
+    font-size: 1.05rem;
+  }
+
+  strong,
+  span {
+    display: block;
+  }
+
+  span {
+    margin-top: 0.2rem;
+    color: var(--text-color-secondary);
+    font-size: 0.82rem;
+  }
+}
+
+.alert-danger { color: #ef4444; }
+.alert-warn { color: #f59e0b; }
+.alert-info { color: #3b82f6; }
+
+.empty-alerts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 2rem 1rem;
+
+  i {
+    color: #10b981;
+    font-size: 2rem;
+  }
+
+  span {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page h1 {
+    font-size: 1.55rem;
+  }
+
+  .chart-doughnut,
+  .chart-line {
+    height: 14rem;
+  }
+}

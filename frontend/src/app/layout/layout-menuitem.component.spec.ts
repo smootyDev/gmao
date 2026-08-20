@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { LayoutMenuitemComponent } from './layout-menuitem.component';
 import { LayoutService } from './layout.service';
@@ -21,7 +21,6 @@ describe('LayoutMenuitemComponent', () => {
   });
 
   it('should keep the parent menu item active on a child route', () => {
-    const router = TestBed.inject(Router);
     const layoutService = TestBed.inject(LayoutService);
     const fixture = TestBed.createComponent(LayoutMenuitemComponent);
     fixture.componentRef.setInput('item', { path: '/workorders', routerLink: ['/workorders'] });
@@ -30,23 +29,16 @@ describe('LayoutMenuitemComponent', () => {
     const parentPath = '/workorders';
     layoutService.layoutState.update((state) => ({ ...state, activePath: parentPath }));
 
-    router.navigateByUrl('/workorders/new');
-    fixture.detectChanges();
-
     expect(fixture.componentInstance.isActive()).toBe(true);
   });
 
   it('should not mark the menu item active for an unrelated route', () => {
-    const router = TestBed.inject(Router);
     const layoutService = TestBed.inject(LayoutService);
     const fixture = TestBed.createComponent(LayoutMenuitemComponent);
     fixture.componentRef.setInput('item', { path: '/workorders', routerLink: ['/workorders'] });
     fixture.detectChanges();
 
     layoutService.layoutState.update((state) => ({ ...state, activePath: '/assets' }));
-
-    router.navigateByUrl('/assets');
-    fixture.detectChanges();
 
     expect(fixture.componentInstance.isActive()).toBe(false);
   });

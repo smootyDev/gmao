@@ -1,3 +1,58 @@
 :host {
   display: block;
 }
+
+.workorder-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.workorder-metric {
+  min-height: 4.55rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 0.7rem;
+  background: var(--surface-card);
+  box-shadow: 0 2px 8px rgb(15 23 42 / 4%);
+
+  span,
+  strong {
+    display: block;
+  }
+
+  span {
+    overflow: hidden;
+    color: var(--text-color-secondary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  strong {
+    margin-top: 0.25rem;
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+}
+
+.metric-blue strong { color: #3b82f6; }
+.metric-amber strong { color: #f59e0b; }
+.metric-green strong { color: #10b981; }
+.metric-red strong { color: #ef4444; }
+.metric-cyan strong { color: #0891b2; }
+
+@media (max-width: 1199px) {
+  .workorder-metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .workorder-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

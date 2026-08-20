@@ -7,6 +7,15 @@
     </button>
   </div>
 
+  <div class="workorder-metrics mb-4">
+    @for (metric of metrics(); track metric.label) {
+      <div class="workorder-metric metric-{{ metric.color }}">
+        <span>{{ metric.label | translate }}</span>
+        <strong>{{ metric.value }}</strong>
+      </div>
+    }
+  </div>
+
   <p-card class="shadow-2">
     <p-table #workOrderTable [value]="rows()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'title', 'description', 'status', 'priority', 'assetId', 'assignedTo', 'estimatedHours']" [paginator]="true" [rows]="10"
              [rowsPerPageOptions]="[5,10,20]">
