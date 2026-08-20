@@ -17,25 +17,56 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'ASSET_TYPES.CODE' | translate }}</th>
-          <th>{{ 'ASSET_TYPES.NAME' | translate }}</th>
-          <th>{{ 'ASSET_TYPES.DESCRIPTION' | translate }}</th>
-          <th>{{ 'ASSET_TYPES.ACTIVE' | translate }}</th>
+          <th pSortableColumn="id" class="col-id">{{ 'COMMON.ID' | translate }}<p-sortIcon field="id" /></th>
+          <th pSortableColumn="code">{{ 'ASSET_TYPES.CODE' | translate }}<p-sortIcon field="code" /></th>
+          <th pSortableColumn="name">{{ 'ASSET_TYPES.NAME' | translate }}<p-sortIcon field="name" /></th>
+          <th pSortableColumn="icon" style="width: 11rem">{{ 'ASSET_TYPES.ICON' | translate }}<p-sortIcon field="icon" /></th>
+          <th pSortableColumn="description">{{ 'ASSET_TYPES.DESCRIPTION' | translate }}<p-sortIcon field="description" /></th>
+          <th pSortableColumn="active">{{ 'ASSET_TYPES.ACTIVE' | translate }}<p-sortIcon field="active" /></th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-8"><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-14"><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th></th>
+          <th class="col-w-16"><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th><p-columnFilter type="boolean" field="active" matchMode="equals" [showMenu]="false" /></th>
           <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-assetType>
         <tr>
+          <td class="col-id">{{ assetType.id }}</td>
           <td>{{ assetType.code }}</td>
           <td>{{ assetType.name }}</td>
-          <td>{{ assetType.description || '-' }}</td>
+          <td>
+            <p-select
+              [options]="iconOptions"
+              optionLabel="label"
+              optionValue="value"
+              [ngModel]="assetType.icon"
+              (ngModelChange)="onIconChange(assetType, $event)"
+              [loading]="savingIconId() === assetType.id"
+              [showClear]="false"
+              styleClass="w-10rem"
+              appendTo="body"
+            >
+              <ng-template let-icon pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2">
+                  <i [class]="icon.value" [style.color]="iconColor(icon.value)" style="font-size: 1.1rem"></i>
+                  <span>{{ icon.label }}</span>
+                </div>
+              </ng-template>
+              <ng-template let-icon pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <i [class]="icon.value" [style.color]="iconColor(icon.value)" style="font-size: 1.1rem"></i>
+                  <span>{{ icon.label }}</span>
+                </div>
+              </ng-template>
+            </p-select>
+          </td>
+          <td>{{ assetType.description }}</td>
           <td>
             <p-tag [value]="(assetType.active ? 'COMMON.YES' : 'COMMON.NO') | translate" [severity]="assetType.active ? 'success' : 'secondary'"></p-tag>
           </td>
@@ -52,7 +83,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        <tr><td colspan="5" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+        <tr><td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
       </ng-template>
     </p-table>
   </p-card>

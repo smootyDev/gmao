@@ -33,6 +33,9 @@ public class AssetType {
 
     private String description;
 
+    @Column(length = 100)
+    private String icon;
+
     @Column(nullable = false)
     private Boolean active = true;
 

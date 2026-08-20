@@ -5,6 +5,7 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
@@ -15,7 +16,16 @@ import { forkJoin, Subscription } from 'rxjs';
 import { WorkorderService, WorkOrder } from '../services/workorder.service';
 import { Asset, AssetService } from '../../assets/services/asset.service';
 import { User, UserService } from '../../users/services/user.service';
+import { InventoryItem, InventoryItemService } from '../../inventory/services/inventory-item.service';
 import { SyncService } from '../../../core/services/sync.service';
+
+interface WorkOrderView extends WorkOrder {
+  itemsCount: number;
+  priorityLabel: string;
+  assetLabel: string;
+  userLabel: string;
+  origin: 'preventive' | 'manual';
+}
 
 @Component({
   selector: 'app-workorder-list',
@@ -27,6 +37,7 @@ import { SyncService } from '../../../core/services/sync.service';
     TableModule,
     ButtonModule,
     TagModule,
+    TooltipModule,
     TranslatePipe, InputTextModule,
     DropdownColumnFilterComponent
   ],
@@ -38,6 +49,18 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
   loading = signal(true);
   assets = signal<Asset[]>([]);
   users = signal<User[]>([]);
+  inventoryItems = signal<InventoryItem[]>([]);
+
+  rows = computed<WorkOrderView[]>(() =>
+    this.workOrders().map((wo) => ({
+      ...wo,
+      itemsCount: (wo.items ?? []).length,
+      priorityLabel: this.priorityName(wo.priority),
+      assetLabel: this.assetName(wo.assetId),
+      userLabel: this.userName(wo.assignedTo),
+      origin: wo.preventivePlanId ? 'preventive' : 'manual'
+    }))
+  );
 
   statusOptions = WORKORDER_STATUS_OPTIONS;
   priorityOptions = WORKORDER_PRIORITY_OPTIONS;
@@ -60,6 +83,7 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
     private workorderService: WorkorderService,
     private assetService: AssetService,
     private userService: UserService,
+    private inventoryItemService: InventoryItemService,
     private syncService: SyncService
   ) {}
 
@@ -76,9 +100,14 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
 
   loadData(): void {
     this.loading.set(true);
-    forkJoin({ workOrders: this.workorderService.list(), assets: this.assetService.list(), users: this.userService.list() }).subscribe({
-      next: ({ workOrders, assets, users }) => {
-        this.workOrders.set(workOrders); this.assets.set(assets); this.users.set(users); this.loading.set(false);
+    forkJoin({
+      workOrders: this.workorderService.list(),
+      assets: this.assetService.list(),
+      users: this.userService.list(),
+      inventoryItems: this.inventoryItemService.list()
+    }).subscribe({
+      next: ({ workOrders, assets, users, inventoryItems }) => {
+        this.workOrders.set(workOrders); this.assets.set(assets); this.users.set(users); this.inventoryItems.set(inventoryItems); this.loading.set(false);
       },
       error: () => {
         this.loading.set(false);
@@ -86,12 +115,23 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
     });
   }
 
-  assetName(id?: number | null): string { return this.assets().find((asset) => asset.id === id)?.name || '-'; }
+  assetName(id?: number | null): string { return this.assets().find((asset) => asset.id === id)?.name || ''; }
   userName(id?: number | null): string {
     const user = this.users().find((candidate) => candidate.id === id);
-    return user ? `${user.employeeCode} - ${user.firstName} ${user.lastName}` : '-';
+    return user ? `${user.employeeCode} - ${user.firstName} ${user.lastName}` : '';
   }
-  priorityName(priority?: number): string { return ({ 1: '1 - Urgente', 2: '2 - Alta', 3: '3 - Media', 4: '4 - Baja' } as Record<number, string>)[priority || 3]; }
+  priorityName(priority?: number): string {
+    return WORKORDER_PRIORITY_OPTIONS.find((option) => option.value === priority)?.label ?? '';
+  }
+
+  itemsTooltip(wo: WorkOrder): string {
+    return (wo.items ?? [])
+      .map((item) => {
+        const name = this.inventoryItems().find((candidate) => candidate.id === item.inventoryItemId)?.name ?? `#${item.inventoryItemId}`;
+        return `${name} × ${item.quantity}`;
+      })
+      .join(' | ');
+  }
 
   delete(id: number): void {
     if (confirm('¿Eliminar esta orden de trabajo?')) {

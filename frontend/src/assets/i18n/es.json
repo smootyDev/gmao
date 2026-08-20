@@ -60,6 +60,7 @@
     "ORIGIN": "Origen",
     "ORIGIN_PREVENTIVE": "Preventivo",
     "ORIGIN_MANUAL": "Manual",
+    "FROM_PREVENTIVE": "Generada desde el plan preventivo",
     "STATUSES": {
       "OPEN": "Abierta",
       "ASSIGNED": "Asignada",
@@ -91,6 +92,8 @@
     "CODE": "Código",
     "NAME": "Nombre",
     "DESCRIPTION": "Descripción",
+    "ICON": "Icono",
+    "SELECT_ICON": "Seleccionar icono",
     "ACTIVE": "Activo"
   },
   "USERS": {
@@ -127,7 +130,9 @@
     "SELECTED": "Localización seleccionada",
     "SELECTED_ASSET": "Activo seleccionado",
     "SELECT_HINT": "Selecciona un nodo para ver sus detalles",
-    "ROOT": "RAÍZ"
+    "ROOT": "RAÍZ",
+    "EXPAND_ALL": "Expandir todo",
+    "COLLAPSE_ALL": "Colapsar todo"
   },
   "INVENTORY": {
     "TITLE": "Inventario",

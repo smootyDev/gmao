@@ -5,12 +5,14 @@
 
   <p-card class="shadow-2">
     <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
-      <div class="formgrid grid" *ngIf="isEdit()">
-        <div class="field col-12 md:col-3">
-          <label for="id">{{ 'COMMON.ID' | translate }}</label>
-          <input pInputText id="id" [value]="id()" disabled class="w-full" />
+      @if (isEdit()) {
+        <div class="formgrid grid">
+          <div class="field col-12 md:col-3">
+            <label for="id">{{ 'COMMON.ID' | translate }}</label>
+            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+          </div>
         </div>
-      </div>
+      }
 
       <div class="formgrid grid">
         <div class="field col-12 md:col-4">
@@ -26,6 +28,26 @@
       <div class="field">
         <label for="description">{{ 'ASSET_TYPES.DESCRIPTION' | translate }}</label>
         <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="icon">{{ 'ASSET_TYPES.ICON' | translate }}</label>
+        <p-select inputId="icon" formControlName="icon" [options]="iconOptions" optionLabel="label" optionValue="value" [showClear]="true" [placeholder]="'ASSET_TYPES.SELECT_ICON' | translate" styleClass="w-full">
+          <ng-template let-icon pTemplate="selectedItem">
+            @if (icon) {
+              <div class="flex align-items-center gap-2">
+                <i [class]="icon.value" [style.color]="iconColor(icon.value)" style="font-size: 1.1rem"></i>
+                <span>{{ icon.label }}</span>
+              </div>
+            }
+          </ng-template>
+          <ng-template let-icon pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <i [class]="icon.value" [style.color]="iconColor(icon.value)" style="font-size: 1.1rem"></i>
+              <span>{{ icon.label }}</span>
+            </div>
+          </ng-template>
+        </p-select>
       </div>
 
       <div class="field flex align-items-center gap-2">

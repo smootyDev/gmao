@@ -18,9 +18,11 @@
         <p-password id="password" formControlName="password" [toggleMask]="true" [feedback]="false" class="w-full" inputStyleClass="w-full" />
       </div>
 
-      <div *ngIf="error()" class="p-3 border-round bg-red-100 text-red-900 text-sm">
-        {{ error() | translate }}
-      </div>
+      @if (error()) {
+        <div class="p-3 border-round bg-red-100 text-red-900 text-sm">
+          {{ error() | translate }}
+        </div>
+      }
 
       <button pButton type="submit" [loading]="loading()" class="w-full">
         <span pButtonLabel>{{ 'LOGIN.SUBMIT' | translate }}</span>

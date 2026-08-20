@@ -49,6 +49,7 @@ public class AssetTypeService {
         existing.setCode(assetType.getCode());
         existing.setName(assetType.getName());
         existing.setDescription(assetType.getDescription());
+        existing.setIcon(assetType.getIcon());
         existing.setActive(assetType.getActive() == null || assetType.getActive());
         return assetTypeRepository.save(existing);
     }

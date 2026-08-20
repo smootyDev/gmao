@@ -8,7 +8,7 @@
   </div>
 
   <p-card class="shadow-2">
-    <p-table #inventoryTable [value]="items()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'code', 'name', 'description', 'category', 'unit']" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]">
+    <p-table #inventoryTable [value]="rows()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'code', 'name', 'description', 'category', 'unit']" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5, 10, 20]">
       <ng-template pTemplate="caption">
         <div class="flex justify-content-between align-items-center">
           <div class="flex align-items-center gap-2">
@@ -22,21 +22,23 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'INVENTORY.CODE' | translate }}</th>
-          <th>{{ 'INVENTORY.NAME' | translate }}</th>
-          <th>{{ 'INVENTORY.CATEGORY' | translate }}</th>
-          <th>{{ 'INVENTORY.UNIT' | translate }}</th>
-          <th>{{ 'INVENTORY.CURRENT_STOCK' | translate }}</th>
-          <th>{{ 'INVENTORY.MINIMUM_STOCK' | translate }}</th>
-          <th>{{ 'INVENTORY.LOCATION' | translate }}</th>
-          <th>{{ 'INVENTORY.WORK_ORDERS' | translate }}</th>
+          <th pSortableColumn="id" class="col-id">{{ 'COMMON.ID' | translate }}<p-sortIcon field="id" /></th>
+          <th pSortableColumn="code">{{ 'INVENTORY.CODE' | translate }}<p-sortIcon field="code" /></th>
+          <th pSortableColumn="name">{{ 'INVENTORY.NAME' | translate }}<p-sortIcon field="name" /></th>
+          <th pSortableColumn="category">{{ 'INVENTORY.CATEGORY' | translate }}<p-sortIcon field="category" /></th>
+          <th pSortableColumn="unit">{{ 'INVENTORY.UNIT' | translate }}<p-sortIcon field="unit" /></th>
+          <th pSortableColumn="currentStock">{{ 'INVENTORY.CURRENT_STOCK' | translate }}<p-sortIcon field="currentStock" /></th>
+          <th pSortableColumn="minimumStock">{{ 'INVENTORY.MINIMUM_STOCK' | translate }}<p-sortIcon field="minimumStock" /></th>
+          <th pSortableColumn="locationLabel">{{ 'INVENTORY.LOCATION' | translate }}<p-sortIcon field="locationLabel" /></th>
+          <th pSortableColumn="associated">{{ 'INVENTORY.WORK_ORDERS' | translate }}<p-sortIcon field="associated" /></th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="category" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="unit" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-10"><p-columnFilter type="text" field="code" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-14"><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-10"><p-columnFilter type="text" field="category" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-6"><p-columnFilter type="text" field="unit" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th></th>
           <th></th>
           <th></th>
@@ -46,10 +48,11 @@
       </ng-template>
       <ng-template pTemplate="body" let-item>
         <tr>
+          <td class="col-id">{{ item.id }}</td>
           <td>{{ item.code }}</td>
           <td>{{ item.name }}</td>
-          <td>{{ item.category || '-' }}</td>
-          <td>{{ item.unit || '-' }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.unit }}</td>
           <td>
             @if (isLowStock(item)) {
               <p-tag [value]="item.currentStock" severity="danger"></p-tag>
@@ -58,9 +61,9 @@
             }
           </td>
           <td>{{ item.minimumStock }}</td>
-          <td>{{ locationName(item.locationId) }}</td>
+          <td>{{ item.locationLabel }}</td>
           <td>
-            @if (isAssociated(item)) {
+            @if (item.associated) {
               <p-tag [value]="'COMMON.YES' | translate" severity="success"></p-tag>
             } @else {
               <p-tag [value]="'COMMON.NO' | translate" severity="secondary"></p-tag>
@@ -80,7 +83,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        <tr><td colspan="9" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+        <tr><td colspan="10" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
       </ng-template>
     </p-table>
   </p-card>
@@ -93,14 +96,14 @@
     <p-table [value]="usageWorkOrders()" size="small">
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'WORKORDERS.ID' | translate }}</th>
-          <th>{{ 'WORKORDERS.TITLE_LABEL' | translate }}</th>
-          <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
+           <th pSortableColumn="id" class="col-id">{{ 'WORKORDERS.ID' | translate }}<p-sortIcon field="id" /></th>
+           <th pSortableColumn="title">{{ 'WORKORDERS.TITLE_LABEL' | translate }}<p-sortIcon field="title" /></th>
+           <th pSortableColumn="status">{{ 'WORKORDERS.STATUS' | translate }}<p-sortIcon field="status" /></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-wo>
         <tr>
-          <td>{{ wo.id }}</td>
+           <td class="col-id">{{ wo.id }}</td>
           <td>{{ wo.title }}</td>
           <td><p-tag [value]="'WORKORDERS.STATUSES.' + wo.status | translate" [severity]="getSeverity(wo.status)"></p-tag></td>
         </tr>

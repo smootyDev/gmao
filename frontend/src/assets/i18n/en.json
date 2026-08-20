@@ -60,6 +60,7 @@
     "ORIGIN": "Origin",
     "ORIGIN_PREVENTIVE": "Preventive",
     "ORIGIN_MANUAL": "Manual",
+    "FROM_PREVENTIVE": "Generated from preventive plan",
     "STATUSES": {
       "OPEN": "Open",
       "ASSIGNED": "Assigned",
@@ -91,6 +92,8 @@
     "CODE": "Code",
     "NAME": "Name",
     "DESCRIPTION": "Description",
+    "ICON": "Icon",
+    "SELECT_ICON": "Select icon",
     "ACTIVE": "Active"
   },
   "USERS": {
@@ -127,7 +130,9 @@
     "SELECTED": "Selected location",
     "SELECTED_ASSET": "Selected asset",
     "SELECT_HINT": "Select a node to see its details",
-    "ROOT": "ROOT"
+    "ROOT": "ROOT",
+    "EXPAND_ALL": "Expand all",
+    "COLLAPSE_ALL": "Collapse all"
   },
   "INVENTORY": {
     "TITLE": "Inventory",

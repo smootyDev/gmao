@@ -25,7 +25,7 @@ describe('UserListComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('p-table')).toBeTruthy();
     expect(compiled.querySelectorAll('app-dropdown-column-filter').length).toBe(1);
-    expect(compiled.querySelectorAll('p-columnfilter').length).toBe(10);
+    expect(compiled.querySelectorAll('p-columnfilter').length).toBe(9);
   });
 
   it('should expose the role options for the equals filter', () => {

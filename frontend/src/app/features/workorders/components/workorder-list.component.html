@@ -8,7 +8,7 @@
   </div>
 
   <p-card class="shadow-2">
-    <p-table #workOrderTable [value]="workOrders()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'title', 'description', 'status', 'priority', 'assetId', 'assignedTo', 'estimatedHours']" [paginator]="true" [rows]="10"
+    <p-table #workOrderTable [value]="rows()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'title', 'description', 'status', 'priority', 'assetId', 'assignedTo', 'estimatedHours']" [paginator]="true" [rows]="10"
              [rowsPerPageOptions]="[5,10,20]">
       <ng-template pTemplate="caption">
         <div class="flex justify-content-between align-items-center">
@@ -18,26 +18,26 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'WORKORDERS.ID' | translate }}</th>
-          <th>{{ 'WORKORDERS.TITLE' | translate }}</th>
-          <th>{{ 'WORKORDERS.DESCRIPTION' | translate }}</th>
-          <th>{{ 'WORKORDERS.STATUS' | translate }}</th>
-          <th>{{ 'WORKORDERS.PRIORITY' | translate }}</th>
-          <th>{{ 'WORKORDERS.ASSET' | translate }}</th>
-          <th>{{ 'WORKORDERS.ASSIGNED' | translate }}</th>
-          <th>{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</th>
-          <th>{{ 'WORKORDERS.ITEMS' | translate }}</th>
-          <th>{{ 'WORKORDERS.ORIGIN' | translate }}</th>
+          <!-- <th pSortableColumn="id" class="col-id">{{ 'WORKORDERS.ID' | translate }}<p-sortIcon field="id" /></th> -->
+          <th pSortableColumn="title">{{ 'WORKORDERS.TITLE' | translate }}<p-sortIcon field="title" /></th>
+          <th pSortableColumn="description">{{ 'WORKORDERS.DESCRIPTION' | translate }}<p-sortIcon field="description" /></th>
+          <th pSortableColumn="status">{{ 'WORKORDERS.STATUS' | translate }}<p-sortIcon field="status" /></th>
+          <th pSortableColumn="priority">{{ 'WORKORDERS.PRIORITY' | translate }}<p-sortIcon field="priority" /></th>
+          <th pSortableColumn="assetId">{{ 'WORKORDERS.ASSET' | translate }}<p-sortIcon field="assetId" /></th>
+          <th pSortableColumn="assignedTo">{{ 'WORKORDERS.ASSIGNED' | translate }}<p-sortIcon field="assignedTo" /></th>
+          <th pSortableColumn="estimatedHours" >{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}<p-sortIcon field="estimatedHours" /></th>
+          <th pSortableColumn="itemsCount">{{ 'WORKORDERS.ITEMS' | translate }}<p-sortIcon field="itemsCount" /></th>
+          <th pSortableColumn="origin">{{ 'WORKORDERS.ORIGIN' | translate }}<p-sortIcon field="origin" /></th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="title" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="priority" [options]="priorityOptions" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
+          <!-- <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th> -->
+          <th class="col-w-14"><p-columnFilter type="text" field="title" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-16"><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-8"><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
+          <th class="col-w-8"><app-dropdown-column-filter field="priority" [options]="priorityOptions" placeholder="" /></th>
+          <th class="col-w-12"><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
+          <th class="col-w-12"><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
           <th><p-columnFilter type="text" field="estimatedHours" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th></th>
           <th></th>
@@ -46,19 +46,24 @@
       </ng-template>
       <ng-template pTemplate="body" let-wo>
         <tr>
-          <td>{{ wo.id }}</td>
+          <!-- <td class="col-id">{{ wo.id }}</td> -->
           <td>{{ wo.title }}</td>
-          <td>{{ wo.description || '-' }}</td>
+          <td>{{ wo.description }}</td>
           <td><p-tag [value]="'WORKORDERS.STATUSES.' + wo.status | translate" [severity]="getSeverity(wo.status)"></p-tag></td>
-          <td>{{ priorityName(wo.priority) }}</td>
-          <td>{{ assetName(wo.assetId) }}</td>
-          <td>{{ userName(wo.assignedTo) }}</td>
-          <td>{{ wo.estimatedHours ?? '-' }}</td>
+          <td>{{ wo.priorityLabel }}</td>
+          <td>{{ wo.assetLabel }}</td>
+          <td>{{ wo.userLabel }}</td>
+          <td >{{ wo.estimatedHours }}</td>
           <td>
-            @if ((wo.items ?? []).length > 0) {
-              <p-tag [value]="(wo.items ?? []).length" severity="info"></p-tag>
-            } @else {
-              -
+            @if (wo.itemsCount > 0) {
+              <span
+                [pTooltip]="itemsTooltip(wo)"
+                tooltipPosition="top"
+                tooltipStyleClass="items-tooltip"
+                class="inline-flex align-items-center"
+              >
+                <p-tag [value]="wo.itemsCount" severity="info"></p-tag>
+              </span>
             }
           </td>
           <td>

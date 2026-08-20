@@ -9,10 +9,10 @@ export const WORKORDER_STATUS_OPTIONS: FilterOption<string>[] = [
 ];
 
 export const WORKORDER_PRIORITY_OPTIONS: FilterOption<number>[] = [
-  { label: '1 - Urgente', value: 1 },
-  { label: '2 - Alta', value: 2 },
-  { label: '3 - Media', value: 3 },
-  { label: '4 - Baja', value: 4 }
+  { label: 'Urgente', value: 1 },
+  { label: 'Alta', value: 2 },
+  { label: 'Media', value: 3 },
+  { label: 'Baja', value: 4 }
 ];
 
 export const ASSET_CRITICALITY_OPTIONS: FilterOption<string>[] = [

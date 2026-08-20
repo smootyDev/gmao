@@ -36,8 +36,9 @@
 
       <button type="button" class="layout-topbar-action" (click)="userMenu.toggle($event)" aria-label="User menu">
         <i class="pi pi-user"></i>
-        <span class="layout-topbar-username" *ngIf="authService.currentUser()?.username">{{
-          authService.currentUser()?.username }}</span>
+        @if (authService.currentUser()?.username) {
+          <span class="layout-topbar-username">{{ authService.currentUser()?.username }}</span>
+        }
       </button>
       <p-menu #userMenu [popup]="true" [model]="userItems()"></p-menu>
     </div>

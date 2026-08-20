@@ -5,12 +5,14 @@
 
   <p-card class="shadow-2">
     <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
-      <div class="formgrid grid" *ngIf="isEdit()">
-        <div class="field col-12 md:col-3">
-          <label for="id">{{ 'COMMON.ID' | translate }}</label>
-          <input pInputText id="id" [value]="id()" disabled class="w-full" />
+      @if (isEdit()) {
+        <div class="formgrid grid">
+          <div class="field col-12 md:col-3">
+            <label for="id">{{ 'COMMON.ID' | translate }}</label>
+            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+          </div>
         </div>
-      </div>
+      }
 
       <div class="formgrid grid">
         <div class="field col-12 md:col-4">

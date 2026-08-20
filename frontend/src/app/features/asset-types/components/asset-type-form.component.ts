@@ -7,13 +7,15 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { SelectModule } from 'primeng/select';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { AssetType, AssetTypeService } from '../services/asset-type.service';
+import { ASSET_TYPE_ICONS, assetTypeIconColor } from '../../../core/utils/asset-type-visual';
 
 @Component({
   selector: 'app-asset-type-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, CardModule, CheckboxModule, InputTextModule, TextareaModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, CardModule, CheckboxModule, InputTextModule, TextareaModule, SelectModule, TranslatePipe],
   templateUrl: './asset-type-form.component.html',
   styleUrl: './asset-type-form.component.scss'
 })
@@ -22,6 +24,7 @@ export class AssetTypeFormComponent implements OnInit {
   isEdit = signal(false);
   id = signal<number | undefined>(undefined);
   saving = signal(false);
+  iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: icon.replace('pi-', ''), value: icon }));
 
   constructor(
     private readonly fb: FormBuilder,
@@ -33,8 +36,13 @@ export class AssetTypeFormComponent implements OnInit {
       code: ['', [Validators.required, Validators.maxLength(50)]],
       name: ['', Validators.required],
       description: [''],
+      icon: [''],
       active: [true]
     });
+  }
+
+  iconColor(icon: string | undefined): string {
+    return assetTypeIconColor(icon);
   }
 
   ngOnInit(): void {

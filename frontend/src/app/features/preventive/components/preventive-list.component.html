@@ -17,16 +17,18 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'PREVENTIVE.NAME' | translate }}</th>
-          <th>{{ 'PREVENTIVE.ASSET' | translate }}</th>
-          <th>{{ 'PREVENTIVE.FREQUENCY' | translate }}</th>
-          <th>{{ 'PREVENTIVE.NEXT_DUE' | translate }}</th>
-          <th>{{ 'PREVENTIVE.LAST_RUN' | translate }}</th>
-          <th>{{ 'PREVENTIVE.GENERATED_WOS' | translate }}</th>
+          <th pSortableColumn="id" class="col-id">{{ 'COMMON.ID' | translate }}<p-sortIcon field="id" /></th>
+          <th pSortableColumn="name">{{ 'PREVENTIVE.NAME' | translate }}<p-sortIcon field="name" /></th>
+          <th pSortableColumn="assetId">{{ 'PREVENTIVE.ASSET' | translate }}<p-sortIcon field="assetId" /></th>
+          <th pSortableColumn="frequencyDays">{{ 'PREVENTIVE.FREQUENCY' | translate }}<p-sortIcon field="frequencyDays" /></th>
+          <th pSortableColumn="nextDueDate">{{ 'PREVENTIVE.NEXT_DUE' | translate }}<p-sortIcon field="nextDueDate" /></th>
+          <th pSortableColumn="lastRunAt">{{ 'PREVENTIVE.LAST_RUN' | translate }}<p-sortIcon field="lastRunAt" /></th>
+          <th pSortableColumn="workOrderCount">{{ 'PREVENTIVE.GENERATED_WOS' | translate }}<p-sortIcon field="workOrderCount" /></th>
           <th style="width: 12rem"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-14"><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th></th>
           <th><p-columnFilter type="text" field="frequencyDays" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th></th>
@@ -37,13 +39,14 @@
       </ng-template>
       <ng-template pTemplate="body" let-plan>
         <tr>
+          <td class="col-id">{{ plan.id }}</td>
           <td>{{ plan.name }}</td>
           <td>{{ assetName(plan.assetId) }}</td>
           <td>{{ plan.frequencyDays }}</td>
           <td>
             <p-tag [value]="dueLabel(plan)" [severity]="dueSeverity(plan)"></p-tag>
           </td>
-          <td>{{ plan.lastRunAt ? (plan.lastRunAt | date: 'short') : '-' }}</td>
+          <td>{{ plan.lastRunAt ? (plan.lastRunAt | date: 'short') : '' }}</td>
           <td>
             @if ((plan.workOrderCount ?? 0) > 0) {
               <p-tag [value]="plan.workOrderCount" severity="info"></p-tag>
@@ -65,7 +68,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
-        <tr><td colspan="7" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+        <tr><td colspan="8" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
       </ng-template>
     </p-table>
   </p-card>

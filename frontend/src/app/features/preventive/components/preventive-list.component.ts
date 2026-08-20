@@ -65,7 +65,7 @@ export class PreventiveListComponent implements OnInit, OnDestroy {
 
   assetName(id?: number | null): string {
     const asset = this.assets().find((candidate) => candidate.id === id);
-    return asset ? `${asset.serialNumber || asset.id} - ${asset.name}` : '-';
+    return asset ? `${asset.serialNumber || asset.id} - ${asset.name}` : '';
   }
 
   dueSeverity(plan: PreventivePlan): DueSeverity {
@@ -87,7 +87,7 @@ export class PreventiveListComponent implements OnInit, OnDestroy {
 
   dueLabel(plan: PreventivePlan): string {
     if (!plan.nextDueDate) {
-      return '-';
+      return '';
     }
     const today = new Date();
     today.setHours(0, 0, 0, 0);

@@ -13,6 +13,7 @@ import { Asset, AssetService } from '../../assets/services/asset.service';
 import { AssetType, AssetTypeService } from '../../asset-types/services/asset-type.service';
 import { Location, LocationService } from '../services/location.service';
 import { SyncService } from '../../../core/services/sync.service';
+import { assetTypeVisual, AssetTypeVisual } from '../../../core/utils/asset-type-visual';
 
 type LocationTreeData =
   | { kind: 'location'; value: Location }
@@ -92,7 +93,21 @@ export class LocationListComponent implements OnInit, OnDestroy {
   }
 
   assetTypeName(typeId?: number | null): string {
-    return this.assetTypes().find((assetType) => assetType.id === typeId)?.name || '-';
+    return this.assetTypes().find((assetType) => assetType.id === typeId)?.name || '';
+  }
+
+  assetVisual(typeId?: number | null): AssetTypeVisual {
+    return assetTypeVisual(this.assetTypes(), typeId);
+  }
+
+  setAllExpanded(expanded: boolean): void {
+    const clone = (nodes: TreeNode<LocationTreeData>[]): TreeNode<LocationTreeData>[] =>
+      nodes.map((node) => ({
+        ...node,
+        expanded,
+        children: node.children?.length ? clone(node.children) : node.children
+      }));
+    this.treeNodes.set(clone(this.treeNodes()));
   }
 
   delete(id: number): void {
@@ -157,10 +172,12 @@ export class LocationListComponent implements OnInit, OnDestroy {
       }
       nodes.set(location.id, {
         key: `location-${location.id}`,
+        // label: `${location.id} ${location.code} ${location.name}`,
         label: `${location.id} ${location.code} ${location.name}`,
         data: { kind: 'location', value: location },
         children: [],
-        expanded: location.parentId == null,
+        //expanded: location.parentId == null,
+        expanded: true,
         draggable: !location.systemRoot,
         droppable: true
       });

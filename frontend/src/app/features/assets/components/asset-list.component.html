@@ -20,7 +20,7 @@
   </div>
 
   <p-card class="shadow-2">
-    <p-table #assetTable [value]="filteredAssets()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'name', 'description', 'typeId', 'serialNumber', 'criticality', 'status', 'locationId', 'hoursOfUse', 'purchaseDate']" [paginator]="true" [rows]="10"
+    <p-table #assetTable [value]="rows()" [loading]="loading()" size="small" [globalFilterFields]="['id', 'name', 'description', 'typeId', 'serialNumber', 'criticality', 'status', 'locationId', 'hoursOfUse', 'purchaseDate']" [paginator]="true" [rows]="10"
              [rowsPerPageOptions]="[5,10,20]">
       <ng-template pTemplate="caption">
         <div class="flex justify-content-between align-items-center">
@@ -30,41 +30,41 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ 'ASSETS.ID' | translate }}</th>
-          <th>{{ 'ASSETS.SERIAL_NUMBER' | translate }}</th>
-          <th>{{ 'ASSETS.NAME' | translate }}</th>
-          <th>{{ 'ASSETS.DESCRIPTION' | translate }}</th>
-          <th>{{ 'ASSETS.TYPE' | translate }}</th>      
-          <th>{{ 'ASSETS.CRITICALITY' | translate }}</th>
-          <th>{{ 'ASSETS.STATUS' | translate }}</th>
-          <th>{{ 'ASSETS.LOCATION' | translate }}</th>
-          <th>{{ 'ASSETS.HOURS_OF_USE' | translate }}</th>
+          <!-- <th pSortableColumn="id" class="col-id">{{ 'ASSETS.ID' | translate }}<p-sortIcon field="id" /></th> -->
+          <th pSortableColumn="serialNumber">{{ 'ASSETS.SERIAL_NUMBER' | translate }}<p-sortIcon field="serialNumber" /></th>
+          <th pSortableColumn="name">{{ 'ASSETS.NAME' | translate }}<p-sortIcon field="name" /></th>
+          <th pSortableColumn="description">{{ 'ASSETS.DESCRIPTION' | translate }}<p-sortIcon field="description" /></th>
+          <th pSortableColumn="typeName">{{ 'ASSETS.TYPE' | translate }}<p-sortIcon field="typeName" /></th>
+          <th pSortableColumn="criticality">{{ 'ASSETS.CRITICALITY' | translate }}<p-sortIcon field="criticality" /></th>
+          <th pSortableColumn="status">{{ 'ASSETS.STATUS' | translate }}<p-sortIcon field="status" /></th>
+          <th pSortableColumn="locationLabel">{{ 'ASSETS.LOCATION' | translate }}<p-sortIcon field="locationLabel" /></th>
+          <th pSortableColumn="hoursOfUse">{{ 'ASSETS.HOURS_OF_USE' | translate }}<p-sortIcon field="hoursOfUse" /></th>
           <th style="width: 8rem"></th>
         </tr>
         <tr>
-          <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="serialNumber" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
-          <th><app-dropdown-column-filter field="typeId" [options]="typeFilterOptions()" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="criticality" [options]="criticalityOptions" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
-          <th><app-dropdown-column-filter field="locationId" [options]="locationFilterOptions()" placeholder="" /></th>
+          <!-- <th><p-columnFilter type="text" field="id" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th> -->
+          <th class="col-w-8"><p-columnFilter type="text" field="serialNumber" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-14"><p-columnFilter type="text" field="name" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-16"><p-columnFilter type="text" field="description" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
+          <th class="col-w-10"><app-dropdown-column-filter field="typeId" [options]="typeFilterOptions()" placeholder="" /></th>
+          <th class="col-w-8"><app-dropdown-column-filter field="criticality" [options]="criticalityOptions" placeholder="" /></th>
+          <th class="col-w-10"><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
+          <th class="col-w-12"><app-dropdown-column-filter field="locationId" [options]="locationFilterOptions()" placeholder="" /></th>
           <th><p-columnFilter type="text" field="hoursOfUse" matchMode="contains" [showMenu]="false" [filterOn]="'input'" [placeholder]="'COMMON.FILTER' | translate" /></th>
           <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-asset>
         <tr>
-          <td>{{ asset.id }}</td>
-          <td>{{ asset.serialNumber || '-' }}</td>
+          <!-- <td class="col-id">{{ asset.id }}</td> -->
+          <td>{{ asset.serialNumber }}</td>
           <td>{{ asset.name }}</td>
-          <td>{{ asset.description || '-' }}</td>
-          <td><p-tag [value]="typeName(asset.typeId)" ></p-tag></td>
+          <td>{{ asset.description }}</td>
+          <td><p-tag [value]="asset.typeName" [severity]="typeSeverity(asset.typeId)"></p-tag></td>
           <td><p-tag [value]="asset.criticality" [severity]="getSeverity(asset.criticality)"></p-tag></td>
           <td>{{ asset.status }}</td>
-          <td>{{ locationName(asset.locationId) }}</td>
-          <td>{{ asset.hoursOfUse ?? '-' }}</td>
+          <td>{{ asset.locationLabel }}</td>
+          <td>{{ asset.hoursOfUse }}</td>
           <td>
             <div class="flex gap-2">
               <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/assets', asset.id]" aria-label="Edit">

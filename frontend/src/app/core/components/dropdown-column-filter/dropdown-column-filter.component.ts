@@ -19,6 +19,7 @@ import { FilterOption } from '../../models/filter-option';
           optionValue="value"
           [showClear]="true"
           [placeholder]="placeholder()"
+          [style]="width() ? { width: width() } : {}"
           styleClass="w-full"
           (onChange)="filter($event.value)"
         >
@@ -33,4 +34,5 @@ export class DropdownColumnFilterComponent {
   field = input.required<string>();
   options = input<FilterOption[]>([]);
   placeholder = input('');
+  width = input('');
 }

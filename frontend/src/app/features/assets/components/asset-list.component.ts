@@ -17,6 +17,12 @@ import { AssetType, AssetTypeService } from '../../asset-types/services/asset-ty
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { SyncService } from '../../../core/services/sync.service';
+import { assetTypeVisual, TagSeverity } from '../../../core/utils/asset-type-visual';
+
+interface AssetView extends Asset {
+  typeName: string;
+  locationLabel: string;
+}
 
 @Component({
   selector: 'app-asset-list',
@@ -43,6 +49,14 @@ export class AssetListComponent implements OnInit, OnDestroy {
   locations = signal<Location[]>([]);
   assetTypes = signal<AssetType[]>([]);
   selectedTypeId = signal<number | null>(null);
+
+  rows = computed<AssetView[]>(() =>
+    this.filteredAssets().map((asset) => ({
+      ...asset,
+      typeName: this.typeName(asset.typeId),
+      locationLabel: this.locationName(asset.locationId)
+    }))
+  );
 
   criticalityOptions = ASSET_CRITICALITY_OPTIONS;
   statusOptions = ASSET_STATUS_OPTIONS;
@@ -102,11 +116,15 @@ export class AssetListComponent implements OnInit, OnDestroy {
   }
 
   typeName(typeId?: number | null): string {
-    return this.assetTypes().find((assetType) => assetType.id === typeId)?.name || '-';
+    return this.assetTypes().find((assetType) => assetType.id === typeId)?.name || '';
+  }
+
+  typeSeverity(typeId?: number | null): TagSeverity {
+    return assetTypeVisual(this.assetTypes(), typeId).severity;
   }
 
   locationName(locationId?: number | null): string {
-    return this.locations().find((location) => location.id === locationId)?.name || '-';
+    return this.locations().find((location) => location.id === locationId)?.name || '';
   }
 
   delete(id: number): void {

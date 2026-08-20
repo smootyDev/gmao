@@ -15,6 +15,11 @@ import { InventoryItem, InventoryItemService } from '../services/inventory-item.
 import { Location, LocationService } from '../../locations/services/location.service';
 import { WorkOrder, WorkorderService } from '../../workorders/services/workorder.service';
 
+interface InventoryItemView extends InventoryItem {
+  locationLabel: string;
+  associated: boolean;
+}
+
 @Component({
   selector: 'app-inventory-list',
   standalone: true,
@@ -33,6 +38,14 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   usageLoading = signal(false);
 
   lowStockCount = computed(() => this.items().filter((item) => (item.currentStock ?? 0) <= (item.minimumStock ?? 0)).length);
+
+  rows = computed<InventoryItemView[]>(() =>
+    this.items().map((item) => ({
+      ...item,
+      locationLabel: this.locationName(item.locationId),
+      associated: this.isAssociated(item)
+    }))
+  );
 
   private usedItemIds = signal<Set<number>>(new Set());
   associatedCount = computed(() => this.items().filter((item) => item.id != null && this.usedItemIds().has(item.id)).length);
@@ -79,7 +92,7 @@ export class InventoryListComponent implements OnInit, OnDestroy {
   }
 
   locationName(id?: number | null): string {
-    return this.locations().find((location) => location.id === id)?.name || '-';
+    return this.locations().find((location) => location.id === id)?.name || '';
   }
 
   isLowStock(item: InventoryItem): boolean {

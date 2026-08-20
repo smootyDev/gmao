@@ -18,6 +18,7 @@ import { WorkorderService, WorkOrder, WorkOrderItem } from '../services/workorde
 import { Asset, AssetService } from '../../assets/services/asset.service';
 import { User, UserService } from '../../users/services/user.service';
 import { InventoryItem, InventoryItemService } from '../../inventory/services/inventory-item.service';
+import { PreventivePlan, PreventivePlanService } from '../../preventive/services/preventive-plan.service';
 
 interface WorkOrderItemRow extends WorkOrderItem {
   name?: string;
@@ -53,6 +54,8 @@ export class WorkorderFormComponent implements OnInit {
   assets = signal<Asset[]>([]);
   users = signal<User[]>([]);
   inventoryItems = signal<InventoryItem[]>([]);
+  preventivePlans = signal<PreventivePlan[]>([]);
+  preventivePlanId = signal<number | undefined>(undefined);
   itemRows = signal<WorkOrderItemRow[]>([]);
 
   statuses = WORKORDER_STATUS_OPTIONS;
@@ -66,6 +69,7 @@ export class WorkorderFormComponent implements OnInit {
     private assetService: AssetService,
     private userService: UserService,
     private inventoryItemService: InventoryItemService,
+    private preventivePlanService: PreventivePlanService,
     private messageService: MessageService
   ) {
     this.form = this.fb.group({
@@ -83,11 +87,13 @@ export class WorkorderFormComponent implements OnInit {
     forkJoin({
       assets: this.assetService.list(),
       users: this.userService.list(),
-      inventoryItems: this.inventoryItemService.list()
-    }).subscribe(({ assets, users, inventoryItems }) => {
+      inventoryItems: this.inventoryItemService.list(),
+      preventivePlans: this.preventivePlanService.list()
+    }).subscribe(({ assets, users, inventoryItems, preventivePlans }) => {
       this.assets.set(assets);
       this.users.set(users);
       this.inventoryItems.set(inventoryItems);
+      this.preventivePlans.set(preventivePlans);
     });
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
@@ -96,11 +102,17 @@ export class WorkorderFormComponent implements OnInit {
       this.workorderService.get(+idParam).subscribe({
         next: (data) => {
           this.form.patchValue(data);
+          this.preventivePlanId.set(data.preventivePlanId);
           this.itemRows.set(this.decorateItems(data.items ?? []));
         },
         error: () => this.router.navigate(['/workorders'])
       });
     }
+  }
+
+  preventivePlanName(): string {
+    const plan = this.preventivePlans().find((candidate) => candidate.id === this.preventivePlanId());
+    return plan ? `#${plan.id} - ${plan.name}` : '';
   }
 
   addItem(): void {

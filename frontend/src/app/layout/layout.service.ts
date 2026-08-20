@@ -1,12 +1,8 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
+import { $t } from '@primeuix/themes';
+import { buildThemePreset, loadPersistedLayoutConfig, THEME_STORAGE_KEY, type LayoutConfig } from './theme';
 
-export interface LayoutConfig {
-  preset: string;
-  primary: string;
-  surface: string | undefined | null;
-  darkTheme: boolean;
-  menuMode: string;
-}
+export type { LayoutConfig };
 
 interface LayoutState {
   staticMenuDesktopInactive: boolean;
@@ -20,9 +16,8 @@ interface LayoutState {
 @Injectable({ providedIn: 'root' })
 export class LayoutService {
   private readonly layoutKey = 'gmao_sidebar';
-  private readonly themeKey = 'gmao_theme';
 
-  layoutConfig = signal<LayoutConfig>(this.loadConfig());
+  layoutConfig = signal<LayoutConfig>(loadPersistedLayoutConfig());
   layoutState = signal<LayoutState>(this.loadState());
 
   theme = computed(() => (this.layoutConfig().darkTheme ? 'dark' : 'light'));
@@ -45,9 +40,12 @@ export class LayoutService {
     }
 
     effect(() => {
-      const { darkTheme } = this.layoutConfig();
-      localStorage.setItem(this.themeKey, darkTheme ? 'dark' : 'light');
+      const config = this.layoutConfig();
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(config));
       this.toggleDarkMode();
+      if (typeof document !== 'undefined') {
+        $t().preset(buildThemePreset(config)).use({ useDefaultOptions: true });
+      }
     });
 
     effect(() => {
@@ -95,21 +93,6 @@ export class LayoutService {
 
   isMobile(): boolean {
     return !this.isDesktop();
-  }
-
-  private loadConfig(): LayoutConfig {
-    let darkTheme = false;
-    const theme = typeof localStorage !== 'undefined' ? localStorage.getItem(this.themeKey) : null;
-    if (theme === 'dark') {
-      darkTheme = true;
-    }
-    return {
-      preset: 'Aura',
-      primary: 'blue',
-      surface: null,
-      darkTheme,
-      menuMode: 'static'
-    };
   }
 
   private loadState(): LayoutState {

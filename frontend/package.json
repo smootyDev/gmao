@@ -21,7 +21,7 @@
     "@angular/service-worker": "^21.2.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
-    "@primeuix/themes": "^3.0.0",
+    "@primeuix/themes": "^2.0.3",
     "localforage": "^1.10.0",
     "primeflex": "^4.0.0",
     "primeicons": "^8.0.0",
