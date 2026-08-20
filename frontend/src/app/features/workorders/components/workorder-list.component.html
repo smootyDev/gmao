@@ -38,10 +38,10 @@
           <th class="col-w-8"><app-dropdown-column-filter field="priority" [options]="priorityOptions" placeholder="" /></th>
           <th class="col-w-12"><app-dropdown-column-filter field="assetId" [options]="assetFilterOptions()" placeholder="" /></th>
           <th class="col-w-12"><app-dropdown-column-filter field="assignedTo" [options]="userFilterOptions()" placeholder="" /></th>
-          <th><app-text-column-filter field="estimatedHours" /></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th class="col-w-10"><app-text-column-filter field="estimatedHours" /></th>
+          <th class="col-w-8"></th>
+          <th class="col-w-6"></th>
+          <th class="col-w-6"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-wo>

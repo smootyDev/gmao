@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, type IsActiveMatchOptions } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RippleModule } from 'primeng/ripple';
 import { filter } from 'rxjs/operators';
@@ -28,7 +28,7 @@ import { LayoutService } from './layout.service';
         [ngClass]="item().class"
         [routerLink]="item().routerLink"
         routerLinkActive="active-route"
-        [routerLinkActiveOptions]="item().routerLinkActiveOptions || { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }"
+        [routerLinkActiveOptions]="item().routerLinkActiveOptions || routeMatchOptions"
         [fragment]="item().fragment"
         [queryParamsHandling]="item().queryParamsHandling"
         [preserveFragment]="item().preserveFragment"
@@ -65,6 +65,13 @@ export class LayoutMenuitemComponent {
 
   router = inject(Router);
 
+  readonly routeMatchOptions: IsActiveMatchOptions = {
+    paths: 'subset',
+    queryParams: 'ignored',
+    matrixParams: 'ignored',
+    fragment: 'ignored'
+  };
+
   item = input<any>(null);
 
   root = input<boolean>(false);
@@ -88,11 +95,9 @@ export class LayoutMenuitemComponent {
   });
 
   isActive = computed(() => {
+    if (!this.item()?.path) return false;
     const activePath = this.layoutService.layoutState().activePath;
-    if (this.item()?.path) {
-      return activePath?.startsWith(this.fullPath() ?? '') ?? false;
-    }
-    return false;
+    return activePath?.startsWith(this.fullPath() ?? '') ?? false;
   });
 
   initialized = signal<boolean>(false);
@@ -121,21 +126,14 @@ export class LayoutMenuitemComponent {
     const item = this.item();
     if (!item?.routerLink) return;
 
-    const isRouteActive = this.router.isActive(item.routerLink[0], {
-      paths: 'exact',
-      queryParams: 'ignored',
-      matrixParams: 'ignored',
-      fragment: 'ignored'
-    });
+    const isRouteActive = this.router.isActive(item.routerLink[0], this.routeMatchOptions);
 
     if (isRouteActive) {
       const parentPath = this.parentPath();
-      if (parentPath) {
-        this.layoutService.layoutState.update((val) => ({
-          ...val,
-          activePath: parentPath
-        }));
-      }
+      this.layoutService.layoutState.update((val) => ({
+        ...val,
+        activePath: parentPath || this.fullPath()
+      }));
     }
   }
 

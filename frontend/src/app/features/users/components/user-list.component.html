@@ -29,7 +29,7 @@
         </tr>
         <tr>
           <!-- <th><app-text-column-filter field="id" /></th> -->
-          <th class="col-w-10"><app-text-column-filter field="employeeCode" /></th>
+          <th class="col-w-12"><app-text-column-filter field="employeeCode" /></th>
           <th class="col-w-10"><app-text-column-filter field="username" /></th>
           <th class="col-w-10"><app-text-column-filter field="firstName" /></th>
           <th class="col-w-10"><app-text-column-filter field="lastName" /></th>
@@ -37,7 +37,7 @@
           <th class="col-w-8"><app-text-column-filter field="phone" /></th>
           <th class="col-w-10"><app-text-column-filter field="department" /></th>
           <th class="col-w-8"><app-dropdown-column-filter field="role" [options]="roleOptions" placeholder="" /></th>
-          <th><p-columnFilter type="boolean" field="active" matchMode="equals" [showMenu]="false" /></th>
+          <th class="col-w-6"><p-columnFilter type="boolean" field="active" matchMode="equals" [showMenu]="false" /></th>
           <th></th>
         </tr>
       </ng-template>

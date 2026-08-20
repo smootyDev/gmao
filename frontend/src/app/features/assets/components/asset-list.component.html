@@ -43,15 +43,15 @@
         </tr>
         <tr>
           <!-- <th><app-text-column-filter field="id" /></th> -->
-          <th class="col-w-8"><app-text-column-filter field="serialNumber" /></th>
+          <th class="col-w-16"><app-text-column-filter field="serialNumber" /></th>
           <th class="col-w-14"><app-text-column-filter field="name" /></th>
           <th class="col-w-16"><app-text-column-filter field="description" /></th>
           <th class="col-w-10"><app-dropdown-column-filter field="typeId" [options]="typeFilterOptions()" placeholder="" /></th>
           <th class="col-w-8"><app-dropdown-column-filter field="criticality" [options]="criticalityOptions" placeholder="" /></th>
           <th class="col-w-10"><app-dropdown-column-filter field="status" [options]="statusOptions" placeholder="" /></th>
           <th class="col-w-12"><app-dropdown-column-filter field="locationId" [options]="locationFilterOptions()" placeholder="" /></th>
-          <th><app-text-column-filter field="hoursOfUse" /></th>
-          <th></th>
+          <th class="col-w-10"><app-text-column-filter field="hoursOfUse" /></th>
+          <th class="col-w-6"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-asset>
