@@ -8,12 +8,12 @@ const adminManager = [roleGuard(['ADMIN', 'MANAGER'])];
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/auth/components/login.component').then(m => m.LoginComponent) },
   { path: 'landscape', loadComponent: () => import('./features/landscape/components/landscape.component').then(m => m.LandscapeComponent) },
+  { path: '', redirectTo: 'landscape', pathMatch: 'full' },
   {
     path: '',
     loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadComponent: () => import('./features/dashboard/components/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'workorders', loadComponent: () => import('./features/workorders/components/workorder-list.component').then(m => m.WorkorderListComponent) },
       { path: 'workorders/new', loadComponent: () => import('./features/workorders/components/workorder-form.component').then(m => m.WorkorderFormComponent), canActivate: adminManager },

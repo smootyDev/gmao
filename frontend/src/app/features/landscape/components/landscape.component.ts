@@ -37,6 +37,11 @@ export class LandscapeComponent {
 
   readonly loggedIn = computed(() => this.auth.currentUser() !== null);
 
+  get logo(): string {
+    const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('app-dark');
+    return isDark ? 'logo-white.png' : 'logo.png';
+  }
+
   goToEntry(): void {
     this.router.navigate([this.loggedIn() ? '/dashboard' : '/login']);
   }

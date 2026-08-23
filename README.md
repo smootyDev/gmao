@@ -1,39 +1,46 @@
 # GMAO CMMS
 
-Sistema de Gestión de Mantenimiento (GMAO/CMMS) moderno, modular y listo para producción.
+Sistema de Gestión de Mantenimiento (GMAO/CMMS) moderno, modular y dockerizado.
 
 ## Stack tecnológico
 
-- **Backend:** Spring Boot 4.1 (Java 21) + PostgreSQL + JWT + MapStruct
+- **Backend:** Spring Boot 4.1 (Java 21) + PostgreSQL 15 + JWT + MapStruct
 - **Frontend:** Angular 21 + PrimeNG + PWA (service worker)
-- **Infraestructura:** Docker + docker-compose
+- **Infraestructura:** Docker + Docker Compose
 - **Tests:** JUnit/Mockito (backend) + Vitest (frontend)
 
-## Características MVP
-
-Estado actual de la implementación:
+## Características
 
 | Funcionalidad | Estado |
 |---|---|
-| Autenticación JWT con roles ADMIN, MANAGER y TECH | ✅ Implementado |
-| Gestión de órdenes de trabajo (CRUD completo) | ✅ Implementado |
-| Gestión de activos/equipos (CRUD completo) | ✅ Implementado |
-| Gestión de tipos de activo (CRUD) | ✅ Implementado |
-| Gestión de ubicaciones (CRUD) | ✅ Implementado |
-| Gestión de usuarios (CRUD) | ✅ Implementado |
-| Dashboard con 6 KPIs visuales | ✅ Implementado |
-| Interfaz responsive con modo claro/oscuro | ✅ Implementado |
-| Soporte multi-idioma (español/inglés) | ✅ Implementado |
-| PWA instalable (manifest + service worker) | ✅ Implementado |
-| Sincronización offline | ✅ Implementado |
-| Dockerizado para despliegue sencillo | ✅ Implementado |
+| Autenticación JWT con roles ADMIN, MANAGER y TECH | ✅ |
+| Órdenes de trabajo (CRUD, artículos asociados, trazabilidad de creador) | ✅ |
+| Activos/equipos y tipos de activo (CRUD) | ✅ |
+| Ubicaciones jerárquicas (CRUD, reordenación por arrastre) | ✅ |
+| Usuarios y roles (CRUD) | ✅ |
+| Inventario de piezas/repuestos, vinculado a órdenes de trabajo | ✅ |
+| Mantenimiento preventivo (planes con frecuencia y generación automática de OTs) | ✅ |
+| Dashboard con KPIs, gráficos (estado, tendencia mensual) y alertas | ✅ |
+| Asistente de IA (chat contextual, sugerencia/priorización de OTs, resúmenes) | ✅ |
+| Configuración de proveedor de IA desde la interfaz (multi-proveedor) | ✅ |
+| Auditoría de operaciones (registro, filtros, retención configurable) | ✅ |
+| Interfaz responsive con modo claro/oscuro y varios presets de color | ✅ |
+| Soporte multi-idioma (español/inglés) | ✅ |
+| PWA instalable (manifest + service worker) | ✅ |
+| Sincronización offline (caché + cola de cambios) | ✅ |
+| Dockerizado para despliegue desde cero con un solo comando | ✅ |
 
 ## Requisitos
 
-- Java 21
+Para levantar la aplicación completa con Docker (la vía recomendada) solo necesitas:
+
+- **Docker** y **Docker Compose** (v2, el plugin `docker compose`)
+
+Para desarrollo local sin Docker, además:
+
+- Java 21 y Maven Wrapper (incluido, `./mvnw`)
 - Node.js 20+
-- Docker y docker-compose
-- PostgreSQL 15 (si no usas Docker)
+- Una instancia de PostgreSQL 15 accesible
 
 ## Estructura del proyecto
 
@@ -41,62 +48,115 @@ Estado actual de la implementación:
 gmao/
 ├── backend/                    # Spring Boot 4.1
 │   └── src/main/java/com/gmao/backend/
-│       ├── auth/               # Autenticación, usuarios y roles
-│       ├── workorders/         # Órdenes de trabajo
-│       ├── assets/             # Activos/equipos
-│       ├── assettypes/         # Tipos de activo
-│       ├── locations/          # Ubicaciones
-│       ├── storage/            # Almacenamiento de archivos
-│       └── config/             # Configuración de seguridad
+│       ├── auth/                # Autenticación, usuarios y roles
+│       ├── workorders/          # Órdenes de trabajo
+│       ├── assets/              # Activos/equipos
+│       ├── assettypes/          # Tipos de activo
+│       ├── locations/           # Ubicaciones
+│       ├── inventory/           # Inventario de piezas/repuestos
+│       ├── preventive/          # Planes de mantenimiento preventivo
+│       ├── ai/                  # Asistente de IA y configuración de proveedor
+│       ├── audit/                # Registro de auditoría
+│       ├── storage/              # Almacenamiento de archivos
+│       ├── security/             # JWT, filtros y matriz de acceso
+│       └── config/               # Configuración de seguridad
 ├── frontend/                   # Angular 21 + PrimeNG
 │   └── src/app/
-│       ├── core/               # Guards, interceptors, pipes, servicios
-│       ├── features/           # login, dashboard, workorders, assets, asset-types, locations, users
-│       └── layout/             # Layout (Verona): topbar, menu, sidebar, footer
-├── scripts/                    # Scripts de inicialización y migraciones SQL
+│       ├── core/                # Guards, interceptors, pipes, servicios
+│       ├── features/             # dashboard, workorders, assets, asset-types,
+│       │                          # locations, inventory, preventive, users, ai, audit
+│       └── layout/               # Topbar, menú, sidebar
+├── scripts/
+│   ├── init-db.sql              # Esquema base + datos de ejemplo (primer arranque)
+│   └── migrations/              # Migraciones incrementales (001…017)
 ├── docker-compose.yml
-├── .env
+├── .env.example
 └── README.md
 ```
 
-## Levantar con Docker
+## Puesta en marcha con Docker (desde cero)
 
-1. Copia y configura las variables de entorno:
+Este es el camino verificado para que alguien que se descarga el repositorio por primera vez levante la aplicación completa.
+
+**1. Variables de entorno**
 
 ```bash
 cp .env.example .env
-# Edita .env y genera un JWT_SECRET seguro
 ```
 
-2. Levanta los servicios:
+El valor incluido ya funciona para probar en local. Si vas a desplegar en un entorno real, genera tu propio secreto antes:
 
 ```bash
-docker-compose up --build
+openssl rand -base64 32
+```
+y sustituye `JWT_SECRET` en `.env`.
+
+**2. Levantar todo**
+
+```bash
+docker compose up --build -d
 ```
 
-3. Accede a la aplicación:
+Esto construye las imágenes de backend y frontend, arranca PostgreSQL, ejecuta las migraciones (`db-migrate`) y finalmente el backend y el frontend, en ese orden (el `depends_on` de cada servicio se encarga de la secuencia).
+
+**3. Comprobar que la migración de base de datos terminó bien**
+
+Es el paso que más merece la pena verificar, porque `db-migrate` es un contenedor que se ejecuta una vez y termina — si algo falla ahí, el backend no arrancará (o arrancará contra un esquema incompleto):
+
+```bash
+docker compose logs db-migrate
+```
+
+Debe verse `DO` (o `CREATE TABLE` / `NOTICE: ... already exists, skipping`) para cada uno de los 17 ficheros de `scripts/migrations/`, sin ninguna línea `ERROR`. Si el contenedor `db-migrate` no aparece en `docker compose ps` como `Exited (0)`, revisa el punto de **Solución de problemas** más abajo.
+
+**4. Acceder**
 
 - Frontend: http://localhost:4200
 - Backend API: http://localhost:8080
-- PostgreSQL: localhost:5432
+- PostgreSQL: localhost:5432 (usuario `gmao`, contraseña `gmao_pass`, base `gmao`)
 
-## Levantar en local (desarrollo)
+**5. Iniciar sesión**
+
+La base de datos se siembra con tres usuarios de prueba (todos con contraseña `admin`):
+
+| Usuario | Contraseña | Rol |
+|---|---|---|
+| `admin` | `admin` | ADMIN |
+| `manager` | `admin` | MANAGER |
+| `tech` | `admin` | TECH |
+
+### Solución de problemas
+
+- **`db-migrate` no aparece como `Exited (0)` o el backend no arranca con un error de Hibernate del tipo `Schema validation: missing table [...]`:** las migraciones no llegaron a aplicarse. Vuelve a lanzarlas manualmente:
+  ```bash
+  docker compose up db-migrate
+  docker compose logs db-migrate
+  ```
+  Si sigue sin funcionar, puedes aplicarlas a mano, en orden, directamente contra el contenedor de base de datos:
+  ```bash
+  for f in scripts/migrations/*.sql; do
+    docker compose exec -T db psql -U gmao -d gmao -v ON_ERROR_STOP=1 < "$f"
+  done
+  ```
+  Son idempotentes (cada una comprueba `schema_migrations` antes de aplicarse), así que ejecutarlas de nuevo no duplica datos.
+- **Puerto ya en uso (5432, 8080 o 4200):** para prevenir puertos ocupados, edita el mapeo de puertos en `docker-compose.yml` (por ejemplo `"15432:5432"`) antes de levantar.
+- **Quiero partir de una base de datos limpia:** `docker compose down -v` elimina también el volumen de PostgreSQL (se pierden los datos).
+
+## Desarrollo local (sin Docker)
+
+### Base de datos
+
+Necesitas un PostgreSQL 15 accesible y ejecutar `scripts/init-db.sql` seguido de todos los ficheros de `scripts/migrations/` en orden (igual que hace el contenedor `db-migrate`).
 
 ### Backend
 
 ```bash
 cd backend
-./mvnw clean package
-./mvnw spring-boot:run
-```
-
-Variables de entorno necesarias:
-
-```bash
 export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/gmao
 export SPRING_DATASOURCE_USERNAME=gmao
 export SPRING_DATASOURCE_PASSWORD=gmao_pass
 export JWT_SECRET=$(openssl rand -base64 32)
+./mvnw spring-boot:run
 ```
 
 ### Frontend
@@ -107,47 +167,25 @@ npm install --legacy-peer-deps
 npm start
 ```
 
-La aplicación estará disponible en http://localhost:4200
+La aplicación estará disponible en http://localhost:4200. En este modo el frontend llama directamente a `http://localhost:8080` (no hay proxy nginx); en Docker, en cambio, nginx redirige `/api` al contenedor del backend.
 
 ## Endpoints principales
 
-- `POST /api/auth/login` - Login
-- `GET /api/workorders` - Listar órdenes
-- `POST /api/workorders` - Crear orden
-- `GET /api/workorders/{id}` - Ver orden
-- `PUT /api/workorders/{id}` - Actualizar orden
-- `DELETE /api/workorders/{id}` - Eliminar orden
-- `GET /api/assets` - Listar activos
-- `POST /api/assets` - Crear activo
-- `GET /api/assets/{id}` - Ver activo
-- `PUT /api/assets/{id}` - Actualizar activo
-- `DELETE /api/assets/{id}` - Eliminar activo
-- `GET /api/asset-types` - Listar tipos de activo
-- `POST /api/asset-types` - Crear tipo de activo
-- `GET /api/asset-types/{id}` - Ver tipo de activo
-- `PUT /api/asset-types/{id}` - Actualizar tipo de activo
-- `DELETE /api/asset-types/{id}` - Eliminar tipo de activo
-- `GET /api/users` - Listar usuarios
-- `POST /api/users` - Crear usuario
-- `GET /api/users/{id}` - Ver usuario
-- `PUT /api/users/{id}` - Actualizar usuario
-- `DELETE /api/users/{id}` - Eliminar usuario
-- `GET /api/locations` - Listar localizaciones
-- `POST /api/locations` - Crear localización
-- `GET /api/locations/{id}` - Ver localización
-- `PUT /api/locations/{id}` - Actualizar localización
-- `DELETE /api/locations/{id}` - Eliminar localización
+| Recurso | Ruta base |
+|---|---|
+| Autenticación | `POST /api/auth/login` |
+| Órdenes de trabajo | `/api/workorders` |
+| Activos | `/api/assets` |
+| Tipos de activo | `/api/asset-types` |
+| Ubicaciones | `/api/locations` |
+| Usuarios | `/api/users` |
+| Inventario | `/api/inventory-items` |
+| Planes preventivos | `/api/preventive-plans` (+ `POST /{id}/run` para generar la OT) |
+| Asistente de IA | `/api/ai/assistant/chat`, `/api/ai/workorders/suggest`, `/api/ai/workorders/prioritize`, `/api/ai/summarize`, `/api/ai/health` |
+| Configuración de IA | `/api/ai/settings` (solo ADMIN) |
+| Auditoría | `GET /api/audit-logs` (solo ADMIN) |
 
-## Sincronización offline
-
-La aplicación funciona en modo lectura/escritura sin conexión:
-
-- **Caché local** (`localforage`): los listados (`GET`) se sirven desde caché cuando no hay red.
-- **Cola outbox**: los cambios (`POST`, `PUT`, `DELETE`) se encolan localmente y se sincronizan cuando la conexión se restablece (automática o con el botón *Sincronizar* del banner).
-- **Idempotencia**: cada operación envía un `clientId`; si un `create` llega con un `clientId` ya existente, el backend devuelve el registro existente en lugar de duplicarlo.
-- El banner de estado informa de la conectividad y del número de operaciones pendientes de sincronizar.
-
-La sincronización cubre los cinco módulos principales: `workorders`, `assets`, `asset-types`, `locations` y `users`.
+Todos (salvo login) siguen el patrón REST estándar: `GET` (lista y por id), `POST`, `PUT /{id}`, `DELETE /{id}`.
 
 ## Ejemplo de login con curl
 
@@ -160,9 +198,35 @@ curl http://localhost:8080/api/workorders \
   -H "Authorization: Bearer $TOKEN"
 ```
 
+## Sincronización offline
+
+La aplicación funciona en modo lectura/escritura sin conexión:
+
+- **Caché local** (`localforage`): los listados (`GET`) se sirven desde caché cuando no hay red.
+- **Cola outbox**: los cambios (`POST`, `PUT`, `DELETE`) se encolan localmente y se sincronizan cuando la conexión se restablece (automática o con el botón *Sincronizar* del banner).
+- **Idempotencia**: cada operación envía un `clientId`; si un `create` llega con un `clientId` ya existente, el backend devuelve el registro existente en lugar de duplicarlo.
+- El banner de estado informa de la conectividad y del número de operaciones pendientes de sincronizar.
+
+La sincronización cubre siete módulos: `workorders`, `assets`, `asset-types`, `locations`, `users`, `inventory-items` y `preventive-plans`.
+
+## Asistente de IA
+
+El módulo de IA viene **activado por defecto con un proveedor `mock`** (no necesita clave de API ni configuración adicional para probarlo). Un ADMIN puede, desde `Administración → Configuración IA` en la interfaz (o vía `PUT /api/ai/settings`), activar y configurar un proveedor real (compatible OpenAI, Anthropic, etc.), guardando la clave de API cifrada en base de datos.
+
+Variables de entorno relacionadas (todas opcionales, ver `backend/src/main/resources/application.yml`):
+
+```bash
+AI_ENABLED=true          # el módulo también se puede activar/desactivar desde la interfaz
+AI_PROVIDER=mock         # mock | openai | anthropic | opencode
+AI_API_KEY=
+AI_BASE_URL=
+AI_MODEL=
+AI_SETTINGS_ENCRYPTION_KEY=   # clave con la que se cifra la API key guardada en BD
+```
+
 ## Seguridad y roles (RBAC)
 
-La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@PreAuthorize` en los controllers y comprobaciones de negocio en los servicios, y **frontend (UX)** ocultando acciones según el rol.
+La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@PreAuthorize` en los controllers y reglas de URL en `SecurityConfig`, y **frontend (UX)** ocultando rutas y acciones según el rol.
 
 | Recurso | GET | POST | PUT | DELETE |
 |---|---|---|---|---|
@@ -173,7 +237,9 @@ La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@Pre
 | Órdenes de trabajo | todos (TECH: solo asignadas) | ADM+MAN | ADM+MAN; TECH: solo asignada + transiciones | ADM+MAN |
 | Inventario | todos | ADM+MAN | ADM+MAN | ADM+MAN |
 | Planes preventivos (+ run) | todos | ADM+MAN | ADM+MAN | ADM+MAN |
-| Auditoría y configuración IA | ADMIN | — | — | — |
+| Asistente de IA (chat, sugerencias) | todos los autenticados | todos los autenticados | — | — |
+| Configuración de IA | ADMIN | — | ADMIN | — |
+| Auditoría | ADMIN | — | — | — |
 
 Reglas de negocio clave:
 - **TECH** solo ve y modifica órdenes asignadas a él; puede transicionar `ASSIGNED → IN_PROGRESS → ON_HOLD → CLOSED` y registrar horas reales, pero no cambiar prioridad, asignación, ni reabrir (`OPEN`).
@@ -189,7 +255,7 @@ cd backend
 ./mvnw test
 ```
 
-Cobertura actual: `WorkOrderServiceTest`, `AssetTypeServiceTest`, `LocationServiceTest` y prueba de contexto de la aplicación.
+Cobertura: servicios de órdenes de trabajo, activos, tipos de activo, ubicaciones, inventario, preventivo, IA (chat, adaptadores de proveedor, configuración) y auditoría, además de una prueba de integración de la matriz de acceso por rol.
 
 ### Frontend
 
@@ -198,19 +264,14 @@ cd frontend
 npm test
 ```
 
-Cobertura actual: specs de `app`, `user-list`, `workorder-list`, `layout-configurator` y `layout.service`.
+Cobertura: componentes de listado y formulario de todos los módulos, servicios core (autenticación, sincronización, layout/tema) e interceptores HTTP.
 
 ## Próximas funcionalidades
-
-### Post-MVP
 
 - Checklists dinámicos en órdenes de trabajo
 - Firma digital de técnicos
 - Notificaciones push
-- Métricas avanzadas y reportes
-- Almacenamiento S3 para evidencias
-- Módulo de inventario completo
-- Mantenimiento preventivo programado
+- Almacenamiento S3 para evidencias adjuntas
 
 ## Licencia
 

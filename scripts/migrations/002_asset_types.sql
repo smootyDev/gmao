@@ -35,7 +35,7 @@ BEGIN
             SELECT 1 FROM information_schema.columns
             WHERE table_name = 'assets' AND column_name = 'type'
         ) THEN
-            EXECUTE $$
+            EXECUTE $upd$
                 UPDATE assets a
                 SET type_id = t.id
                 FROM asset_types t
@@ -45,15 +45,19 @@ BEGIN
                     WHEN a.type IS NULL OR trim(a.type) = '' THEN 'OTHER'
                     ELSE 'EQUIPMENT'
                   END
-            $$;
+            $upd$;
         ELSE
             UPDATE assets
             SET type_id = (SELECT id FROM asset_types WHERE code = 'OTHER')
             WHERE type_id IS NULL;
         END IF;
 
-        ALTER TABLE assets
-            ADD CONSTRAINT fk_assets_type FOREIGN KEY (type_id) REFERENCES asset_types(id);
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint WHERE conname = 'fk_assets_type'
+        ) THEN
+            ALTER TABLE assets
+                ADD CONSTRAINT fk_assets_type FOREIGN KEY (type_id) REFERENCES asset_types(id);
+        END IF;
 
         INSERT INTO schema_migrations (version) VALUES ('002_asset_types');
     END IF;
