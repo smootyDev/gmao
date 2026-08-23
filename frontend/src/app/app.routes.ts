@@ -7,6 +7,7 @@ const adminManager = [roleGuard(['ADMIN', 'MANAGER'])];
 
 export const routes: Routes = [
   { path: 'login', loadComponent: () => import('./features/auth/components/login.component').then(m => m.LoginComponent) },
+  { path: 'landscape', loadComponent: () => import('./features/landscape/components/landscape.component').then(m => m.LandscapeComponent) },
   {
     path: '',
     loadComponent: () => import('./layout/layout.component').then(m => m.LayoutComponent),

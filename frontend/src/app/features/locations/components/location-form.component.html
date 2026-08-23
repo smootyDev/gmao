@@ -1,27 +1,29 @@
-<div class="fadein mx-auto">
+<div class="fadein mx-auto max-w-5xl">
   <h1 class="text-3xl font-bold mb-4">
     {{ (isEdit() ? 'LOCATIONS.EDIT' : 'LOCATIONS.NEW') | translate }}
   </h1>
 
-  <p-card class="shadow-2">
-    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+  <p-card class="shadow-2 surface-card p-4 border-round-xl">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-4">
       @if (isEdit()) {
-        <div class="formgrid grid">
-          <div class="field col-12 md:col-3">
+        <div class="grid formgrid">
+          <div class="field col-12 md:col-2">
             <label for="id">{{ 'COMMON.ID' | translate }}</label>
-            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+            <input pInputText id="id" [value]="id()" disabled class="w-full font-semibold" />
           </div>
         </div>
       }
 
-      <div class="formgrid grid">
+      <div class="grid formgrid">
         <div class="field col-12 md:col-4">
           <label for="code">{{ 'LOCATIONS.CODE' | translate }}</label>
           <input pInputText id="code" formControlName="code" class="w-full" />
         </div>
         <div class="field col-12 md:col-8">
-          <label for="name">{{ 'LOCATIONS.NAME' | translate }}</label>
-          <input pInputText id="name" formControlName="name" class="w-full" />
+          <div class="field-box field-box-primary p-3">
+            <label for="name" class="field-box-label">{{ 'LOCATIONS.NAME' | translate }}</label>
+            <input pInputText id="name" formControlName="name" class="w-full" />
+          </div>
         </div>
       </div>
 
@@ -30,8 +32,8 @@
         <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
       </div>
 
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-8">
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-8 mb-0">
           <label for="parentId">{{ 'LOCATIONS.PARENT' | translate }}</label>
           <p-select
             inputId="parentId"
@@ -51,7 +53,7 @@
             </ng-template>
           </p-select>
         </div>
-        <div class="field col-12 md:col-4 flex align-items-center gap-2 pt-4">
+        <div class="field col-12 md:col-4 mb-0 flex align-items-end gap-2 pb-3">
           <p-checkbox inputId="active" formControlName="active" [binary]="true"></p-checkbox>
           <label for="active">{{ 'LOCATIONS.ACTIVE' | translate }}</label>
         </div>

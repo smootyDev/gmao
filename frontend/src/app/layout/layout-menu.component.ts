@@ -29,6 +29,7 @@ export class LayoutMenuComponent {
       {
         label: 'MENU.SECTION',
         items: [
+          { label: 'MENU.LANDSCAPE', icon: 'pi pi-fw pi-compass', path: '/landscape', routerLink: ['/landscape'] },
           { label: 'MENU.DASHBOARD', icon: 'pi pi-fw pi-home', path: '/dashboard', routerLink: ['/dashboard'] },
           { label: 'MENU.WORKORDERS', icon: 'pi pi-fw pi-wrench', path: '/workorders', routerLink: ['/workorders'] },
           { label: 'MENU.ASSETS', icon: 'pi pi-fw pi-box', path: '/assets', routerLink: ['/assets'] },

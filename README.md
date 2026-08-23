@@ -109,14 +109,6 @@ npm start
 
 La aplicación estará disponible en http://localhost:4200
 
-## Credenciales por defecto
-
-| Usuario  | Contraseña | Rol     |
-|----------|------------|---------|
-| admin    | admin      | ADMIN   |
-| manager  | admin      | MANAGER |
-| tech     | admin      | TECH    |
-
 ## Endpoints principales
 
 - `POST /api/auth/login` - Login

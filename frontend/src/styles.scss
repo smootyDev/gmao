@@ -78,3 +78,40 @@ a {
   width: 20rem !important;
   min-width: 20rem;
 }
+
+/* Patrón de formularios modernos */
+.field-box {
+  background: var(--surface-100);
+  border: 1px solid var(--surface-200);
+  border-radius: 0.75rem;
+}
+
+.field-box-primary {
+  border-left: 4px solid var(--primary-color);
+}
+
+.field-box-teal {
+  border-left: 4px solid #0d9488;
+
+  .field-box-label {
+    color: #0d9488;
+  }
+}
+
+.field-box-label {
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.hours-box {
+  background: var(--surface-50);
+  border: 1px dashed var(--surface-300);
+  border-radius: 0.75rem;
+}
+
+.hours-label {
+  font-weight: 600;
+  color: var(--text-color-secondary);
+}

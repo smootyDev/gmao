@@ -1,25 +1,26 @@
-<div class="fadein mx-auto">
+<div class="fadein mx-auto max-w-5xl">
   <h1 class="text-3xl font-bold mb-4">
     {{ (isEdit() ? 'ASSETS.EDIT' : 'ASSETS.NEW') | translate }}
   </h1>
 
-  <p-card class="shadow-2">
-    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
-      @if (isEdit()) {
-        <div class="formgrid grid">
-          <div class="field col-12 md:col-3">
+  <p-card class="shadow-2 surface-card p-4 border-round-xl">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-4">
+      <!-- ID + Nombre -->
+      <div class="grid formgrid">
+        @if (isEdit()) {
+          <div class="field col-12 md:col-2">
             <label for="id">{{ 'COMMON.ID' | translate }}</label>
-            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+            <input pInputText id="id" [value]="id()" disabled class="w-full font-semibold" />
           </div>
+        }
+        <div class="field" [class]="isEdit() ? 'col-12 md:col-10' : 'col-12'">
+          <label for="name">{{ 'ASSETS.NAME' | translate }}</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
         </div>
-      }
-
-      <div class="field">
-        <label for="name">{{ 'ASSETS.NAME' | translate }}</label>
-        <input pInputText id="name" formControlName="name" class="w-full" />
       </div>
 
-      <div class="formgrid grid">
+      <!-- Tipo + Nº serie -->
+      <div class="grid formgrid">
         <div class="field col-12 md:col-6">
           <label for="typeId">{{ 'ASSETS.TYPE' | translate }}</label>
           <p-select inputId="typeId" formControlName="typeId" [options]="assetTypes()" optionLabel="name" optionValue="id" [showClear]="true" [placeholder]="'-'" styleClass="w-full">
@@ -34,25 +35,45 @@
         </div>
       </div>
 
-      <div class="field">
-        <label for="description">{{ 'ASSETS.DESCRIPTION' | translate }}</label>
-        <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
-      </div>
-
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
-          <label for="criticality">{{ 'ASSETS.CRITICALITY' | translate }}</label>
-          <p-select inputId="criticality" formControlName="criticality" [options]="criticalities" optionLabel="label" optionValue="value" styleClass="w-full"></p-select>
+      <!-- Descripción | Criticidad + Estado -->
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-7 mb-3">
+          <label for="description">{{ 'ASSETS.DESCRIPTION' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="5" class="w-full" style="height: 100%; min-height: 9.5rem"></textarea>
         </div>
 
-        <div class="field col-12 md:col-6">
-          <label for="status">{{ 'ASSETS.STATUS' | translate }}</label>
-          <p-select inputId="status" formControlName="status" [options]="statuses" optionLabel="label" optionValue="value" styleClass="w-full"></p-select>
+        <div class="field col-12 md:col-5 mb-0">
+          <div class="grid formgrid">
+            <div class="field col-12 mb-3">
+              <label for="criticality">{{ 'ASSETS.CRITICALITY' | translate }}</label>
+              <p-select inputId="criticality" formControlName="criticality" [options]="criticalities" optionLabel="label" optionValue="value" styleClass="w-full">
+                <ng-template let-c pTemplate="item">
+                  <p-tag [value]="c.label" [severity]="criticalitySeverity(c.value)"></p-tag>
+                </ng-template>
+                <ng-template let-c pTemplate="selectedItem">
+                  <p-tag [value]="c?.label ?? ''" [severity]="criticalitySeverity(c?.value)"></p-tag>
+                </ng-template>
+              </p-select>
+            </div>
+
+            <div class="field col-12 mb-0">
+              <label for="status">{{ 'ASSETS.STATUS' | translate }}</label>
+              <p-select inputId="status" formControlName="status" [options]="statuses" optionLabel="label" optionValue="value" styleClass="w-full">
+                <ng-template let-s pTemplate="item">
+                  <p-tag [value]="s.label" [severity]="statusSeverity(s.value)"></p-tag>
+                </ng-template>
+                <ng-template let-s pTemplate="selectedItem">
+                  <p-tag [value]="s?.label ?? ''" [severity]="statusSeverity(s?.value)"></p-tag>
+                </ng-template>
+              </p-select>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
+      <!-- Ubicación + Datos -->
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-6 mb-0">
           <label for="locationId">{{ 'ASSETS.LOCATION' | translate }}</label>
           <p-select inputId="locationId" formControlName="locationId" [options]="locations()" optionLabel="name" optionValue="id" [showClear]="true" [placeholder]="'-'" styleClass="w-full">
             <ng-template let-location pTemplate="item">{{ location.code }} - {{ location.name }}</ng-template>
@@ -60,14 +81,19 @@
           </p-select>
         </div>
 
-        <div class="field col-12 md:col-3">
-          <label for="hoursOfUse">{{ 'ASSETS.HOURS_OF_USE' | translate }}</label>
-          <p-inputnumber inputId="hoursOfUse" formControlName="hoursOfUse" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
-        </div>
-
-        <div class="field col-12 md:col-3">
-          <label for="purchaseDate">{{ 'ASSETS.PURCHASE_DATE' | translate }}</label>
-          <p-datepicker inputId="purchaseDate" formControlName="purchaseDate" dateFormat="yy-mm-dd" [showIcon]="true" styleClass="w-full" inputStyleClass="w-full"></p-datepicker>
+        <div class="field col-12 md:col-6 mb-0">
+          <div class="hours-box">
+            <div class="grid formgrid">
+              <div class="field col-12 md:col-6 mb-0">
+                <label class="hours-label"><i class="pi pi-clock mr-2"></i>{{ 'ASSETS.HOURS_OF_USE' | translate }}</label>
+                <p-inputnumber inputId="hoursOfUse" formControlName="hoursOfUse" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+              </div>
+              <div class="field col-12 md:col-6 mb-0">
+                <label class="hours-label"><i class="pi pi-calendar mr-2"></i>{{ 'ASSETS.PURCHASE_DATE' | translate }}</label>
+                <p-datepicker inputId="purchaseDate" formControlName="purchaseDate" dateFormat="yy-mm-dd" [showIcon]="true" styleClass="w-full" inputStyleClass="w-full"></p-datepicker>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

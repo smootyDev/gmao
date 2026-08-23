@@ -1,0 +1,112 @@
+<div class="landscape-page">
+  <!-- CABECERA -->
+  <header class="landscape-header">
+    <div class="brand">
+      <i class="pi pi-bolt brand-icon"></i>
+      <span class="brand-name">GMAO CMMS</span>
+    </div>
+    <div class="header-actions">
+      @if (!loggedIn()) {
+        <button pButton type="button" severity="secondary" outlined icon="pi pi-sign-in" [label]="'Iniciar sesión'" (click)="goToEntry()"></button>
+      } @else {
+        <button pButton type="button" icon="pi pi-chart-line" [label]="'Ir al panel'" (click)="goToEntry()"></button>
+      }
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <i class="pi pi-bolt"></i>
+        <span>GMAO CMMS · Mantenimiento asistido por IA</span>
+      </div>
+      <h1>Gestión de Mantenimiento <span>moderna e inteligente</span></h1>
+      <p class="hero-subtitle">
+        Centraliza órdenes de trabajo, activos, inventario y preventivo en una única plataforma.
+        Con un asistente de IA que entiende el contexto real de tu operación.
+      </p>
+      <div class="hero-actions">
+        <button pButton routerLink="/dashboard" icon="pi pi-chart-line" [label]="'Ir al panel'"></button>
+        <button pButton type="button" severity="secondary" outlined routerLink="/workorders" icon="pi pi-wrench" [label]="'Ver órdenes'"></button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>10</strong><span>Módulos integrados</span></div>
+        <div class="stat"><strong>3</strong><span>Roles de acceso</span></div>
+        <div class="stat"><strong>90 días</strong><span>Retención de auditoría</span></div>
+        <div class="stat"><strong>24/7</strong><span>Disponible y offline</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÓDULOS -->
+  <section class="section">
+    <div class="section-heading">
+      <h2>Todo tu mantenimiento, en un solo lugar</h2>
+      <p>Diez módulos que cubren el ciclo completo del mantenimiento industrial.</p>
+    </div>
+    <div class="modules-grid">
+      @for (module of modules; track module.title) {
+        <div class="module-card">
+          <div class="module-icon" [style.background]="module.accent + '20'" [style.color]="'var(--text-color)'">
+            <i [class]="module.icon" [style.color]="accentColor(module.accent)"></i>
+          </div>
+          <h3>{{ module.title }}</h3>
+          <p>{{ module.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="section roles-section">
+    <div class="section-heading">
+      <h2>Roles y permisos</h2>
+      <p>Cada perfil opera con el acceso que necesita, y el backend lo garantiza.</p>
+    </div>
+    <div class="roles-grid">
+      @for (role of roles; track role.name) {
+        <div class="role-card">
+          <div class="role-header">
+            <i [class]="role.icon" [style.color]="role.color"></i>
+            <span class="role-name">{{ role.name }}</span>
+          </div>
+          <ul>
+            @for (capability of role.capabilities; track capability) {
+              <li><i class="pi pi-check"></i>{{ capability }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- TECNOLOGÍA -->
+  <section class="section tech-section">
+    <div class="section-heading">
+      <h2>Tecnología</h2>
+      <p>Un stack moderno, seguro y preparado para producción.</p>
+    </div>
+    <div class="tech-grid">
+      @for (item of tech; track item.name) {
+        <div class="tech-item">
+          <i [class]="item.icon"></i>
+          <div>
+            <strong>{{ item.name }}</strong>
+            <span>{{ item.description }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta">
+    <h2>¿Listo para optimizar tu mantenimiento?</h2>
+    <p>Explora los módulos y comienza a gestionar tus órdenes de trabajo hoy mismo.</p>
+    <div class="cta-actions">
+      <button pButton routerLink="/dashboard" icon="pi pi-arrow-right" iconPos="right" [label]="'Ir al panel'"></button>
+      <button pButton type="button" severity="secondary" routerLink="/ai" icon="pi pi-android" [label]="'Probar el asistente IA'"></button>
+    </div>
+  </section>
+</div>

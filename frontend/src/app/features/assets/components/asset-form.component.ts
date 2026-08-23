@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
@@ -30,6 +31,7 @@ import { AssetType, AssetTypeService } from '../../asset-types/services/asset-ty
     DatePickerModule,
     InputNumberModule,
     SelectModule,
+    TagModule,
     ButtonModule,
     TextareaModule,
     ToastModule,
@@ -49,6 +51,25 @@ export class AssetFormComponent implements OnInit {
 
   criticalities = ASSET_CRITICALITY_OPTIONS;
   statuses = ASSET_STATUS_OPTIONS;
+
+  criticalitySeverity(criticality?: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
+    switch (criticality) {
+      case 'LOW': return 'success';
+      case 'MEDIUM': return 'warn';
+      case 'HIGH': return 'danger';
+      case 'CRITICAL': return 'danger';
+      default: return 'info';
+    }
+  }
+
+  statusSeverity(status?: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' {
+    switch (status) {
+      case 'OPERATIVE': return 'success';
+      case 'MAINTENANCE': return 'warn';
+      case 'OUT_OF_SERVICE': return 'danger';
+      default: return 'info';
+    }
+  }
 
   constructor(
     private fb: FormBuilder,

@@ -1,20 +1,20 @@
-<div class="fadein mx-auto">
+<div class="fadein mx-auto max-w-5xl">
   <h1 class="text-3xl font-bold mb-4">
     {{ (isEdit() ? 'INVENTORY.EDIT' : 'INVENTORY.NEW') | translate }}
   </h1>
 
-  <p-card class="shadow-2">
-    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+  <p-card class="shadow-2 surface-card p-4 border-round-xl">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-4">
       @if (isEdit()) {
-        <div class="formgrid grid">
-          <div class="field col-12 md:col-3">
+        <div class="grid formgrid">
+          <div class="field col-12 md:col-2">
             <label for="id">{{ 'COMMON.ID' | translate }}</label>
-            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+            <input pInputText id="id" [value]="id()" disabled class="w-full font-semibold" />
           </div>
         </div>
       }
 
-      <div class="formgrid grid">
+      <div class="grid formgrid">
         <div class="field col-12 md:col-4">
           <label for="code">{{ 'INVENTORY.CODE' | translate }}</label>
           <input pInputText id="code" formControlName="code" class="w-full" />
@@ -30,7 +30,7 @@
         <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
       </div>
 
-      <div class="formgrid grid">
+      <div class="grid formgrid">
         <div class="field col-12 md:col-4">
           <label for="category">{{ 'INVENTORY.CATEGORY' | translate }}</label>
           <p-select inputId="category" formControlName="category" [options]="categoryOptions" optionLabel="label" optionValue="value" [showClear]="true" [placeholder]="'-'" styleClass="w-full"></p-select>
@@ -41,24 +41,27 @@
           <p-select inputId="unit" formControlName="unit" [options]="unitOptions" optionLabel="label" optionValue="value" styleClass="w-full"></p-select>
         </div>
 
-        <div class="field col-12 md:col-4">
-          <label for="locationId">{{ 'INVENTORY.LOCATION' | translate }}</label>
-          <p-select inputId="locationId" formControlName="locationId" [options]="locations()" optionLabel="name" optionValue="id" [showClear]="true" [placeholder]="'-'" styleClass="w-full">
-            <ng-template let-location pTemplate="item">{{ location.code }} - {{ location.name }}</ng-template>
-            <ng-template let-location pTemplate="selectedItem">{{ location ? location.code + ' - ' + location.name : '-' }}</ng-template>
-          </p-select>
+        <div class="field col-12 md:col-4 mb-0">
+          <div class="field-box field-box-teal p-3">
+            <label for="locationId" class="field-box-label">{{ 'INVENTORY.LOCATION' | translate }}</label>
+            <p-select inputId="locationId" formControlName="locationId" [options]="locations()" optionLabel="name" optionValue="id" [showClear]="true" [placeholder]="'-'" styleClass="w-full">
+              <ng-template let-location pTemplate="item">{{ location.code }} - {{ location.name }}</ng-template>
+              <ng-template let-location pTemplate="selectedItem">{{ location ? location.code + ' - ' + location.name : '-' }}</ng-template>
+            </p-select>
+          </div>
         </div>
       </div>
 
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
-          <label for="currentStock">{{ 'INVENTORY.CURRENT_STOCK' | translate }}</label>
-          <p-inputnumber inputId="currentStock" formControlName="currentStock" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="minimumStock">{{ 'INVENTORY.MINIMUM_STOCK' | translate }}</label>
-          <p-inputnumber inputId="minimumStock" formControlName="minimumStock" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+      <div class="hours-box p-3">
+        <div class="grid formgrid">
+          <div class="field col-12 md:col-6 mb-0">
+            <label class="hours-label"><i class="pi pi-box mr-2"></i>{{ 'INVENTORY.CURRENT_STOCK' | translate }}</label>
+            <p-inputnumber inputId="currentStock" formControlName="currentStock" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+          </div>
+          <div class="field col-12 md:col-6 mb-0">
+            <label class="hours-label"><i class="pi pi-arrow-down mr-2"></i>{{ 'INVENTORY.MINIMUM_STOCK' | translate }}</label>
+            <p-inputnumber inputId="minimumStock" formControlName="minimumStock" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+          </div>
         </div>
       </div>
 

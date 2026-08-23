@@ -1,15 +1,15 @@
-<div class="fadein mx-auto">
+<div class="fadein mx-auto max-w-5xl">
   <h1 class="text-3xl font-bold mb-4">
     {{ (isEdit() ? 'PREVENTIVE.EDIT' : 'PREVENTIVE.NEW') | translate }}
   </h1>
 
-  <p-card class="shadow-2">
-    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
+  <p-card class="shadow-2 surface-card p-4 border-round-xl">
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-4">
       @if (isEdit()) {
-        <div class="formgrid grid">
-          <div class="field col-12 md:col-3">
+        <div class="grid formgrid">
+          <div class="field col-12 md:col-2">
             <label for="id">{{ 'COMMON.ID' | translate }}</label>
-            <input pInputText id="id" [value]="id()" disabled class="w-full" />
+            <input pInputText id="id" [value]="id()" disabled class="w-full font-semibold" />
           </div>
         </div>
       }
@@ -24,8 +24,8 @@
         <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
       </div>
 
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-8">
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-8 mb-0">
           <label for="assetId">{{ 'PREVENTIVE.ASSET' | translate }}</label>
           <p-select inputId="assetId" formControlName="assetId" [options]="assets()" optionLabel="name" optionValue="id" [filter]="true" filterBy="name,serialNumber" [placeholder]="'-'" styleClass="w-full">
             <ng-template let-asset pTemplate="item">{{ asset.serialNumber || asset.id }} - {{ asset.name }}</ng-template>
@@ -33,9 +33,11 @@
           </p-select>
         </div>
 
-        <div class="field col-12 md:col-4">
-          <label for="frequencyDays">{{ 'PREVENTIVE.FREQUENCY' | translate }}</label>
-          <p-inputnumber inputId="frequencyDays" formControlName="frequencyDays" [min]="1" [useGrouping]="false" suffix=" d" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+        <div class="field col-12 md:col-4 mb-0">
+          <div class="hours-box p-3">
+            <label class="hours-label"><i class="pi pi-calendar-clock mr-2"></i>{{ 'PREVENTIVE.FREQUENCY' | translate }}</label>
+            <p-inputnumber inputId="frequencyDays" formControlName="frequencyDays" [min]="1" [useGrouping]="false" suffix=" d" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+          </div>
         </div>
       </div>
 

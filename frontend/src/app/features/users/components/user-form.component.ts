@@ -7,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
 import { PasswordModule } from 'primeng/password';
 import { MessageModule } from 'primeng/message';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
@@ -17,7 +18,7 @@ import { fieldErrorKey, fieldErrorParams, fieldInvalid } from '../../../core/uti
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, CardModule, CheckboxModule, InputTextModule, SelectModule, PasswordModule, MessageModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ButtonModule, CardModule, CheckboxModule, InputTextModule, SelectModule, TagModule, PasswordModule, MessageModule, TranslatePipe],
   templateUrl: './user-form.component.html'
 })
 export class UserFormComponent implements OnInit {
@@ -27,6 +28,15 @@ export class UserFormComponent implements OnInit {
   saving = signal(false);
   submitted = signal(false);
   roles = USER_ROLE_OPTIONS;
+
+  roleSeverity(role?: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
+    switch (role) {
+      case 'ADMIN': return 'contrast';
+      case 'MANAGER': return 'info';
+      case 'TECH': return 'secondary';
+      default: return 'secondary';
+    }
+  }
 
   constructor(
     private readonly fb: FormBuilder,
