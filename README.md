@@ -24,6 +24,7 @@ Sistema de Gestión de Mantenimiento (GMAO/CMMS) moderno, modular y dockerizado.
 | Asistente de IA (chat contextual, sugerencia/priorización de OTs, resúmenes) | ✅ |
 | Configuración de proveedor de IA desde la interfaz (multi-proveedor) | ✅ |
 | Auditoría de operaciones (registro, filtros, retención configurable) | ✅ |
+| Landing pública (`/landscape`) con la presentación de módulos, roles y stack | ✅ |
 | Interfaz responsive con modo claro/oscuro y varios presets de color | ✅ |
 | Soporte multi-idioma (español/inglés) | ✅ |
 | PWA instalable (manifest + service worker) | ✅ |
@@ -63,8 +64,9 @@ gmao/
 ├── frontend/                   # Angular 21 + PrimeNG
 │   └── src/app/
 │       ├── core/                # Guards, interceptors, pipes, servicios
-│       ├── features/             # dashboard, workorders, assets, asset-types,
-│       │                          # locations, inventory, preventive, users, ai, audit
+│       ├── features/             # landscape (landing), auth, dashboard, workorders,
+│       │                          # assets, asset-types, locations, inventory,
+│       │                          # preventive, users, ai, audit
 │       └── layout/               # Topbar, menú, sidebar
 ├── scripts/
 │   ├── init-db.sql              # Esquema base + datos de ejemplo (primer arranque)
@@ -111,7 +113,7 @@ Debe verse `DO` (o `CREATE TABLE` / `NOTICE: ... already exists, skipping`) para
 
 **4. Acceder**
 
-- Frontend: http://localhost:4200
+- Frontend: http://localhost:4200 (abre primero la landing pública `/landscape`; pulsa *Iniciar sesión* o ve directamente a `/login`)
 - Backend API: http://localhost:8080
 - PostgreSQL: localhost:5432 (usuario `gmao`, contraseña `gmao_pass`, base `gmao`)
 
@@ -226,7 +228,9 @@ AI_SETTINGS_ENCRYPTION_KEY=   # clave con la que se cifra la API key guardada en
 
 ## Seguridad y roles (RBAC)
 
-La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@PreAuthorize` en los controllers y reglas de URL en `SecurityConfig`, y **frontend (UX)** ocultando rutas y acciones según el rol.
+La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@PreAuthorize` en los controllers (`@EnableMethodSecurity`) y reglas de URL en `SecurityConfig`, y **frontend (UX)** ocultando rutas y acciones según el rol (`PermissionsService` + `roleGuard`, menú de administración solo visible para ADMIN).
+
+Los errores de autenticación/autorización devuelven JSON (`{"error": "...", "status": 401|403}`) en lugar de la página de error por defecto de Spring. El origen permitido para CORS es configurable con `APP_CORS_ALLOWED_ORIGINS` (por defecto `*`; en Docker no hace falta tocarlo porque nginx sirve el frontend y proxya `/api` al backend en el mismo origen).
 
 | Recurso | GET | POST | PUT | DELETE |
 |---|---|---|---|---|
@@ -243,6 +247,7 @@ La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@Pre
 
 Reglas de negocio clave:
 - **TECH** solo ve y modifica órdenes asignadas a él; puede transicionar `ASSIGNED → IN_PROGRESS → ON_HOLD → CLOSED` y registrar horas reales, pero no cambiar prioridad, asignación, ni reabrir (`OPEN`).
+- Una orden de trabajo solo puede asignarse a un usuario con rol **TECH**.
 - La raíz de empresa (`systemRoot`) está protegida para los tres roles.
 - `created_by` se fija en el servidor al crear la orden (trazabilidad); las históricas quedan `NULL`.
 
