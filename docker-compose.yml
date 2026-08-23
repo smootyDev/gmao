@@ -42,11 +42,13 @@ services:
       - ./scripts/migrations/011_preventive_plans.sql:/migrations/011_preventive_plans.sql:ro
       - ./scripts/migrations/012_asset_type_icon.sql:/migrations/012_asset_type_icon.sql:ro
       - ./scripts/migrations/013_fix_asset_type_icon_format.sql:/migrations/013_fix_asset_type_icon_format.sql:ro
+      - ./scripts/migrations/014_ai_settings.sql:/migrations/014_ai_settings.sql:ro
+      - ./scripts/migrations/015_audit_log.sql:/migrations/015_audit_log.sql:ro
     depends_on:
       db:
         condition: service_healthy
     entrypoint: ["/bin/sh", "-c"]
-    command: "psql -v ON_ERROR_STOP=1 -f /migrations/001_locations.sql -f /migrations/002_asset_types.sql -f /migrations/003_asset_description.sql -f /migrations/004_asset_type_descriptions.sql -f /migrations/005_repair_asset_type_descriptions.sql -f /migrations/006_users_assets_assignment.sql -f /migrations/007_drop_asset_assignment.sql -f /migrations/008_add_client_id.sql -f /migrations/009_inventory_items.sql -f /migrations/010_work_order_items.sql -f /migrations/011_preventive_plans.sql -f /migrations/012_asset_type_icon.sql -f /migrations/013_fix_asset_type_icon_format.sql"
+    command: "psql -v ON_ERROR_STOP=1 -f /migrations/001_locations.sql -f /migrations/002_asset_types.sql -f /migrations/003_asset_description.sql -f /migrations/004_asset_type_descriptions.sql -f /migrations/005_repair_asset_type_descriptions.sql -f /migrations/006_users_assets_assignment.sql -f /migrations/007_drop_asset_assignment.sql -f /migrations/008_add_client_id.sql -f /migrations/009_inventory_items.sql -f /migrations/010_work_order_items.sql -f /migrations/011_preventive_plans.sql -f /migrations/012_asset_type_icon.sql -f /migrations/013_fix_asset_type_icon_format.sql -f /migrations/014_ai_settings.sql -f /migrations/015_audit_log.sql"
 
   backend:
     build: ./backend

@@ -1,5 +1,8 @@
 package com.gmao.backend.config;
 
+import com.gmao.backend.audit.service.AuditLogService;
+import com.gmao.backend.audit.web.AuditRequestFilter;
+import com.gmao.backend.audit.web.AuditSanitizer;
 import com.gmao.backend.auth.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,17 +38,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   AuditLogService auditLogService,
+                                                   AuditSanitizer auditSanitizer) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/ai/settings/**").hasRole("ADMIN")
+                .requestMatchers("/api/audit-logs/**").hasRole("ADMIN")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new AuditRequestFilter(auditLogService, auditSanitizer),
+                JwtAuthenticationFilter.class);
 
         return http.build();
     }

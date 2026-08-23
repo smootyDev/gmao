@@ -3,19 +3,17 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
-import { StyleClass } from 'primeng/styleclass';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../core/pipes/translate.pipe';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../core/services/auth.service';
 import { LanguageService } from '../core/services/language.service';
 import { LayoutService } from './layout.service';
-import { LayoutConfiguratorComponent } from './layout-configurator.component';
 
 @Component({
   selector: 'app-layout-topbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, MenuModule, TranslatePipe, LayoutConfiguratorComponent, StyleClass],
+  imports: [CommonModule, RouterModule, MenuModule, TranslatePipe],
   templateUrl: './layout-topbar.component.html'
 })
 export class LayoutTopbarComponent {
@@ -48,4 +46,11 @@ export class LayoutTopbarComponent {
       darkTheme: !state.darkTheme
     }));
   }
+
+  get logo(): string {
+    const path = 'logo';
+    const logo = this.layoutService.isDarkTheme() || this.layoutService.layoutConfig().primary === 'primaryColor' ? '-white.png' : '.png';
+    return path + logo;
+  }
+
 }

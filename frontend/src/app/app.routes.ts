@@ -30,7 +30,10 @@ export const routes: Routes = [
       { path: 'inventory/:id', loadComponent: () => import('./features/inventory/components/inventory-form.component').then(m => m.InventoryFormComponent) },
       { path: 'preventive', loadComponent: () => import('./features/preventive/components/preventive-list.component').then(m => m.PreventiveListComponent) },
       { path: 'preventive/new', loadComponent: () => import('./features/preventive/components/preventive-form.component').then(m => m.PreventiveFormComponent) },
-      { path: 'preventive/:id', loadComponent: () => import('./features/preventive/components/preventive-form.component').then(m => m.PreventiveFormComponent) }
+      { path: 'preventive/:id', loadComponent: () => import('./features/preventive/components/preventive-form.component').then(m => m.PreventiveFormComponent) },
+      { path: 'ai', loadComponent: () => import('./features/ai/chat/components/ai-chat.component').then(m => m.AiChatComponent) },
+      { path: 'ai/settings', loadComponent: () => import('./features/ai/settings/components/ai-settings.component').then(m => m.AiSettingsComponent) },
+      { path: 'audit-logs', loadComponent: () => import('./features/audit/components/audit-log-list.component').then(m => m.AuditLogListComponent) }
     ]
   },
   { path: '**', redirectTo: 'login' }

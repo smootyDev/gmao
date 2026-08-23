@@ -14,3 +14,29 @@
 
   <div class="layout-mask" (click)="hideMenu()"></div>
 </div>
+
+@if (aiState.enabled()) {
+  <button
+    pButton
+    type="button"
+    class="ai-fab"
+    icon="pi pi-android"
+    rounded
+    [title]="'AI.TITLE' | translate"
+    (click)="openAiChat()"
+  ></button>
+}
+
+<p-dialog
+  [(visible)]="aiDialogVisible"
+  [header]="'AI.TITLE' | translate"
+  [modal]="true"
+  [dismissableMask]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  [style]="{ width: '560px', maxHeight: '80vh' }"
+  (onShow)="aiChat.refreshHealth()"
+>
+  <app-ai-chat #aiChat [embedded]="true" (createWorkOrder)="aiDialogVisible.set(false)"></app-ai-chat>
+</p-dialog>

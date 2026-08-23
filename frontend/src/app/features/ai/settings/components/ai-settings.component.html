@@ -1,0 +1,173 @@
+<div class="fadein mx-auto">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'AI.SETTINGS_TITLE' | translate }}</h1>
+    <div class="flex align-items-center gap-2">
+      <div class="flex align-items-center gap-2 mr-2">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-th-large"
+          [severity]="viewMode() === 'grid' ? 'primary' : 'secondary'"
+          [text]="viewMode() !== 'grid'"
+          [title]="'AI.VIEW_GRID' | translate"
+          (click)="setViewMode('grid')"
+        ></button>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-bars"
+          [severity]="viewMode() === 'list' ? 'primary' : 'secondary'"
+          [text]="viewMode() !== 'list'"
+          [title]="'AI.VIEW_LIST' | translate"
+          (click)="setViewMode('list')"
+        ></button>
+      </div>
+      @if (health(); as h) {
+        <p-tag
+          [value]="(h.enabled ? 'AI.STATUS_ENABLED' : 'AI.STATUS_DISABLED') | translate"
+          [severity]="h.enabled ? 'success' : 'warn'"
+        ></p-tag>
+        <p-tag [value]="h.provider" severity="info"></p-tag>
+      }
+    </div>
+  </div>
+
+  @if (!loading()) {
+    <div class="flex align-items-center gap-3 mb-4">
+      <p-toggleswitch [ngModel]="enabled()" (ngModelChange)="onEnabledChange($event)"></p-toggleswitch>
+      <span class="font-semibold">
+        {{ 'AI.ENABLED' | translate }}:
+        {{ (enabled() ? 'AI.STATUS_ENABLED' : 'AI.STATUS_DISABLED') | translate }}
+      </span>
+    </div>
+
+    @if (viewMode() === 'grid') {
+      <div class="grid">
+        @for (provider of providers(); track provider.provider) {
+          <div class="col-12 md:col-6">
+            <p-card class="shadow-2 h-full" [style]="{ 'border': isActive(provider.provider) ? '2px solid var(--primary-color)' : '' }">
+              <div class="flex justify-content-between align-items-center mb-2">
+                <div class="flex align-items-center gap-2">
+                  <span class="font-bold text-xl">{{ provider.provider.toUpperCase() }}</span>
+                  @if (isActive(provider.provider)) {
+                    <p-tag value="ACTIVA" severity="success"></p-tag>
+                  }
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  severity="success"
+                  outlined
+                  icon="pi pi-star"
+                  [label]="'AI.SET_ACTIVE' | translate"
+                  [disabled]="isActive(provider.provider)"
+                  (click)="activate(provider)"
+                ></button>
+              </div>
+
+              <div class="flex flex-column gap-2">
+                <div class="field">
+                  <label>{{ 'AI.BASE_URL' | translate }}</label>
+                  <input pInputText [(ngModel)]="provider.baseUrl" [name]="'baseUrl-' + provider.provider" class="w-full" />
+                </div>
+                <div class="field">
+                  <label>{{ 'AI.MODEL' | translate }}</label>
+                  <input pInputText [(ngModel)]="provider.model" [name]="'model-' + provider.provider" class="w-full" />
+                </div>
+                <div class="field">
+                  <label>{{ 'AI.USERNAME' | translate }}</label>
+                  <input pInputText [(ngModel)]="provider.username" [name]="'username-' + provider.provider" class="w-full" />
+                </div>
+                <div class="field">
+                  <label>{{ 'AI.API_KEY' | translate }}</label>
+                  <input
+                    pInputText
+                    [(ngModel)]="provider.apiKey"
+                    [name]="'apiKey-' + provider.provider"
+                    type="password"
+                    class="w-full"
+                    [placeholder]="provider.apiKeyConfigured ? ('AI.API_KEY_CONFIGURED' | translate) : ''"
+                  />
+                </div>
+                <div class="grid">
+                  <div class="field col-12 md:col-4">
+                    <label>{{ 'AI.TEMPERATURE' | translate }}</label>
+                    <p-inputnumber [(ngModel)]="provider.temperature" [name]="'temp-' + provider.provider" mode="decimal" [min]="0" [max]="2" [step]="0.1" [minFractionDigits]="1" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+                  </div>
+                  <div class="field col-12 md:col-4">
+                    <label>{{ 'AI.MAX_TOKENS' | translate }}</label>
+                    <p-inputnumber [(ngModel)]="provider.maxTokens" [name]="'tokens-' + provider.provider" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+                  </div>
+                  <div class="field col-12 md:col-4">
+                    <label>{{ 'AI.TIMEOUT' | translate }}</label>
+                    <p-inputnumber [(ngModel)]="provider.timeoutMs" [name]="'timeout-' + provider.provider" [useGrouping]="false" suffix=" ms" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-content-end gap-2 mt-3">
+                <button pButton type="button" severity="secondary" outlined icon="pi pi-wifi" [label]="'AI.TEST' | translate" [loading]="provider.testing" (click)="test(provider)"></button>
+                <button pButton type="button" [loading]="provider.saving" icon="pi pi-check" [label]="'COMMON.SAVE' | translate" (click)="save(provider)"></button>
+              </div>
+            </p-card>
+          </div>
+        }
+      </div>
+    } @else {
+      <p-card class="shadow-2">
+        <p-table [value]="providers()" styleClass="p-datatable-striped" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 170px">{{ 'AI.PROVIDER' | translate }}</th>
+              <th style="width: 500px">{{ 'AI.MODEL' | translate }}</th>
+              <th style="width: 700px">{{ 'AI.BASE_URL' | translate }}</th>
+              <th style="width: 170px">{{ 'AI.USERNAME' | translate }}</th>
+              <th style="width: 200px">{{ 'AI.API_KEY' | translate }}</th>
+              <th style="width: 90px">{{ 'AI.TEMPERATURE' | translate }}</th>
+              <th style="width: 110px">{{ 'AI.MAX_TOKENS' | translate }}</th>
+              <th style="width: 130px">{{ 'AI.TIMEOUT' | translate }}</th>
+              <th style="width: 170px"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-provider>
+            <tr [style]="{ 'background': isActive(provider.provider) ? 'var(--highlight-bg)' : '' }">
+              <td>
+                <div class="flex align-items-center gap-2">
+                  <span class="font-bold">{{ provider.provider.toUpperCase() }}</span>
+                  @if (isActive(provider.provider)) {
+                    <p-tag value="ACTIVA" severity="success"></p-tag>
+                  }
+                </div>
+              </td>
+              <td><input pInputText [(ngModel)]="provider.model" [name]="'list-model-' + provider.provider" class="w-full" /></td>
+              <td><input pInputText [(ngModel)]="provider.baseUrl" [name]="'list-baseUrl-' + provider.provider" class="w-full" /></td>
+              <td><input pInputText [(ngModel)]="provider.username" [name]="'list-username-' + provider.provider" class="w-full" /></td>
+              <td>
+                <input
+                  pInputText
+                  [(ngModel)]="provider.apiKey"
+                  [name]="'list-apiKey-' + provider.provider"
+                  type="password"
+                  class="w-full"
+                  [placeholder]="provider.apiKeyConfigured ? ('AI.API_KEY_CONFIGURED' | translate) : ''"
+                />
+              </td>
+              <td><p-inputnumber [(ngModel)]="provider.temperature" [name]="'list-temp-' + provider.provider" mode="decimal" [min]="0" [max]="2" [step]="0.1" [minFractionDigits]="1" [maxFractionDigits]="2" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber></td>
+              <td><p-inputnumber [(ngModel)]="provider.maxTokens" [name]="'list-tokens-' + provider.provider" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber></td>
+              <td><p-inputnumber [(ngModel)]="provider.timeoutMs" [name]="'list-timeout-' + provider.provider" [useGrouping]="false" suffix=" ms" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber></td>
+              <td>
+                <div class="flex gap-2 justify-content-end">
+                  <button pButton type="button" severity="success" outlined icon="pi pi-star" [title]="'AI.SET_ACTIVE' | translate" [disabled]="isActive(provider.provider)" (click)="activate(provider)"></button>
+                  <button pButton type="button" severity="secondary" outlined icon="pi pi-wifi" [title]="'AI.TEST' | translate" [loading]="provider.testing" (click)="test(provider)"></button>
+                  <button pButton type="button" icon="pi pi-check" [title]="'COMMON.SAVE' | translate" [loading]="provider.saving" (click)="save(provider)"></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    }
+  }
+</div>
+
+<p-toast></p-toast>

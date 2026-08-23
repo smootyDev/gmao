@@ -58,9 +58,9 @@
           </ng-template>
           <ng-template pTemplate="body" let-workOrder>
             <tr>
-              <td><a class="order-link" [routerLink]="['/workorders', workOrder.id]">OT-{{ workOrder.id }}</a></td>
+              <td><a class="order-link" [routerLink]="['/workorders', workOrder.id]">{{ workOrder.id }}</a></td>
               <td class="font-medium">{{ workOrder.title }}</td>
-              <td>{{ workOrder.assetId || ('COMMON.EMPTY' | translate) }}</td>
+              <td>{{ assetName(workOrder.assetId) || ('COMMON.EMPTY' | translate) }}</td>
               <td><p-tag [value]="('WORKORDERS.STATUSES.' + workOrder.status) | translate" [severity]="workOrder.status === 'ON_HOLD' ? 'warn' : workOrder.status === 'IN_PROGRESS' ? 'info' : 'success'"></p-tag></td>
             </tr>
           </ng-template>

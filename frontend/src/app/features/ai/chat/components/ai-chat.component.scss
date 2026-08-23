@@ -1,0 +1,18 @@
+.chat-scroll {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.ai-chat-embedded {
+  .p-card-body {
+    padding: 0.75rem;
+  }
+}
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

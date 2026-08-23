@@ -19,6 +19,21 @@ jwt:
   secret: ${JWT_SECRET:wdnKIPY7LxULcvqqX8JAzSU4a/C7ATWwyqstb021TPI=}
   expiration: 86400000
 
+ai:
+  enabled: ${AI_ENABLED:false}
+  provider: ${AI_PROVIDER:mock}
+  api-key: ${AI_API_KEY:}
+  base-url: ${AI_BASE_URL:}
+  model: ${AI_MODEL:}
+  timeout-ms: ${AI_TIMEOUT_MS:30000}
+  max-tokens: ${AI_MAX_TOKENS:1000}
+  temperature: ${AI_TEMPERATURE:0.2}
+  settings-encryption-key: ${AI_SETTINGS_ENCRYPTION_KEY:ccihsis94tsYTHbsaexE3uTTSBG3rW/gDvA4WbCViXg=}
+  store-content: ${AI_STORE_CONTENT:false}
+
+audit:
+  retention-days: ${AUDIT_RETENTION_DAYS:90}
+
 server:
   port: 8080
 

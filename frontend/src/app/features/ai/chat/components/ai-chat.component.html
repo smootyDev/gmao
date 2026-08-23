@@ -1,0 +1,154 @@
+<div class="fadein" [class.ai-chat-embedded]="embedded">
+  @if (embedded) {
+    <div class="flex justify-content-end align-items-center gap-2 mb-2">
+      @if (health(); as h) {
+        <p-tag
+          [value]="(h.enabled ? 'AI.STATUS_ENABLED' : 'AI.STATUS_DISABLED') | translate"
+          [severity]="h.enabled ? 'success' : 'warn'"
+          icon="pi pi-android"
+        ></p-tag>
+        <p-tag [value]="h.provider" severity="info" [rounded]="true"></p-tag>
+      }
+    </div>
+  } @else {
+    <div class="flex justify-content-between align-items-center mb-4">
+      <h1 class="text-3xl font-bold m-0">{{ 'AI.TITLE' | translate }}</h1>
+      <div class="flex align-items-center gap-2">
+        @if (health(); as h) {
+          <p-tag
+            [value]="(h.enabled ? 'AI.STATUS_ENABLED' : 'AI.STATUS_DISABLED') | translate"
+            [severity]="h.enabled ? 'success' : 'warn'"
+            icon="pi pi-android"
+          ></p-tag>
+          <p-tag [value]="h.provider" severity="info" [rounded]="true"></p-tag>
+        }
+      </div>
+    </div>
+  }
+
+  <p-card class="shadow-2">
+    <div class="flex flex-column" [style.height]="chatHeight()">
+      <div class="flex gap-2 mb-3">
+        <button pButton type="button" outlined severity="secondary" icon="pi pi-bolt" [label]="'AI.QUICK_SUGGEST' | translate" (click)="openSuggest()"></button>
+        <button pButton type="button" outlined severity="secondary" icon="pi pi-sort-amount-down" [label]="'AI.QUICK_PRIORITIZE' | translate" (click)="runPrioritize()"></button>
+        <button pButton type="button" outlined severity="secondary" icon="pi pi-chart-line" [label]="'AI.QUICK_SUMMARY' | translate" (click)="runSummarize()"></button>
+      </div>
+
+      <div #scrollFrame class="chat-scroll flex-1 surface-section border-round p-3">
+        @if (showWelcome()) {
+          <div class="flex flex-column align-items-center justify-content-center h-full text-color-secondary">
+            <i class="pi pi-android text-5xl mb-3"></i>
+            <p class="m-0">{{ 'AI.WELCOME' | translate }}</p>
+          </div>
+        }
+
+        @for (message of messages(); track message.createdAt) {
+          @if (message.role === 'system') {
+            <div class="flex justify-content-center mb-3">
+              <small class="text-color-secondary bg-200 px-3 py-1 border-round">{{ message.text }}</small>
+            </div>
+          } @else {
+            <div class="flex mb-3" [class.justify-content-end]="message.role === 'user'">
+              <div
+                class="chat-bubble"
+                [ngClass]="{
+                  'bg-primary text-primary-contrast': message.role === 'user',
+                  'surface-card border-1 border-200': message.role === 'assistant'
+                }"
+              >
+                @if (message.meta === 'suggest' && message.data && isSuggestData(message.data)) {
+                  <ng-container>
+                    <div class="flex align-items-center gap-2 mb-2">
+                      <strong>{{ message.data.title }}</strong>
+                      <p-tag [value]="priorityLabel(message.data.priority) | translate" [severity]="prioritySeverity(message.data.priority)"></p-tag>
+                      @if (message.data.estimatedHours != null) {
+                        <p-tag [value]="message.data.estimatedHours + 'h'" severity="info"></p-tag>
+                      }
+                    </div>
+                    <p class="m-0 mb-2">{{ message.data.description }}</p>
+                    @if (message.data.checklist.length > 0) {
+                      <ul class="m-0 mb-2 pl-4">
+                        @for (step of message.data.checklist; track step) {
+                          <li>{{ step }}</li>
+                        }
+                      </ul>
+                    }
+                    <button pButton type="button" size="small" icon="pi pi-plus" [label]="'AI.CREATE_WORKORDER' | translate" (click)="createWorkOrderFromSuggestion()"></button>
+                  </ng-container>
+                } @else if (message.meta === 'prioritize' && message.data && !isSuggestData(message.data)) {
+                  <ng-container>
+                    <ul class="m-0 p-0 list-none">
+                      @for (suggestion of message.data; track suggestion.workOrderId) {
+                        <li class="flex align-items-center gap-2 mb-2">
+                          <p-tag [value]="'OT #' + suggestion.workOrderId" severity="contrast"></p-tag>
+                          <p-tag [value]="priorityLabel(suggestion.suggestedPriority) | translate" [severity]="prioritySeverity(suggestion.suggestedPriority)"></p-tag>
+                          <span>{{ suggestion.reason }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </ng-container>
+                } @else {
+                  <div>{{ message.text }}</div>
+                }
+
+                @if (message.usage; as usage) {
+                  <small class="flex gap-2 mt-2 text-xs text-color-secondary">
+                    <span>{{ usage.tokensIn }} in / {{ usage.tokensOut }} out</span>
+                    <span>{{ usage.latencyMs }} ms</span>
+                    <span>€ {{ usage.estimatedCost.toFixed(4) }}</span>
+                  </small>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        @if (loading()) {
+          <div class="flex mb-3">
+            <div class="chat-bubble surface-card border-1 border-200">
+              <div class="flex align-items-center gap-2">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>{{ 'AI.THINKING' | translate }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="flex align-items-end gap-2 mt-3">
+        <textarea
+          pTextarea
+          rows="2"
+          class="flex-1"
+          [ngModel]="inputText()"
+          (ngModelChange)="inputText.set($event)"
+          [placeholder]="'AI.INPUT_PLACEHOLDER' | translate"
+          (keydown.enter)="onEnterKey($event)"
+          [disabled]="loading()"
+        ></textarea>
+        <button pButton type="button" [loading]="loading()" icon="pi pi-send" [disabled]="inputText().trim() === ''" (click)="send()" [label]="'AI.SEND' | translate"></button>
+      </div>
+    </div>
+  </p-card>
+</div>
+
+<p-dialog [(visible)]="suggestVisible" [header]="'AI.SUGGEST_DIALOG' | translate" [modal]="true" [style]="{ width: '540px' }">
+  <form [formGroup]="suggestForm" (ngSubmit)="submitSuggest()" class="flex flex-column gap-3">
+    <div class="field">
+      <label for="description">{{ 'AI.SUGGEST_DESCRIPTION' | translate }} *</label>
+      <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+    </div>
+    <div class="field">
+      <label for="assetName">{{ 'AI.SUGGEST_ASSET' | translate }}</label>
+      <input pInputText id="assetName" formControlName="assetName" class="w-full" />
+    </div>
+    <div class="field">
+      <label for="notes">{{ 'AI.SUGGEST_NOTES' | translate }}</label>
+      <textarea pTextarea id="notes" formControlName="notes" rows="2" class="w-full"></textarea>
+    </div>
+    <div class="flex justify-content-end gap-2">
+      <button pButton type="button" severity="secondary" [label]="'COMMON.CANCEL' | translate" (click)="suggestVisible.set(false)"></button>
+      <button pButton type="submit" icon="pi pi-sparkles" [label]="'AI.GENERATE' | translate"></button>
+    </div>
+  </form>
+</p-dialog>

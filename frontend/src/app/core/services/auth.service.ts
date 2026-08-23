@@ -19,6 +19,7 @@ export interface LoginResponse {
 export class AuthService {
   private readonly apiUrl = '/api/auth';
   private readonly tokenKey = 'gmao_token';
+  private readonly userKey = 'gmao_user';
 
   currentUser = signal<LoginResponse | null>(this.loadUser());
 
@@ -28,6 +29,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
       tap(response => {
         localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.userKey, JSON.stringify(response));
         this.currentUser.set(response);
       })
     );
@@ -35,6 +37,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
@@ -49,6 +52,19 @@ export class AuthService {
 
   private loadUser(): LoginResponse | null {
     const token = localStorage.getItem(this.tokenKey);
-    return token ? { token, type: 'Bearer', username: '', role: '' } : null;
+    if (!token) {
+      return null;
+    }
+
+    const raw = localStorage.getItem(this.userKey);
+    if (raw) {
+      try {
+        return { ...(JSON.parse(raw) as LoginResponse), token };
+      } catch {
+        /* datos de usuario almacenados inválidos: se ignoran */
+      }
+    }
+
+    return { token, type: 'Bearer', username: '', role: '' };
   }
 }

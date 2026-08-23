@@ -41,7 +41,7 @@ function isNetworkError(error: unknown): boolean {
     return true;
   }
   const status = (error as { status?: number })?.status;
-  return status === 0 || status === undefined || status === 502 || status === 503 || status === 504;
+  return status === 0 || status === undefined || status === 502 || status === 504;
 }
 
 export const offlineInterceptor: HttpInterceptorFn = (req, next) => {

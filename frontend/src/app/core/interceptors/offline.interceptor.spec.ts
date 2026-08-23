@@ -113,6 +113,16 @@ describe('offlineInterceptor', () => {
     expect(connectivity.online()).toBe(false);
   });
 
+  it('should not mark the app offline on a 503 service unavailable response', async () => {
+    connectivity.markOnline();
+    const req = new HttpRequest('GET', '/api/workorders');
+    const serviceUnavailable = new HttpErrorResponse({ status: 503, statusText: 'Service Unavailable' });
+
+    await expect(callInterceptor(req, () => throwError(() => serviceUnavailable))).rejects.toBeDefined();
+
+    expect(connectivity.online()).toBe(true);
+  });
+
   it('should mark the app online when a real response succeeds', async () => {
     connectivity.markOffline();
     const req = new HttpRequest('GET', '/api/workorders');

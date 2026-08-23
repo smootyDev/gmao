@@ -1,0 +1,12 @@
+.audit-pre {
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 12rem;
+  overflow: auto;
+}

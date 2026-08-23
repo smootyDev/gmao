@@ -152,6 +152,10 @@ export class DashboardComponent implements OnInit {
     return value ? new Date(value).getTime() : 0;
   }
 
+  assetName(id?: number | null): string {
+    return this.assets().find((asset) => asset.id === id)?.name || '';
+  }
+
   private lastMonths(): MonthlyTrend[] {
     const now = new Date();
     return Array.from({ length: 6 }, (_, index) => {

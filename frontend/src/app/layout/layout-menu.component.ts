@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { LayoutMenuitemComponent } from './layout-menuitem.component';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-layout-menu',
@@ -20,8 +21,10 @@ import { LayoutMenuitemComponent } from './layout-menuitem.component';
 })
 export class LayoutMenuComponent {
   model: MenuItem[] = [];
+  private readonly authService = inject(AuthService);
 
   ngOnInit() {
+    const isAdmin = this.authService.currentUser()?.role === 'ADMIN';
     this.model = [
       {
         label: 'MENU.SECTION',
@@ -42,7 +45,13 @@ export class LayoutMenuComponent {
       {
         label: 'MENU.ADMINISTRATION',
         items: [
-          { label: 'MENU.USERS', icon: 'pi pi-fw pi-users', path: '/users', routerLink: ['/users'] }
+          { label: 'MENU.USERS', icon: 'pi pi-fw pi-users', path: '/users', routerLink: ['/users'] },
+          ...(isAdmin
+            ? [
+                { label: 'MENU.AI_SETTINGS', icon: 'pi pi-fw pi-cog', path: '/ai/settings', routerLink: ['/ai/settings'] },
+                { label: 'MENU.AUDIT_LOGS', icon: 'pi pi-fw pi-history', path: '/audit-logs', routerLink: ['/audit-logs'] }
+              ]
+            : [])
         ]
       }
     ];

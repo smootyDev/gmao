@@ -1,0 +1,127 @@
+<div class="fadein">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h1 class="text-3xl font-bold m-0">{{ 'AUDIT.TITLE' | translate }}</h1>
+    <p-tag [value]="totalElements().toString()" severity="info" icon="pi pi-database"></p-tag>
+  </div>
+
+  <p-card class="shadow-2">
+    <div class="grid mb-3">
+      <div class="field col-12 md:col-2 mb-0">
+        <label class="block mb-1 text-sm">{{ 'AUDIT.CATEGORY' | translate }}</label>
+        <p-select
+          [options]="categoryOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="category()"
+          (ngModelChange)="category.set($event); onFiltersChange()"
+          [showClear]="true"
+          [placeholder]="'COMMON.FILTER' | translate"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+      <div class="field col-12 md:col-2 mb-0">
+        <label class="block mb-1 text-sm">{{ 'AUDIT.ACTION' | translate }}</label>
+        <input pInputText class="w-full" [ngModel]="action()" (ngModelChange)="action.set($event); onFiltersChange()" [placeholder]="'COMMON.FILTER' | translate" />
+      </div>
+      <div class="field col-12 md:col-2 mb-0">
+        <label class="block mb-1 text-sm">{{ 'AUDIT.ENTITY' | translate }}</label>
+        <input pInputText class="w-full" [ngModel]="entity()" (ngModelChange)="entity.set($event); onFiltersChange()" [placeholder]="'COMMON.FILTER' | translate" />
+      </div>
+      <div class="field col-12 md:col-2 mb-0">
+        <label class="block mb-1 text-sm">{{ 'AUDIT.USER' | translate }}</label>
+        <input pInputText class="w-full" [ngModel]="username()" (ngModelChange)="username.set($event); onFiltersChange()" [placeholder]="'COMMON.FILTER' | translate" />
+      </div>
+      <div class="field col-12 md:col-3 mb-0">
+        <label class="block mb-1 text-sm">{{ 'AUDIT.DATE_RANGE' | translate }}</label>
+        <p-datepicker
+          [ngModel]="dateRange()"
+          (ngModelChange)="dateRange.set($event); onFiltersChange()"
+          selectionMode="range"
+          [readonlyInput]="false"
+          styleClass="w-full"
+        ></p-datepicker>
+      </div>
+      <div class="field col-12 md:col-1 mb-0 flex align-items-end">
+        <button pButton type="button" text severity="secondary" icon="pi pi-refresh" [title]="'COMMON.CLEAR_FILTERS' | translate" (click)="clearFilters()"></button>
+      </div>
+    </div>
+
+    <p-table
+      [value]="logs()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="rows()"
+      [first]="first()"
+      [totalRecords]="totalElements()"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
+      [expandedRowKeys]="expandedRowKeys()"
+      (onRowExpand)="onRowExpand($event)"
+      (onRowCollapse)="onRowCollapse($event)"
+      (onPage)="onPage($event)"
+      dataKey="id"
+      size="small"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem"></th>
+          <th>{{ 'AUDIT.TIMESTAMP' | translate }}</th>
+          <th>{{ 'AUDIT.CATEGORY' | translate }}</th>
+          <th>{{ 'AUDIT.ACTION' | translate }}</th>
+          <th>{{ 'AUDIT.METHOD' | translate }}</th>
+          <th>{{ 'AUDIT.PATH' | translate }}</th>
+          <th>{{ 'AUDIT.USER' | translate }}</th>
+          <th>{{ 'AUDIT.ROLE' | translate }}</th>
+          <th>{{ 'AUDIT.ENTITY' | translate }}</th>
+          <th>{{ 'AUDIT.STATUS' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-log let-expanded="expanded">
+        <tr>
+          <td>
+            <button pButton type="button" pRipple [pRowToggler]="log" text rounded size="small" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" aria-label="Expand"></button>
+          </td>
+          <td>{{ formatTimestamp(log.timestamp) }}</td>
+          <td><p-tag [value]="log.category" [severity]="categorySeverity(log.category)"></p-tag></td>
+          <td>{{ log.action }}</td>
+          <td><p-tag [value]="log.method ?? '-'" severity="secondary"></p-tag></td>
+          <td class="font-mono text-sm">{{ log.path }}</td>
+          <td>{{ log.username ?? '-' }}</td>
+          <td>{{ log.role ?? '-' }}</td>
+          <td>{{ log.entity ?? '-' }}{{ log.entityId ? ' #' + log.entityId : '' }}</td>
+          <td>
+            <p-tag
+              [value]="statusLabel(log.statusCode)"
+              [severity]="log.statusCode != null && log.statusCode >= 400 ? 'danger' : 'secondary'"
+            ></p-tag>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-log>
+        <tr>
+          <td colspan="10" class="bg-50">
+            <div class="grid">
+              <div class="col-12 md:col-6">
+                <h6 class="m-0 mb-2">{{ 'AUDIT.DETAILS' | translate }}</h6>
+                <pre class="audit-pre">{{ log.details || '-' }}</pre>
+              </div>
+              <div class="col-12 md:col-6">
+                <h6 class="m-0 mb-2">{{ 'AUDIT.REQUEST_BODY' | translate }}</h6>
+                <pre class="audit-pre">{{ log.requestBody || '-' }}</pre>
+              </div>
+              <div class="col-12 md:col-6">
+                <small class="text-color-secondary">
+                  IP: {{ log.ip ?? '-' }} · Latencia: {{ log.latencyMs != null ? log.latencyMs + ' ms' : '-' }}
+                </small>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="10" class="text-center p-4">{{ 'COMMON.NO_DATA' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

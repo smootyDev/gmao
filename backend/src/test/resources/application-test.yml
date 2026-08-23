@@ -12,3 +12,12 @@ spring:
 jwt:
   secret: dGVzdF9zZWNyZXRfdGVzdF9zZWNyZXRfdGVzdF9zZWNyZXQ=
   expiration: 86400000
+
+ai:
+  enabled: true
+  provider: mock
+  settings-encryption-key: ccihsis94tsYTHbsaexE3uTTSBG3rW/gDvA4WbCViXg=
+  store-content: true
+
+audit:
+  retention-days: 90
