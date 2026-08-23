@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -12,6 +12,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { InventoryItem, InventoryItemService } from '../services/inventory-item.service';
 import { Location, LocationService } from '../../locations/services/location.service';
 import { WorkOrder, WorkorderService } from '../../workorders/services/workorder.service';
@@ -29,6 +30,7 @@ interface InventoryItemView extends InventoryItem {
   styleUrl: './inventory-list.component.scss'
 })
 export class InventoryListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   items = signal<InventoryItem[]>([]);
   locations = signal<Location[]>([]);
   loading = signal(true);

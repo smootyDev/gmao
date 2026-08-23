@@ -168,6 +168,26 @@ curl http://localhost:8080/api/workorders \
   -H "Authorization: Bearer $TOKEN"
 ```
 
+## Seguridad y roles (RBAC)
+
+La seguridad se aplica en dos niveles: **backend (autoritativo)** mediante `@PreAuthorize` en los controllers y comprobaciones de negocio en los servicios, y **frontend (UX)** ocultando acciones según el rol.
+
+| Recurso | GET | POST | PUT | DELETE |
+|---|---|---|---|---|
+| Usuarios | ADMIN | ADMIN | ADMIN | ADMIN |
+| Activos | todos | ADM+MAN | ADM+MAN | ADMIN |
+| Tipos de activo | todos | ADM+MAN | ADM+MAN | ADMIN |
+| Localizaciones | todos | ADM+MAN | ADM+MAN | ADMIN |
+| Órdenes de trabajo | todos (TECH: solo asignadas) | ADM+MAN | ADM+MAN; TECH: solo asignada + transiciones | ADM+MAN |
+| Inventario | todos | ADM+MAN | ADM+MAN | ADM+MAN |
+| Planes preventivos (+ run) | todos | ADM+MAN | ADM+MAN | ADM+MAN |
+| Auditoría y configuración IA | ADMIN | — | — | — |
+
+Reglas de negocio clave:
+- **TECH** solo ve y modifica órdenes asignadas a él; puede transicionar `ASSIGNED → IN_PROGRESS → ON_HOLD → CLOSED` y registrar horas reales, pero no cambiar prioridad, asignación, ni reabrir (`OPEN`).
+- La raíz de empresa (`systemRoot`) está protegida para los tres roles.
+- `created_by` se fija en el servidor al crear la orden (trazabilidad); las históricas quedan `NULL`.
+
 ## Tests
 
 ### Backend

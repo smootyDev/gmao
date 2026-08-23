@@ -1,3 +1,81 @@
-.max-w-900 {
-  max-width: 900px;
+// El estado muestra un p-tag como valor seleccionado; el padding propio del
+// tag se suma al del select y lo deja mas alto que el de prioridad (texto
+// simple). Se anula ese padding extra para que ambos midan lo mismo.
+:host ::ng-deep .field-select-fixed-height .p-select-label {
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .field-select-fixed-height .p-select-label .p-tag {
+  padding-top: 0;
+  // padding-bottom: 0;
+}
+
+.field-box {
+  background: var(--surface-100);
+  border: 1px solid var(--surface-200);
+  border-radius: 0.75rem;
+}
+
+.field-box-primary {
+  border-left: 4px solid var(--primary-color);
+}
+
+.field-box-teal {
+  border-left: 4px solid #0d9488;
+
+  .field-box-label {
+    color: #0d9488;
+  }
+}
+
+.field-box-label {
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.hours-box {
+  background: var(--surface-50);
+  border: 1px dashed var(--surface-300);
+  border-radius: 0.75rem;
+}
+
+.hours-label {
+  font-weight: 600;
+  color: var(--text-color-secondary);
+}
+
+.modern-items-list {
+  border: 1px solid var(--surface-200);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+
+  :host ::ng-deep .p-listbox-item {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--surface-100);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.modern-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.modern-item-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.modern-qty {
+  flex: 0 0 5.5rem;
+  width: 5.5rem;
+  text-align: right;
 }

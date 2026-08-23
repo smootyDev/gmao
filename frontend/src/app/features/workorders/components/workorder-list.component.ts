@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -10,6 +10,7 @@ import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { DropdownColumnFilterComponent } from '../../../core/components/dropdown-column-filter/dropdown-column-filter.component';
 import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
+import { workOrderStatusSeverity, priorityIcon, priorityColor } from '../../../core/utils/workorder-visual';
 import { FilterOption } from '../../../core/models/filter-option';
 import { InputTextModule } from 'primeng/inputtext';
 import { forkJoin, Subscription } from 'rxjs';
@@ -19,6 +20,7 @@ import { Asset, AssetService } from '../../assets/services/asset.service';
 import { User, UserService } from '../../users/services/user.service';
 import { InventoryItem, InventoryItemService } from '../../inventory/services/inventory-item.service';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 
 interface WorkOrderView extends WorkOrder {
   itemsCount: number;
@@ -53,6 +55,7 @@ interface WorkOrderMetric {
   styleUrl: './workorder-list.component.scss'
 })
 export class WorkorderListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   workOrders = signal<WorkOrder[]>([]);
   loading = signal(true);
   assets = signal<Asset[]>([]);
@@ -186,14 +189,15 @@ export class WorkorderListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' | undefined {
-    switch (status) {
-      case 'OPEN': return 'info';
-      case 'ASSIGNED': return 'secondary';
-      case 'IN_PROGRESS': return 'warn';
-      case 'ON_HOLD': return 'danger';
-      case 'CLOSED': return 'success';
-      default: return 'info';
-    }
+  statusSeverity(status: string): ReturnType<typeof workOrderStatusSeverity> {
+    return workOrderStatusSeverity(status);
+  }
+
+  priorityIcon(priority?: number | null): string {
+    return priorityIcon(priority);
+  }
+
+  priorityColor(priority?: number | null): string {
+    return priorityColor(priority);
   }
 }

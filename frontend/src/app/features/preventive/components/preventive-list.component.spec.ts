@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
@@ -13,6 +14,7 @@ describe('PreventiveListComponent', () => {
       imports: [PreventiveListComponent],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
         provideTranslateService(),
         { provide: PreventivePlanService, useValue: { list: () => of([]) } },
         { provide: AssetService, useValue: { list: () => of([]) } },

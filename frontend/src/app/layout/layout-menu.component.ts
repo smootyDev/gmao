@@ -42,18 +42,16 @@ export class LayoutMenuComponent {
           { label: 'MENU.ASSET_TYPES', icon: 'pi pi-fw pi-tags', path: '/catalogs/asset-types', routerLink: ['/asset-types'] }
         ]
       },
-      {
-        label: 'MENU.ADMINISTRATION',
-        items: [
-          { label: 'MENU.USERS', icon: 'pi pi-fw pi-users', path: '/users', routerLink: ['/users'] },
-          ...(isAdmin
-            ? [
-                { label: 'MENU.AI_SETTINGS', icon: 'pi pi-fw pi-cog', path: '/ai/settings', routerLink: ['/ai/settings'] },
-                { label: 'MENU.AUDIT_LOGS', icon: 'pi pi-fw pi-history', path: '/audit-logs', routerLink: ['/audit-logs'] }
-              ]
-            : [])
-        ]
-      }
+      ...(isAdmin
+        ? [{
+            label: 'MENU.ADMINISTRATION',
+            items: [
+              { label: 'MENU.USERS', icon: 'pi pi-fw pi-users', path: '/users', routerLink: ['/users'] },
+              { label: 'MENU.AI_SETTINGS', icon: 'pi pi-fw pi-cog', path: '/ai/settings', routerLink: ['/ai/settings'] },
+              { label: 'MENU.AUDIT_LOGS', icon: 'pi pi-fw pi-history', path: '/audit-logs', routerLink: ['/audit-logs'] }
+            ]
+          }]
+        : [])
     ];
   }
 }

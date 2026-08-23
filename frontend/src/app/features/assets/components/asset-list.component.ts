@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -18,6 +18,7 @@ import { AssetType, AssetTypeService } from '../../asset-types/services/asset-ty
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { assetTypeVisual, TagSeverity } from '../../../core/utils/asset-type-visual';
 
 interface AssetView extends Asset {
@@ -46,6 +47,7 @@ interface AssetView extends Asset {
   styleUrl: './asset-list.component.scss'
 })
 export class AssetListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   assets = signal<Asset[]>([]);
   loading = signal(true);
   locations = signal<Location[]>([]);
@@ -127,6 +129,14 @@ export class AssetListComponent implements OnInit, OnDestroy {
 
   locationName(locationId?: number | null): string {
     return this.locations().find((location) => location.id === locationId)?.name || '';
+  }
+
+  statusLabel(status?: string): string {
+    return ASSET_STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status ?? '';
+  }
+
+  criticalityLabel(criticality?: string): string {
+    return ASSET_CRITICALITY_OPTIONS.find((option) => option.value === criticality)?.label ?? criticality ?? '';
   }
 
   delete(id: number): void {

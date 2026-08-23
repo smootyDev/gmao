@@ -73,7 +73,9 @@
                         }
                       </ul>
                     }
-                    <button pButton type="button" size="small" icon="pi pi-plus" [label]="'AI.CREATE_WORKORDER' | translate" (click)="createWorkOrderFromSuggestion()"></button>
+                    @if (!permissions.isTech()) {
+                      <button pButton type="button" size="small" icon="pi pi-plus" [label]="'AI.CREATE_WORKORDER' | translate" (click)="createWorkOrderFromSuggestion()"></button>
+                    }
                   </ng-container>
                 } @else if (message.meta === 'prioritize' && message.data && !isSuggestData(message.data)) {
                   <ng-container>

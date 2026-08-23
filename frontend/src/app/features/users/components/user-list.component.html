@@ -51,7 +51,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.phone }}</td>
           <td>{{ user.department }}</td>
-          <td>{{ user.role }}</td>
+          <td>{{ roleLabel(user.role) | translate }}</td>
           <td><p-tag [value]="(user.active ? 'COMMON.YES' : 'COMMON.NO') | translate" [severity]="user.active ? 'success' : 'danger'"></p-tag></td>
           <td>
             <div class="flex gap-2">

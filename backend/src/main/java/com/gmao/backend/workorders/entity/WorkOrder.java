@@ -53,6 +53,12 @@ public class WorkOrder {
     @Column(name = "preventive_plan_id")
     private Long preventivePlanId;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "actual_hours")
+    private Double actualHours;
+
     @Transient
     @Builder.Default
     private List<WorkOrderItem> items = new ArrayList<>();

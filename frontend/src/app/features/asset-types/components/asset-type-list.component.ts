@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -13,6 +13,7 @@ import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { AssetType, AssetTypeService } from '../services/asset-type.service';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { ASSET_TYPE_ICONS, assetTypeIconLabel, assetTypeIconColor, normalizeAssetTypeIcon } from '../../../core/utils/asset-type-visual';
 
 @Component({
@@ -23,6 +24,7 @@ import { ASSET_TYPE_ICONS, assetTypeIconLabel, assetTypeIconColor, normalizeAsse
   styleUrl: './asset-type-list.component.scss'
 })
 export class AssetTypeListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   assetTypes = signal<AssetType[]>([]);
   loading = signal(true);
   iconOptions = ASSET_TYPE_ICONS.map((icon) => ({ label: assetTypeIconLabel(icon), value: icon }));

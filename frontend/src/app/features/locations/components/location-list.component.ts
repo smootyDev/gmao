@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
@@ -13,6 +13,7 @@ import { Asset, AssetService } from '../../assets/services/asset.service';
 import { AssetType, AssetTypeService } from '../../asset-types/services/asset-type.service';
 import { Location, LocationService } from '../services/location.service';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { assetTypeVisual, AssetTypeVisual } from '../../../core/utils/asset-type-visual';
 
 type LocationTreeData =
@@ -28,6 +29,7 @@ type LocationTreeData =
   styleUrl: './location-list.component.scss'
 })
 export class LocationListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   locations = signal<Location[]>([]);
   treeNodes = signal<TreeNode<LocationTreeData>[]>([]);
   selectedNode = signal<TreeNode<LocationTreeData> | null>(null);
@@ -120,6 +122,10 @@ export class LocationListComponent implements OnInit, OnDestroy {
   }
 
   onNodeDrop(event: TreeNodeDropEvent): void {
+    if (!this.permissions.canManageLocations()) {
+      this.loadData();
+      return;
+    }
     const draggedLocation = this.locationFrom(event.dragNode!);
     const draggedAsset = this.assetFrom(event.dragNode!);
     const parentId = this.findParentId(this.treeNodes(), event.dragNode!);

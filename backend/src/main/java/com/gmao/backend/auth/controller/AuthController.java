@@ -2,7 +2,9 @@ package com.gmao.backend.auth.controller;
 
 import com.gmao.backend.auth.dto.LoginRequest;
 import com.gmao.backend.auth.dto.LoginResponse;
+import com.gmao.backend.auth.entity.User;
 import com.gmao.backend.auth.jwt.JwtProvider;
+import com.gmao.backend.auth.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +20,14 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public AuthController(AuthenticationManager authenticationManager,
+                          JwtProvider jwtProvider,
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -41,6 +47,10 @@ public class AuthController {
             .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
             .orElse("");
 
-        return ResponseEntity.ok(new LoginResponse(token, "Bearer", authentication.getName(), role));
+        Long userId = userRepository.findByUsername(authentication.getName())
+            .map(User::getId)
+            .orElse(null);
+
+        return ResponseEntity.ok(new LoginResponse(userId, token, "Bearer", authentication.getName(), role));
     }
 }

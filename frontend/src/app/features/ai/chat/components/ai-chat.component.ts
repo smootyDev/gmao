@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, signal, computed, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -11,6 +11,7 @@ import { TagModule } from 'primeng/tag';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 import { AiService, AiHealth, AiUsage, AiPrioritizeSuggestion, AiSuggestResponse } from '../../services/ai.service';
+import { PermissionsService } from '../../../../core/services/permissions.service';
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -46,6 +47,8 @@ const PRIORITY_KEY = (p: number): string => `AI.PRIORITY_${p}`;
 export class AiChatComponent implements OnInit, AfterViewChecked {
   @Input() embedded = false;
   @Output() createWorkOrder = new EventEmitter<void>();
+
+  readonly permissions = inject(PermissionsService);
 
   messages = signal<ChatMessage[]>([]);
   inputText = signal('');

@@ -3,6 +3,7 @@ package com.gmao.backend.locations.controller;
 import com.gmao.backend.locations.entity.Location;
 import com.gmao.backend.locations.service.LocationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class LocationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Location> create(@RequestBody Location location) {
         return ResponseEntity.ok(locationService.create(location));
     }
@@ -44,11 +46,13 @@ public class LocationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Location> update(@PathVariable Long id, @RequestBody Location location) {
         return ResponseEntity.ok(locationService.update(id, location));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         locationService.delete(id);
         return ResponseEntity.noContent().build();

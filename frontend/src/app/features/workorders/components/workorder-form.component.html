@@ -1,103 +1,175 @@
-<div class="fadein max-w-900 mx-auto">
+<div class="fadein mx-auto max-w-5xl">
   <h1 class="text-3xl font-bold mb-4">
     {{ (isEdit() ? 'WORKORDERS.EDIT' : 'WORKORDERS.NEW') | translate }}
   </h1>
 
-  <p-card class="shadow-2">
-    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-3">
-      @if (isEdit()) {
-        <div class="formgrid grid">
-          <div class="field col-12 md:col-3">
-            <label for="id">{{ 'COMMON.ID' | translate }}</label>
-            <input pInputText id="id" [value]="id()" disabled class="w-full" />
-          </div>
-          @if (preventivePlanId()) {
-            <div class="field col-12 md:col-9">
-              <label for="preventivePlan">{{ 'WORKORDERS.FROM_PREVENTIVE' | translate }}</label>
-              <input pInputText id="preventivePlan" [value]="preventivePlanName()" disabled class="w-full" />
+  <p-card class="shadow-2 surface-card p-4 border-round-xl">
+    @if (isReadOnly()) {
+    <p class="p-2 text-warn border-round bg-yellow-100 mb-3">{{ 'WORKORDERS.READ_ONLY' | translate }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-column gap-4">
+      <!-- ID + Title -->
+      <div class="grid formgrid">
+        @if (isEdit()) {
+        <div class="field col-12 md:col-2">
+          <label for="id">{{ 'COMMON.ID' | translate }}</label>
+          <input pInputText id="id" [value]="id()" disabled class="w-full font-semibold" />
+        </div>
+        }
+        @if (preventivePlanId()) {
+        <div class="field col-12 md:col-4">
+          <label for="preventivePlan">{{ 'WORKORDERS.FROM_PREVENTIVE' | translate }}</label>
+          <input pInputText id="preventivePlan" [value]="preventivePlanName()" disabled class="w-full" />
+        </div>
+        }
+        <div class="field"
+          [class]="isEdit() ? (preventivePlanId() ? 'col-12 md:col-6' : 'col-12 md:col-10') : 'col-12'">
+          <label for="title">{{ 'WORKORDERS.TITLE_LABEL' | translate }}</label>
+          <input pInputText id="title" formControlName="title" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Estado + Prioridad + Activo | Descripción -->
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-7 mb-0">
+          <div class="grid formgrid">
+            <div class="field col-12 md:col-6 mb-3">
+              <label for="status">{{ 'WORKORDERS.STATUS' | translate }}</label>
+              <p-select inputId="status" formControlName="status" [options]="availableStatuses()" optionLabel="label"
+                optionValue="value" styleClass="w-full field-select-fixed-height">
+                <ng-template let-s pTemplate="item">
+                  <p-tag [value]="s.label | translate" [severity]="statusSeverity(s.value)"></p-tag>
+                </ng-template>
+                <ng-template let-s pTemplate="selectedItem">
+                  <p-tag [value]="(s?.label | translate) ?? ''" [severity]="statusSeverity(s?.value)"></p-tag>
+                </ng-template>
+              </p-select>
             </div>
-          }
-        </div>
-      }
 
-      <div class="field">
-        <label for="title">{{ 'WORKORDERS.TITLE_LABEL' | translate }}</label>
-        <input pInputText id="title" formControlName="title" class="w-full" />
+            <div class="field col-12 md:col-6 mb-3">
+              <label for="priority">{{ 'WORKORDERS.PRIORITY' | translate }}</label>
+              <p-select inputId="priority" formControlName="priority" [options]="priorities" optionLabel="label"
+                optionValue="value" styleClass="w-full field-select-fixed-height">
+                <ng-template let-p pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <i [class]="priorityIcon(p.value)" [style.color]="priorityColor(p.value)"></i>
+                    <span>{{ p.label }}</span>
+                  </div>
+                </ng-template>
+                <ng-template let-p pTemplate="selectedItem">
+                  <div class="flex align-items-center gap-2">
+                    <i [class]="priorityIcon(p?.value)" [style.color]="priorityColor(p?.value)"></i>
+                    <span>{{ p?.label }}</span>
+                  </div>
+                </ng-template>
+              </p-select>
+            </div>
+
+            <div class="field col-12  mb-3">
+              <div class="field-box field-box-primary pl-3 pb-3">
+                <label for="assetId" class="field-box-label">{{ 'WORKORDERS.ASSET' | translate }}</label>
+                <p-select inputId="assetId" formControlName="assetId" [options]="assets()" optionLabel="name"
+                  optionValue="id" [showClear]="true" [filter]="true" filterBy="name,serialNumber" [placeholder]="'-'"
+                  styleClass="w-full">
+                  <ng-template let-asset pTemplate="item">{{ asset.serialNumber || asset.id }} - {{ asset.name
+                    }}</ng-template>
+                  <ng-template let-asset pTemplate="selectedItem">{{ asset ? (asset.serialNumber || asset.id) + ' - ' +
+                    asset.name : '-' }}</ng-template>
+                </p-select>
+              </div>
+            </div>
+
+            <div class="field col-12 mb-0">
+              <div class="field-box field-box-teal pl-3 pb-3">
+                <label for="assignedTo" class="field-box-label">{{ 'WORKORDERS.ASSIGNED' | translate }}</label>
+                <p-select inputId="assignedTo" formControlName="assignedTo" [options]="users()"
+                  optionLabel="employeeCode" optionValue="id" [showClear]="true" [filter]="true"
+                  filterBy="employeeCode,firstName,lastName,username" [placeholder]="'-'" styleClass="w-full">
+                  <ng-template let-user pTemplate="item">{{ user.employeeCode }} - {{ user.firstName }} {{ user.lastName
+                    }}</ng-template>
+                  <ng-template let-user pTemplate="selectedItem">{{ user ? user.employeeCode + ' - ' + user.firstName +
+                    ' ' + user.lastName : '-' }}</ng-template>
+                </p-select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="field col-12 md:col-5 mb-0">
+          <label for="description">{{ 'WORKORDERS.DESCRIPTION' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="5" class="w-full"
+            style="height: 100%; min-height: 9.5rem"></textarea>
+        </div>
       </div>
 
-      <div class="field">
-        <label for="description">{{ 'WORKORDERS.DESCRIPTION' | translate }}</label>
-        <textarea pTextarea id="description" formControlName="description" rows="4" class="w-full"></textarea>
+      <!-- Asignado (mismo formato que activo, otro color) -->
+      <div class="grid formgrid">
+
       </div>
 
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
-          <label for="status">{{ 'WORKORDERS.STATUS' | translate }}</label>
-          <p-select inputId="status" formControlName="status" [options]="statuses" optionLabel="label" optionValue="value" styleClass="w-full">
-            <ng-template let-status pTemplate="item">{{ status.label | translate }}</ng-template>
-            <ng-template let-status pTemplate="selectedItem">{{ status.label | translate }}</ng-template>
-          </p-select>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="priority">{{ 'WORKORDERS.PRIORITY' | translate }}</label>
-          <p-select inputId="priority" formControlName="priority" [options]="priorities" optionLabel="label" optionValue="value" styleClass="w-full"></p-select>
-        </div>
-      </div>
-
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-4">
-          <label for="assetId">{{ 'WORKORDERS.ASSET' | translate }}</label>
-          <p-select inputId="assetId" formControlName="assetId" [options]="assets()" optionLabel="name" optionValue="id" [showClear]="true" [filter]="true" filterBy="name,serialNumber" [placeholder]="'-'" styleClass="w-full">
-            <ng-template let-asset pTemplate="item">{{ asset.serialNumber || asset.id }} - {{ asset.name }}</ng-template>
-            <ng-template let-asset pTemplate="selectedItem">{{ asset ? (asset.serialNumber || asset.id) + ' - ' + asset.name : '-' }}</ng-template>
-          </p-select>
-        </div>
-
-        <div class="field col-12 md:col-4">
-          <label for="assignedTo">{{ 'WORKORDERS.ASSIGNED' | translate }}</label>
-          <p-select inputId="assignedTo" formControlName="assignedTo" [options]="users()" optionLabel="employeeCode" optionValue="id" [showClear]="true" [filter]="true" filterBy="employeeCode,firstName,lastName,username" [placeholder]="'-'" styleClass="w-full">
-            <ng-template let-user pTemplate="item">{{ user.employeeCode }} - {{ user.firstName }} {{ user.lastName }}</ng-template>
-            <ng-template let-user pTemplate="selectedItem">{{ user ? user.employeeCode + ' - ' + user.firstName + ' ' + user.lastName : '-' }}</ng-template>
-          </p-select>
-        </div>
-
-        <div class="field col-12 md:col-4">
-          <label for="estimatedHours">{{ 'WORKORDERS.ESTIMATED_HOURS' | translate }}</label>
-          <p-inputnumber inputId="estimatedHours" formControlName="estimatedHours" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full"></p-inputnumber>
+      <!-- Horas -->
+      <div class="hours-box p-3">
+        <div class="grid formgrid">
+          <div class="field col-12 md:col-6 mb-0">
+            <label class="hours-label"><i class="pi pi-hourglass mr-2"></i>{{ 'WORKORDERS.ESTIMATED_HOURS' | translate
+              }}</label>
+            <p-inputnumber inputId="estimatedHours" formControlName="estimatedHours" mode="decimal" suffix=" h"
+              [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full"></p-inputnumber>
+          </div>
+          <div class="field col-12 md:col-6 mb-0">
+            <label class="hours-label"><i class="pi pi-clock mr-2"></i>{{ 'WORKORDERS.ACTUAL_HOURS' | translate
+              }}</label>
+            <p-inputnumber inputId="actualHours" formControlName="actualHours" mode="decimal" suffix=" h"
+              [minFractionDigits]="0" [maxFractionDigits]="1" [useGrouping]="false" styleClass="w-full"></p-inputnumber>
+          </div>
         </div>
       </div>
 
+      <!-- Artículos: listado PrimeNG moderno -->
       <div class="field">
         <div class="flex justify-content-between align-items-center mb-2">
-          <label class="m-0">{{ 'WORKORDERS.ITEMS' | translate }}</label>
-          <button pButton type="button" text size="small" icon="pi pi-plus" [label]="'WORKORDERS.ADD_ITEM' | translate" (click)="addItem()"></button>
+          <label class="m-0 font-semibold text-lg">{{ 'WORKORDERS.ITEMS' | translate }}</label>
+          <button pButton type="button" text size="small" icon="pi pi-plus" [label]="'WORKORDERS.ADD_ITEM' | translate"
+            [disabled]="isTechView()" (click)="addItem()"></button>
         </div>
 
         @if (itemRows().length > 0) {
-          <div class="flex flex-column gap-2">
-            @for (row of itemRows(); track $index) {
-              <div class="flex align-items-center gap-2">
-                <p-select [options]="itemOptionsFor($index)" optionLabel="name" optionValue="id" [ngModel]="row.inventoryItemId" [ngModelOptions]="{ standalone: true }" (ngModelChange)="onItemSelected($index, $event)" [placeholder]="'-'" styleClass="w-full" [style]="{ 'min-width': '18rem' }"></p-select>
-                <p-inputnumber [ngModel]="row.quantity" [ngModelOptions]="{ standalone: true }" (ngModelChange)="itemRows.update(rows => rows.map((r, i) => i === $index ? { ...r, quantity: $event ?? 1 } : r))" [min]="0" [useGrouping]="false" styleClass="w-full" inputStyleClass="w-full" [style]="{ 'max-width': '6rem' }"></p-inputnumber>
-                <button pButton type="button" text severity="danger" size="small" icon="pi pi-times" (click)="removeItem($index)" aria-label="Remove"></button>
-              </div>
-            }
-          </div>
+        <p-listbox [options]="itemRows()" optionLabel="name" styleClass="w-full modern-items-list">
+          <ng-template let-row pTemplate="item">
+            <div class="modern-item-row">
+              <p-select [options]="itemOptionsForRow(row)" optionLabel="name" optionValue="id"
+                [ngModel]="row.inventoryItemId" [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onItemSelected(row, $event)" [placeholder]="'-'" [showClear]="true" appendTo="body"
+                styleClass="modern-item-select w-full" (click)="$event.stopPropagation()"></p-select>
+
+              <input pInputText type="number" min="0" class="modern-qty" [value]="row.quantity"
+                (input)="updateItemQuantity(row, $any($event.target).value)" (click)="$event.stopPropagation()" />
+
+              <button pButton type="button" text severity="danger" size="small" icon="pi pi-times"
+                [disabled]="isTechView()" (click)="$event.stopPropagation(); removeItemRow(row)"
+                aria-label="Remove"></button>
+            </div>
+          </ng-template>
+        </p-listbox>
         } @else {
-          <p class="text-muted-color m-0">{{ 'WORKORDERS.NO_ITEMS' | translate }}</p>
+        <p class="text-muted-color m-0">{{ 'WORKORDERS.NO_ITEMS' | translate }}</p>
         }
       </div>
 
+      <!-- Acciones -->
       <div class="flex justify-content-end gap-2 mt-3">
         <button pButton type="button" severity="secondary" routerLink="/workorders">
           <i class="pi pi-times" pButtonIcon></i>
           <span pButtonLabel>{{ 'COMMON.CANCEL' | translate }}</span>
         </button>
+        @if (canSave()) {
         <button pButton type="submit" [loading]="saving()">
           <i class="pi pi-check" pButtonIcon></i>
           <span pButtonLabel>{{ 'COMMON.SAVE' | translate }}</span>
         </button>
+        }
       </div>
     </form>
   </p-card>

@@ -4,10 +4,12 @@
     <div class="flex align-items-center gap-2">
       <button pButton type="button" text severity="secondary" icon="pi pi-plus" [label]="'LOCATIONS.EXPAND_ALL' | translate" (click)="setAllExpanded(true)"></button>
       <button pButton type="button" text severity="secondary" icon="pi pi-minus" [label]="'LOCATIONS.COLLAPSE_ALL' | translate" (click)="setAllExpanded(false)"></button>
-      <button pButton type="button" routerLink="/locations/new">
-        <i class="pi pi-plus" pButtonIcon></i>
-        <span pButtonLabel>{{ 'LOCATIONS.NEW' | translate }}</span>
-      </button>
+      @if (permissions.canManageLocations()) {
+        <button pButton type="button" routerLink="/locations/new">
+          <i class="pi pi-plus" pButtonIcon></i>
+          <span pButtonLabel>{{ 'LOCATIONS.NEW' | translate }}</span>
+        </button>
+      }
     </div>
   </div>
 
@@ -76,17 +78,21 @@
             </div>
             <div class="location-tree-node-actions">
               @if (node.data.kind === 'location' && !node.data.value.systemRoot) {
-                <button
-                  pButton type="button" icon="pi pi-pencil" text rounded severity="secondary"
-                  [routerLink]="['/locations', node.data.value.id]"
-                  [attr.aria-label]="'LOCATIONS.EDIT' | translate"
-                  (click)="$event.stopPropagation()"
-                ></button>
-                <button
-                  pButton type="button" icon="pi pi-trash" text rounded severity="danger"
-                  [attr.aria-label]="'LOCATIONS.DELETE' | translate"
-                  (click)="$event.stopPropagation(); delete(node.data.value.id!)"
-                ></button>
+                @if (permissions.canManageLocations()) {
+                  <button
+                    pButton type="button" icon="pi pi-pencil" text rounded severity="secondary"
+                    [routerLink]="['/locations', node.data.value.id]"
+                    [attr.aria-label]="'LOCATIONS.EDIT' | translate"
+                    (click)="$event.stopPropagation()"
+                  ></button>
+                }
+                @if (permissions.canDeleteLocation()) {
+                  <button
+                    pButton type="button" icon="pi pi-trash" text rounded severity="danger"
+                    [attr.aria-label]="'LOCATIONS.DELETE' | translate"
+                    (click)="$event.stopPropagation(); delete(node.data.value.id!)"
+                  ></button>
+                }
               }
             </div>
           </div>

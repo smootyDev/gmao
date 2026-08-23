@@ -9,6 +9,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  id: number;
   token: string;
   type: string;
   username: string;
@@ -65,6 +66,6 @@ export class AuthService {
       }
     }
 
-    return { token, type: 'Bearer', username: '', role: '' };
+    return { id: 0, token, type: 'Bearer', username: '', role: '' };
   }
 }

@@ -4,6 +4,7 @@ import com.gmao.backend.preventive.entity.PreventivePlan;
 import com.gmao.backend.preventive.service.PreventivePlanService;
 import com.gmao.backend.workorders.entity.WorkOrder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class PreventivePlanController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<PreventivePlan> create(@RequestBody PreventivePlan plan) {
         return ResponseEntity.ok(preventivePlanService.create(plan));
     }
@@ -45,17 +47,20 @@ public class PreventivePlanController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<PreventivePlan> update(@PathVariable Long id, @RequestBody PreventivePlan plan) {
         return ResponseEntity.ok(preventivePlanService.update(id, plan));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         preventivePlanService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/run")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<WorkOrder> run(@PathVariable Long id) {
         return ResponseEntity.ok(preventivePlanService.generateWorkOrder(id));
     }

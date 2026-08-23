@@ -3,6 +3,7 @@ package com.gmao.backend.assets.controller;
 import com.gmao.backend.assets.entity.Asset;
 import com.gmao.backend.assets.service.AssetService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class AssetController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Asset> create(@RequestBody Asset asset) {
         return ResponseEntity.ok(assetService.create(asset));
     }
@@ -36,11 +38,13 @@ public class AssetController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Asset> update(@PathVariable Long id, @RequestBody Asset asset) {
         return ResponseEntity.ok(assetService.update(id, asset));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         assetService.delete(id);
         return ResponseEntity.noContent().build();

@@ -3,6 +3,7 @@ package com.gmao.backend.inventory.controller;
 import com.gmao.backend.inventory.entity.InventoryItem;
 import com.gmao.backend.inventory.service.InventoryItemService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class InventoryItemController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InventoryItem> create(@RequestBody InventoryItem item) {
         return ResponseEntity.ok(inventoryItemService.create(item));
     }
@@ -44,11 +46,13 @@ public class InventoryItemController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InventoryItem> update(@PathVariable Long id, @RequestBody InventoryItem item) {
         return ResponseEntity.ok(inventoryItemService.update(id, item));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         inventoryItemService.delete(id);
         return ResponseEntity.noContent().build();

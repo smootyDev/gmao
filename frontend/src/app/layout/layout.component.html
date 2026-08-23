@@ -36,7 +36,12 @@
   [resizable]="false"
   [closable]="true"
   [style]="{ width: '560px', maxHeight: '80vh' }"
-  (onShow)="aiChat.refreshHealth()"
 >
-  <app-ai-chat #aiChat [embedded]="true" (createWorkOrder)="aiDialogVisible.set(false)"></app-ai-chat>
+  @defer (when aiDialogVisible()) {
+    <app-ai-chat [embedded]="true" (createWorkOrder)="aiDialogVisible.set(false)"></app-ai-chat>
+  } @placeholder {
+    <div class="flex justify-content-center align-items-center" style="height: 420px">
+      <i class="pi pi-spin pi-spinner text-2xl text-color-secondary"></i>
+    </div>
+  }
 </p-dialog>

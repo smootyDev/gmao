@@ -12,10 +12,12 @@
         [placeholder]="'ASSETS.FILTER_TYPE' | translate"
         styleClass="w-14rem"
       ></p-select>
-      <button pButton type="button" routerLink="/assets/new">
-        <i class="pi pi-plus" pButtonIcon></i>
-        <span pButtonLabel>{{ 'ASSETS.NEW' | translate }}</span>
-      </button>
+      @if (permissions.canManageAssets()) {
+        <button pButton type="button" routerLink="/assets/new">
+          <i class="pi pi-plus" pButtonIcon></i>
+          <span pButtonLabel>{{ 'ASSETS.NEW' | translate }}</span>
+        </button>
+      }
     </div>
   </div>
 
@@ -61,18 +63,22 @@
           <td>{{ asset.name }}</td>
           <td>{{ asset.description }}</td>
           <td><p-tag [value]="asset.typeName" [severity]="typeSeverity(asset.typeId)"></p-tag></td>
-          <td><p-tag [value]="asset.criticality" [severity]="getSeverity(asset.criticality)"></p-tag></td>
-          <td>{{ asset.status }}</td>
+          <td><p-tag [value]="criticalityLabel(asset.criticality)" [severity]="getSeverity(asset.criticality)"></p-tag></td>
+          <td>{{ statusLabel(asset.status) }}</td>
           <td>{{ asset.locationLabel }}</td>
           <td>{{ asset.hoursOfUse }}</td>
           <td>
             <div class="flex gap-2">
-              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/assets', asset.id]" aria-label="Edit">
-                <i class="pi pi-pencil" pButtonIcon></i>
-              </button>
-              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(asset.id)" aria-label="Delete">
-                <i class="pi pi-trash" pButtonIcon></i>
-              </button>
+              @if (permissions.canManageAssets()) {
+                <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/assets', asset.id]" aria-label="Edit">
+                  <i class="pi pi-pencil" pButtonIcon></i>
+                </button>
+              }
+              @if (permissions.canDeleteAsset()) {
+                <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(asset.id)" aria-label="Delete">
+                  <i class="pi pi-trash" pButtonIcon></i>
+                </button>
+              }
             </div>
           </td>
         </tr>

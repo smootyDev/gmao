@@ -1,10 +1,12 @@
 <div class="fadein">
   <div class="flex justify-content-between align-items-center mb-4">
     <h1 class="text-3xl font-bold m-0">{{ 'ASSET_TYPES.TITLE' | translate }}</h1>
-    <button pButton type="button" routerLink="/asset-types/new">
-      <i class="pi pi-plus" pButtonIcon></i>
-      <span pButtonLabel>{{ 'ASSET_TYPES.NEW' | translate }}</span>
-    </button>
+    @if (permissions.canManageAssetTypes()) {
+      <button pButton type="button" routerLink="/asset-types/new">
+        <i class="pi pi-plus" pButtonIcon></i>
+        <span pButtonLabel>{{ 'ASSET_TYPES.NEW' | translate }}</span>
+      </button>
+    }
   </div>
 
   <p-card class="shadow-2">
@@ -48,6 +50,7 @@
               [ngModel]="assetType.icon"
               (ngModelChange)="onIconChange(assetType, $event)"
               [loading]="savingIconId() === assetType.id"
+              [disabled]="!permissions.canManageAssetTypes()"
               [showClear]="false"
               styleClass="w-10rem"
               appendTo="body"
@@ -72,12 +75,16 @@
           </td>
           <td>
             <div class="flex gap-2">
-              <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/asset-types', assetType.id]" aria-label="Edit">
-                <i class="pi pi-pencil" pButtonIcon></i>
-              </button>
-              <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(assetType.id)" aria-label="Delete">
-                <i class="pi pi-trash" pButtonIcon></i>
-              </button>
+              @if (permissions.canManageAssetTypes()) {
+                <button pButton type="button" class="p-button-text p-button-sm" [routerLink]="['/asset-types', assetType.id]" aria-label="Edit">
+                  <i class="pi pi-pencil" pButtonIcon></i>
+                </button>
+              }
+              @if (permissions.canDeleteAssetType()) {
+                <button pButton type="button" class="p-button-text p-button-sm" severity="danger" (click)="delete(assetType.id)" aria-label="Delete">
+                  <i class="pi pi-trash" pButtonIcon></i>
+                </button>
+              }
             </div>
           </td>
         </tr>

@@ -4,6 +4,7 @@ import com.gmao.backend.workorders.entity.WorkOrder;
 import com.gmao.backend.workorders.entity.WorkOrderStatus;
 import com.gmao.backend.workorders.service.WorkOrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class WorkOrderController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<WorkOrder> create(@RequestBody WorkOrder workOrder) {
         return ResponseEntity.ok(workOrderService.create(workOrder));
     }
@@ -56,11 +58,13 @@ public class WorkOrderController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER') or hasRole('TECH')")
     public ResponseEntity<WorkOrder> update(@PathVariable Long id, @RequestBody WorkOrder workOrder) {
         return ResponseEntity.ok(workOrderService.update(id, workOrder));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         workOrderService.delete(id);
         return ResponseEntity.noContent().build();

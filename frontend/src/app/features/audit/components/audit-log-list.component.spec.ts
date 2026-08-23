@@ -36,6 +36,30 @@ describe('AuditLogListComponent', () => {
     expect(compiled.textContent).toContain('CHAT');
   });
 
+  it('should expand and collapse a row when clicking the toggle button', async () => {
+    const fixture = TestBed.createComponent(AuditLogListComponent);
+    fixture.detectChanges();
+    const getButton = () => fixture.nativeElement.querySelector('[aria-label="Expand"]') as HTMLElement;
+    const component = fixture.componentInstance;
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    getButton().click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.expandedRowKeys()['1']).toBe(true);
+    expect(compiled.textContent).toContain('provider=mock');
+
+    getButton().click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(component.expandedRowKeys()['1']).toBeFalsy();
+    expect(compiled.textContent).not.toContain('provider=mock');
+  });
+
   it('should send filters to the service on change', () => {
     const listAuditLogs = vi.fn().mockReturnValue(of(page));
     TestBed.resetTestingModule();

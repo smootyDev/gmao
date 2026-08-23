@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
@@ -10,6 +10,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 import { TextColumnFilterComponent } from '../../../core/components/text-column-filter/text-column-filter.component';
 import { SyncService } from '../../../core/services/sync.service';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { PreventivePlan, PreventivePlanService } from '../services/preventive-plan.service';
 import { Asset, AssetService } from '../../assets/services/asset.service';
 
@@ -23,6 +24,7 @@ type DueSeverity = 'danger' | 'warn' | 'success' | 'secondary';
   styleUrl: './preventive-list.component.scss'
 })
 export class PreventiveListComponent implements OnInit, OnDestroy {
+  readonly permissions = inject(PermissionsService);
   plans = signal<PreventivePlan[]>([]);
   assets = signal<Asset[]>([]);
   loading = signal(true);

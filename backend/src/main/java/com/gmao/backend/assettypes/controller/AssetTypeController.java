@@ -3,6 +3,7 @@ package com.gmao.backend.assettypes.controller;
 import com.gmao.backend.assettypes.entity.AssetType;
 import com.gmao.backend.assettypes.service.AssetTypeService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class AssetTypeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<AssetType> create(@RequestBody AssetType assetType) {
         return ResponseEntity.ok(assetTypeService.create(assetType));
     }
@@ -44,11 +46,13 @@ public class AssetTypeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<AssetType> update(@PathVariable Long id, @RequestBody AssetType assetType) {
         return ResponseEntity.ok(assetTypeService.update(id, assetType));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         assetTypeService.delete(id);
         return ResponseEntity.noContent().build();

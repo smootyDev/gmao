@@ -22,7 +22,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
       if (error instanceof HttpErrorResponse && req.url.startsWith('/api')) {
         const status = error.status;
         const isAuthEndpoint = req.url.startsWith('/api/auth');
-        if ((status === 401 || status === 403) && !isAuthEndpoint) {
+        if (status === 401 && !isAuthEndpoint) {
           authService.logout();
         }
       }

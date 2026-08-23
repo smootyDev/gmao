@@ -74,6 +74,8 @@
     "ASSET": "Activo",
     "ASSIGNED": "Asignado",
     "ESTIMATED_HOURS": "Horas estimadas",
+    "ACTUAL_HOURS": "Horas reales",
+    "READ_ONLY": "Solo lectura: esta orden no está asignada a ti.",
     "ITEMS": "Artículos",
     "ADD_ITEM": "Añadir artículo",
     "NO_ITEMS": "Sin artículos asignados",
@@ -141,6 +143,9 @@
     "DEPARTMENT": "Departamento",
     "PASSWORD": "Contraseña",
     "ROLE": "Rol",
+    "ROLE_ADMIN": "Administrador",
+    "ROLE_MANAGER": "Responsable",
+    "ROLE_TECH": "Técnico",
     "ACTIVE": "Activo"
   },
   "LOCATIONS": {

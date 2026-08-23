@@ -74,6 +74,8 @@
     "ASSET": "Asset",
     "ASSIGNED": "Assigned",
     "ESTIMATED_HOURS": "Estimated hours",
+    "ACTUAL_HOURS": "Actual hours",
+    "READ_ONLY": "Read-only: this work order is not assigned to you.",
     "ITEMS": "Items",
     "ADD_ITEM": "Add item",
     "NO_ITEMS": "No items assigned",
@@ -141,6 +143,9 @@
     "DEPARTMENT": "Department",
     "PASSWORD": "Password",
     "ROLE": "Role",
+    "ROLE_ADMIN": "Administrator",
+    "ROLE_MANAGER": "Manager",
+    "ROLE_TECH": "Technician",
     "ACTIVE": "Active"
   },
   "LOCATIONS": {

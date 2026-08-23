@@ -60,8 +60,8 @@ describe('jwtInterceptor', () => {
     expect(captured[0]?.headers.get('Authorization')).toBeNull();
   });
 
-  it('should logout and redirect to login on a 403 from an api endpoint', async () => {
-    localStorage.setItem('gmao_token', 'expired');
+it('should not logout on a 403 from an api endpoint', async () => {
+    localStorage.setItem('gmao_token', 'valid');
     const navigateSpy = vi.spyOn(router, 'navigate');
     const req = new HttpRequest<unknown>('GET', '/api/workorders');
     const error = new HttpErrorResponse({ status: 403 });
@@ -70,8 +70,8 @@ describe('jwtInterceptor', () => {
       callInterceptor(req, () => throwError(() => error))
     ).rejects.toBeDefined();
 
-    expect(localStorage.getItem('gmao_token')).toBeNull();
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(localStorage.getItem('gmao_token')).toBe('valid');
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 
   it('should redirect on a 401 from an api endpoint', async () => {

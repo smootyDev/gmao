@@ -93,16 +93,13 @@ export class AuditLogListComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-  onRowExpand(event: { data: AuditLog }): void {
-    this.setExpanded(event.data.id, true);
+  toggleRow(log: AuditLog): void {
+    const key = String(log.id);
+    this.expandedRowKeys.update((keys) => ({ ...keys, [key]: !keys[key] }));
   }
 
-  onRowCollapse(event: { data: AuditLog }): void {
-    this.setExpanded(event.data.id, false);
-  }
-
-  private setExpanded(id: number, expanded: boolean): void {
-    this.expandedRowKeys.update((keys) => ({ ...keys, [String(id)]: expanded }));
+  isExpanded(log: AuditLog): boolean {
+    return this.expandedRowKeys()[String(log.id)] === true;
   }
 
   formatTimestamp(value: string): string {

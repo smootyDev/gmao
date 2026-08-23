@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -6,12 +6,16 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { ListboxModule } from 'primeng/listbox';
+import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { PermissionsService } from '../../../core/services/permissions.service';
 import { WORKORDER_STATUS_OPTIONS, WORKORDER_PRIORITY_OPTIONS } from '../../../core/constants/select-options';
+import { workOrderStatusSeverity, priorityIcon, priorityColor } from '../../../core/utils/workorder-visual';
 import { forkJoin } from 'rxjs';
 
 import { WorkorderService, WorkOrder, WorkOrderItem } from '../services/workorder.service';
@@ -37,6 +41,8 @@ interface WorkOrderItemRow extends WorkOrderItem {
     InputTextModule,
     InputNumberModule,
     SelectModule,
+    ListboxModule,
+    TagModule,
     TextareaModule,
     ButtonModule,
     ToastModule,
@@ -47,10 +53,16 @@ interface WorkOrderItemRow extends WorkOrderItem {
   styleUrl: './workorder-form.component.scss'
 })
 export class WorkorderFormComponent implements OnInit {
+  readonly permissions = inject(PermissionsService);
+  readonly statusSeverity = workOrderStatusSeverity;
+  readonly priorityIcon = priorityIcon;
+  readonly priorityColor = priorityColor;
+
   form: FormGroup;
   isEdit = signal(false);
   id = signal<number | undefined>(undefined);
   saving = signal(false);
+  isReadOnly = signal(false);
   assets = signal<Asset[]>([]);
   users = signal<User[]>([]);
   inventoryItems = signal<InventoryItem[]>([]);
@@ -60,6 +72,17 @@ export class WorkorderFormComponent implements OnInit {
 
   statuses = WORKORDER_STATUS_OPTIONS;
   priorities = WORKORDER_PRIORITY_OPTIONS;
+
+  readonly canSave = computed(
+    () => !this.isReadOnly() && (this.permissions.isAdmin() || this.permissions.isManager() || this.permissions.isTech())
+  );
+  readonly isTechView = computed(() => this.permissions.isTech());
+  readonly availableStatuses = computed(() => {
+    if (!this.permissions.isTech()) {
+      return this.statuses;
+    }
+    return this.statuses.filter((status) => status.value !== 'OPEN');
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -79,7 +102,8 @@ export class WorkorderFormComponent implements OnInit {
       priority: [3],
       assetId: [null],
       assignedTo: [null],
-      estimatedHours: [null]
+      estimatedHours: [null],
+      actualHours: [null]
     });
   }
 
@@ -104,8 +128,25 @@ export class WorkorderFormComponent implements OnInit {
           this.form.patchValue(data);
           this.preventivePlanId.set(data.preventivePlanId);
           this.itemRows.set(this.decorateItems(data.items ?? []));
+          this.isReadOnly.set(
+            this.permissions.isTech() && !this.permissions.isWorkOrderAssigned(data.assignedTo)
+          );
+          this.applyPermissions();
         },
         error: () => this.router.navigate(['/workorders'])
+      });
+    }
+  }
+
+  private applyPermissions(): void {
+    const tech = this.permissions.isTech();
+    if (this.isReadOnly()) {
+      Object.values(this.form.controls).forEach((control) => control.disable());
+      return;
+    }
+    if (tech) {
+      ['title', 'priority', 'assetId', 'assignedTo', 'estimatedHours'].forEach((name) => {
+        this.form.get(name)?.disable();
       });
     }
   }
@@ -126,34 +167,32 @@ export class WorkorderFormComponent implements OnInit {
     this.itemRows.update((rows) => [...rows, { inventoryItemId: first.id!, quantity: 1, name: first.name, unit: first.unit }]);
   }
 
-  removeItem(index: number): void {
-    this.itemRows.update((rows) => rows.filter((_, i) => i !== index));
-  }
-
-  onItemSelected(index: number, inventoryItemId: number): void {
+  onItemSelected(row: WorkOrderItemRow, inventoryItemId: number): void {
     const selected = this.inventoryItems().find((item) => item.id === inventoryItemId);
-    this.itemRows.update((rows) => {
-      const updated = [...rows];
-      updated[index] = {
-        ...updated[index],
-        inventoryItemId,
-        name: selected?.name,
-        unit: selected?.unit
-      };
-      return updated;
-    });
+    this.itemRows.update((rows) =>
+      rows.map((r) => (r === row ? { ...r, inventoryItemId, name: selected?.name, unit: selected?.unit } : r))
+    );
   }
 
-  itemOptionsFor(index: number): InventoryItem[] {
-    const row = this.itemRows()[index];
-    const available = this.inventoryItems().filter(
-      (item) => !this.itemRows().some((candidate, i) => i !== index && candidate.inventoryItemId === item.id)
+  updateItemQuantity(row: WorkOrderItemRow, quantity: unknown): void {
+    const n = Number(quantity);
+    const value = Number.isFinite(n) && n >= 0 ? n : 1;
+    this.itemRows.update((rows) =>
+      rows.map((r) => (r === row ? { ...r, quantity: value } : r))
     );
-    if (row && row.inventoryItemId) {
-      const selected = this.inventoryItems().find((item) => item.id === row.inventoryItemId);
-      if (selected && !available.some((item) => item.id === selected.id)) {
-        return [...available, selected];
-      }
+  }
+
+  removeItemRow(row: WorkOrderItemRow): void {
+    this.itemRows.update((rows) => rows.filter((r) => r !== row));
+  }
+
+  itemOptionsForRow(row: WorkOrderItemRow): InventoryItem[] {
+    const available = this.inventoryItems().filter(
+      (item) => !this.itemRows().some((candidate) => candidate !== row && candidate.inventoryItemId === item.id)
+    );
+    const selected = this.inventoryItems().find((item) => item.id === row.inventoryItemId);
+    if (selected && !available.some((item) => item.id === selected.id)) {
+      return [...available, selected];
     }
     return available;
   }
@@ -173,6 +212,7 @@ export class WorkorderFormComponent implements OnInit {
       assetId: this.toNumber(raw.assetId),
       assignedTo: this.toNumber(raw.assignedTo),
       estimatedHours: this.toNumber(raw.estimatedHours),
+      actualHours: this.toNumber(raw.actualHours),
       items: this.itemRows().map((row) => ({
         inventoryItemId: row.inventoryItemId,
         quantity: row.quantity

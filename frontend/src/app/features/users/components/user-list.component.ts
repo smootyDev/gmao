@@ -43,4 +43,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   loadData(): void { this.loading.set(true); this.userService.list().subscribe({ next: (users) => { this.users.set(users); this.loading.set(false); }, error: () => this.loading.set(false) }); }
   delete(id: number): void { if (confirm('¿Eliminar este usuario?')) this.userService.delete(id).subscribe({ next: () => this.loadData(), error: () => alert('No se puede eliminar el usuario') }); }
+  roleLabel(role: string): string {
+    return `USERS.ROLE_${role}`;
+  }
 }

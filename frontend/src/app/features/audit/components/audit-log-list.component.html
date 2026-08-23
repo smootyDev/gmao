@@ -49,14 +49,12 @@
     <p-table
       [value]="logs()"
       [loading]="loading()"
+      [lazy]="true"
       [paginator]="true"
       [rows]="rows()"
       [first]="first()"
       [totalRecords]="totalElements()"
       [rowsPerPageOptions]="[10, 25, 50, 100]"
-      [expandedRowKeys]="expandedRowKeys()"
-      (onRowExpand)="onRowExpand($event)"
-      (onRowCollapse)="onRowCollapse($event)"
       (onPage)="onPage($event)"
       dataKey="id"
       size="small"
@@ -75,47 +73,49 @@
           <th>{{ 'AUDIT.STATUS' | translate }}</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-log let-expanded="expanded">
-        <tr>
-          <td>
-            <button pButton type="button" pRipple [pRowToggler]="log" text rounded size="small" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" aria-label="Expand"></button>
-          </td>
-          <td>{{ formatTimestamp(log.timestamp) }}</td>
-          <td><p-tag [value]="log.category" [severity]="categorySeverity(log.category)"></p-tag></td>
-          <td>{{ log.action }}</td>
-          <td><p-tag [value]="log.method ?? '-'" severity="secondary"></p-tag></td>
-          <td class="font-mono text-sm">{{ log.path }}</td>
-          <td>{{ log.username ?? '-' }}</td>
-          <td>{{ log.role ?? '-' }}</td>
-          <td>{{ log.entity ?? '-' }}{{ log.entityId ? ' #' + log.entityId : '' }}</td>
-          <td>
-            <p-tag
-              [value]="statusLabel(log.statusCode)"
-              [severity]="log.statusCode != null && log.statusCode >= 400 ? 'danger' : 'secondary'"
-            ></p-tag>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="rowexpansion" let-log>
-        <tr>
-          <td colspan="10" class="bg-50">
-            <div class="grid">
-              <div class="col-12 md:col-6">
-                <h6 class="m-0 mb-2">{{ 'AUDIT.DETAILS' | translate }}</h6>
-                <pre class="audit-pre">{{ log.details || '-' }}</pre>
-              </div>
-              <div class="col-12 md:col-6">
-                <h6 class="m-0 mb-2">{{ 'AUDIT.REQUEST_BODY' | translate }}</h6>
-                <pre class="audit-pre">{{ log.requestBody || '-' }}</pre>
-              </div>
-              <div class="col-12 md:col-6">
-                <small class="text-color-secondary">
-                  IP: {{ log.ip ?? '-' }} · Latencia: {{ log.latencyMs != null ? log.latencyMs + ' ms' : '-' }}
-                </small>
-              </div>
-            </div>
-          </td>
-        </tr>
+      <ng-template pTemplate="body" let-log>
+        <ng-container>
+          <tr>
+            <td>
+              <button pButton type="button" text rounded size="small" [icon]="isExpanded(log) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" (click)="toggleRow(log)" aria-label="Expand"></button>
+            </td>
+            <td>{{ formatTimestamp(log.timestamp) }}</td>
+            <td><p-tag [value]="log.category" [severity]="categorySeverity(log.category)"></p-tag></td>
+            <td>{{ log.action }}</td>
+            <td><p-tag [value]="log.method ?? '-'" severity="secondary"></p-tag></td>
+            <td class="font-mono text-sm">{{ log.path }}</td>
+            <td>{{ log.username ?? '-' }}</td>
+            <td>{{ log.role ?? '-' }}</td>
+            <td>{{ log.entity ?? '-' }}{{ log.entityId ? ' #' + log.entityId : '' }}</td>
+            <td>
+              <p-tag
+                [value]="statusLabel(log.statusCode)"
+                [severity]="log.statusCode != null && log.statusCode >= 400 ? 'danger' : 'secondary'"
+              ></p-tag>
+            </td>
+          </tr>
+          @if (isExpanded(log)) {
+            <tr class="bg-50">
+              <td colspan="10" class="bg-50">
+                <div class="grid">
+                  <div class="col-12 md:col-6">
+                    <h6 class="m-0 mb-2">{{ 'AUDIT.DETAILS' | translate }}</h6>
+                    <pre class="audit-pre">{{ log.details || '-' }}</pre>
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <h6 class="m-0 mb-2">{{ 'AUDIT.REQUEST_BODY' | translate }}</h6>
+                    <pre class="audit-pre">{{ log.requestBody || '-' }}</pre>
+                  </div>
+                  <div class="col-12 md:col-6">
+                    <small class="text-color-secondary">
+                      IP: {{ log.ip ?? '-' }} · Latencia: {{ log.latencyMs != null ? log.latencyMs + ' ms' : '-' }}
+                    </small>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        </ng-container>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>

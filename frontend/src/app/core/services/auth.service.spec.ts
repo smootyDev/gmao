@@ -23,7 +23,7 @@ describe('AuthService', () => {
 
   it('should persist username and role on login so they are available after a reload', () => {
     const service = TestBed.inject(AuthService);
-    const response: LoginResponse = { token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' };
+    const response: LoginResponse = { id: 1, token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' };
 
     service.login({ username: 'jdoe', password: 'secret' }).subscribe();
     httpMock.expectOne('/api/auth/login').flush(response);
@@ -34,7 +34,7 @@ describe('AuthService', () => {
   });
 
   it('should restore username and role from storage after a page reload', () => {
-    const stored: LoginResponse = { token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' };
+    const stored: LoginResponse = { id: 1, token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' };
     localStorage.setItem('gmao_token', stored.token);
     localStorage.setItem('gmao_user', JSON.stringify(stored));
 
@@ -48,12 +48,12 @@ describe('AuthService', () => {
 
     const service = TestBed.inject(AuthService);
 
-    expect(service.currentUser()).toEqual({ token: 'abc123', type: 'Bearer', username: '', role: '' });
+    expect(service.currentUser()).toEqual({ id: 0, token: 'abc123', type: 'Bearer', username: '', role: '' });
   });
 
   it('should clear both the token and the stored user on logout', () => {
     localStorage.setItem('gmao_token', 'abc123');
-    localStorage.setItem('gmao_user', JSON.stringify({ token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' }));
+    localStorage.setItem('gmao_user', JSON.stringify({ id: 1, token: 'abc123', type: 'Bearer', username: 'jdoe', role: 'ADMIN' }));
     const service = TestBed.inject(AuthService);
 
     service.logout();
