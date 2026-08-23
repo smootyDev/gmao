@@ -1,0 +1,6 @@
+# Herramientas / tooling
+.claude/
+
+# Entorno y secretos locales
+.env
+.env.local
